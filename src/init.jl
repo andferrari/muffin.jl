@@ -1,3 +1,3 @@
 # initialisation
 
-# chargement fichiers fits
+# chargement fits
