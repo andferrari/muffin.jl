@@ -1,4 +1,5 @@
 include("init.jl")
+include("prox.jl")
 
 nfreq = 10
 mydata = datacube[32:96,32:96,1:nfreq]
@@ -18,29 +19,30 @@ tol1 = Float64[]
 tol2 = Float64[]
 loop = true
 
-rhop = 1.0
 nfty = size(fty)[1]
+rhop = 1.0
+muesp = 0.1
 taup = zeros(Float64,nfty,nfty,nfreq)
 
+
 p = zeros(Float64,nfty,nfty,nfreq)
-x = zeros(Float64,nfty,nfty,10)
+x = zeros(Float64,nfty,nfty,nfreq)
 
 while loop
     tic()
     niter +=1
 
     # update x
+    for z = 1:nfreq
+        x[:,:,z] = gradD(x[:,:,z],fty[:,:,z],taup[:,:,z],mypsf[:,:,z],mypsfadj[:,:,z],p[:,:,z])
+    end
+
+    # x[:,:,1] = gradD(x[:,:,1],fty[:,:,1],taup[:,:,1],mypsf[:,:,1],mypsfadj[:,:,1],p[:,:,1])
 
 
-    # while vecnorm(x[:,:,j+1] - x[:,:,j], 2) > 1E-8
-    #     j += 1
-    #     alpha[:,:,j] = (r[:,:,j]*r[:,:,j])/((cubefilter(cubefilter(p[:,:,1], mypsf), mypsfadj))*p[:,:,j])
-    #     x[:,:,j+1] = x[:,:,j] + alpha[:,:,j]*p[:,:,j]
-    #     r[:,:,j+1] = r[:,:,j] - alpha[:,:,j]*(cubefilter(cubefilter(p[:,:,1], mypsf), mypsfadj))
-    #     beta[:,:,j] = (r[:,:,j+1]*r[:,:,j+1])/(r[:,:,j]*r[:,:,j])
-    #     p[:,:,j+1] = r[:,:,j+1] + beta[:,:,j]*p[:,:,j]
-    #     println(vecnorm(x[:,:,j+1] - x[:,:,j], 2))
-    # end
+
+
+
 
 
 

@@ -8,25 +8,34 @@ function prox_u(u::Array,μ)
 end
 
 
-function
-b = fty + taup + rhop*p
+function gradD(x::Array,fty::Array,taup::Array,mypsf::Array,mypsfadj::Array,p::Array)
 
-x[:,:,:] = 1
-xm = x                                                        # x0
-r = b - (cubefilter(cubefilter(x, mypsf), mypsfadj))  # r0
-rm = r
-p = r                                                # p0
 
-for z = 1:nfreq
-    while vecnorm(x[:,:,z] - xm[:,:,z], 2) > 1E-8
 
-        alpha = (r[:,:,z],r[:,:,z])/dot((cubefilter(cubefilter(p[:,:,z], mypsf), mypsfadj)),p[:,:,z])
-        x = x + alpha*p
-        r = r - alpha*(cubefilter(cubefilter(p, mypsf), mypsfadj))
-        betaa = dot(r[:,:,z],r[:,:,z])/dot(rm[:,:,z],rm[:,:,z])
-        rm = r
-        p = r + betaa*p
-        println(vecnorm(x[:,:,z] - xm[:,:,z])
+        b = fty + taup + rhop*p
+
         xm = x
-    end
+        r = b - (imfilter_fft(imfilter_fft(x, mypsf), mypsfadj) + (muesp + rhop)*eye(nfty)*x)  # r0
+        rm = r
+        p = r                                                 # p0
+
+        println(vecnorm(x - xm))
+        loop = true
+        while loop
+
+            alpha = sum(r.*r)/sum((imfilter_fft(imfilter_fft(p, mypsf), mypsfadj) + (muesp + rhop)*eye(nfty)*p).*p)
+            x = x + alpha*p
+            r = r - alpha*(imfilter_fft(imfilter_fft(p, mypsf), mypsfadj) + (muesp + rhop)*eye(nfty)*p)
+            betaa = sum(r.*r)/sum(rm.*rm)
+            rm = r
+            p = r + betaa*p
+            println(norm(x - xm))
+
+
+            if vecnorm(x - xm, 2) < 1E-8
+                loop = false
+            end
+            xm = x
+        end
+        return x
 end
