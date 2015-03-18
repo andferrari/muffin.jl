@@ -1,17 +1,26 @@
 # initialisation
 
 using FITSIO
+using Images
 
-# write cdf file for paraview visualization
+# module to write cdf file for paraview visualization
 module Writecdf
 export writecdf
 
 using NetCDF
-    function writecdf{T<:Float64}(filename::String,psfcube,datacube::Array{T,3})
+    function writecdf{T<:Float64}(filename::ASCIIString,datacube::Array{T,3},paraview = false)
+        if isfile(filename)
+            error("file $filename already exists")
+        end
         nx, ny, nfreq = size(datacube)
-        nccreate(filename,"psf","x",nx,"y",ny,"frequency",nfreq)
-        ncwrite(psfcube,filename,"psf")
+        nccreate(filename,"datacube","x",nx,"y",ny,"frequency",nfreq)
+        ncwrite(datacube,filename,"datacube")
         ncclose()
+
+        if paraview ==  true
+            path = pwd()
+            run(`open -a paraview --args --data=$path/$filename`)
+        end
     end
 end
 
@@ -22,12 +31,13 @@ close(file)
 psfcube = squeeze(data,3)
 nxpsf, nypsf, nfreq = size(psfcube)
 
+# load gray sky model fits file
 file = FITS("../data/cluster.fits")
 data = read(file[1])
 cluster = squeeze(squeeze(data,4),3)
 nxmod, nymod = size(cluster)
 
-data = Array(Float64,nxmod,nymod,nfreq)
+imgcube = Array(Float64,nxmod,nymod,nfreq)
 for k = 1:nfreq
-    data[:,:,k] = conv2(cluster,psfcube[:,:,k])
+    imgcube[:,:,k] = imfilter_fft(cluster,psfcube[:,:,k])
 end
