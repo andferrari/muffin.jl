@@ -97,4 +97,4 @@ for z = 1:nw
  matinv[:,:,z] = inv(speye(Nb)+rho_y/K*F3D[z]*F3D[z]')
 end
 
-include("test_loop.jl")
+include("admm.jl")

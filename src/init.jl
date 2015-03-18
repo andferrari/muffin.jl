@@ -2,26 +2,42 @@
 
 using FITSIO
 using Images
-
-# module to write cdf file for paraview visualization
-module Writecdf
-export writecdf
-
 using NetCDF
-    function writecdf{T<:Float64}(filename::ASCIIString,datacube::Array{T,3},paraview = false)
-        if isfile(filename)
-            error("file $filename already exists")
-        end
-        nx, ny, nfreq = size(datacube)
-        nccreate(filename,"datacube","x",nx,"y",ny,"frequency",nfreq)
-        ncwrite(datacube,filename,"datacube")
-        ncclose()
 
-        if paraview ==  true
-            path = pwd()
-            run(`open -a paraview --args --data=$path/$filename`)
-        end
+
+function writecdf{T<:FloatingPoint}(filename::ASCIIString,datacube::Array{T,3},paraview = false)
+    if isfile(filename)
+        error("file $filename already exists")
     end
+    nx, ny, nfreq = size(datacube)
+    nccreate(filename,"datacube","x",nx,"y",ny,"frequency",nfreq)
+    ncwrite(datacube,filename,"datacube")
+    ncclose()
+    if paraview ==  true
+        path = pwd()
+        run(`open -a paraview --args --data=$path/$filename`)
+    end
+end
+
+
+function cubefilter{T<:FloatingPoint}(imagecube::Array{T,3},psfcube::Array{T,3})
+    nximg, nyimg, nfreq = size(imagecube)
+    nxpsf, nypsf, nfreq = size(psfcube)
+    rescube = Array(Float64,nximg,nyimg,nfreq)
+    for k = 1:nfreq
+        rescube[:,:,k] = imfilter_fft(imagecube[:,:,k],psfcube[:,:,k])
+    end
+    return rescube
+end
+
+function cubefilter{T<:FloatingPoint}(imagecube::Array{T,2},psfcube::Array{T,3})
+    nximg, nyimg = size(imagecube)
+    nxpsf, nypsf, nfreq = size(psfcube)
+    rescube = Array(Float64,nximg,nyimg,nfreq)
+    for k = 1:nfreq
+        rescube[:,:,k] = imfilter_fft(imagecube,psfcube[:,:,k])
+    end
+    return rescube
 end
 
 # load psf fits file created by meqtrees
@@ -35,9 +51,5 @@ nxpsf, nypsf, nfreq = size(psfcube)
 file = FITS("../data/cluster.fits")
 data = read(file[1])
 cluster = squeeze(squeeze(data,4),3)
-nxmod, nymod = size(cluster)
 
-imgcube = Array(Float64,nxmod,nymod,nfreq)
-for k = 1:nfreq
-    imgcube[:,:,k] = imfilter_fft(cluster,psfcube[:,:,k])
-end
+datacube = cubefilter(cluster,psfcube)

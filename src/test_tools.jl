@@ -15,22 +15,22 @@ end
 function estime_x(x)
 
  yy = tau_y + rho_y*yc
- tt = tau_T + rho_T*T
- pp = tau_P + rho_P*P
- ss = tau_S + rho_S*S
+ # tt = tau_T + rho_T*T
+ # pp = tau_P + rho_P*P
+ # ss = tau_S + rho_S*S
 
- reg = pp + ss
+ #reg = pp + ss
 
  for z = 1:nw
   x1[:,:,z] = nfft_adjoint(Plan[z],yy[:,z])/N
-  for i = 1:nspat
-   x2[:,:,z,i] = idwt(tt[:,:,z,i], wavelet(SpatialWaveletsBasisList[i]))
-  end
+  # for i = 1:nspat
+  #  x2[:,:,z,i] = idwt(tt[:,:,z,i], wavelet(SpatialWaveletsBasisList[i]))
+  # end
  end
 
 println("debut_xtt","  ")
 
-  xtt = x1  + reg  + sum(x2,4)
+  xtt = x1  #+ reg  + sum(x2,4)
 
 println("fin_xtt")
 
@@ -62,7 +62,7 @@ function estime_S(S)
   end
   return S,sH
 end
-update of v  S
+#update of v  S
 
 
 
