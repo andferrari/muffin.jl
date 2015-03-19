@@ -27,41 +27,44 @@ taup = zeros(Float64,nfty,nfty,nfreq)
 
 p = zeros(Float64,nfty,nfty,nfreq)
 x = zeros(Float64,nfty,nfty,nfreq)
+xmm = zeros(Float64,nfty,nfty,nfreq)
+
 tic()
-while loop
-    tic()
-    niter +=1
+    while loop
+        tic()
+        niter +=1
 
-    # update x
-    clf()
-    xm = x
-    for z = 1:nfreq
-        x[:,:,z] = gradD(x[:,:,z],fty[:,:,z],taup[:,:,z],mypsf[:,:,z],mypsfadj[:,:,z],p[:,:,z],z)
+        # update x
+        clf()
+
+        for z = 1:nfreq
+            x[:,:,z] = gradD(x[:,:,z],fty[:,:,z],taup[:,:,z],mypsf[:,:,z],mypsfadj[:,:,z],p[:,:,z],z)
+        end
+        println(norm(x[:,:,1]-xmm[:,:,1]))
+        # x[:,:,1] = gradD(x[:,:,1],fty[:,:,1],taup[:,:,1],mypsf[:,:,1],mypsfadj[:,:,1],p[:,:,1])
+
+        # prox positivity
+        tmp = x-taup/rhop
+        p = max(0,tmp)
+
+
+        # update of Lagrange multipliers
+
+        taup = taup + rhop*(p-x)
+
+        push!(tol1,vecnorm(x - xmm, 2))
+        push!(tol2,vecnorm(x - p, 2))
+
+
+        if (niter >= nbitermax) || ((tol1[niter] < 1E-8) && (tol2[niter] < 1E-8))
+            loop = false
+        end
+        println(niter)
+        toc()
+        println(niter,"  ",tol1[niter],"  ",tol2[niter])
+        xmm = x
+
     end
-
-    # x[:,:,1] = gradD(x[:,:,1],fty[:,:,1],taup[:,:,1],mypsf[:,:,1],mypsfadj[:,:,1],p[:,:,1])
-
-    # prox positivity
-    tmp = x-taup/rhop
-    p = max(0,tmp)
-
-
-    # update of Lagrange multipliers
-
-    taup = taup + rhop*(p-x)
-
-    push!(tol1,vecnorm(x - xm, 2))
-    push!(tol2,vecnorm(x - p, 2))
-
-
-    if (niter >= nbitermax) || ((tol1[niter] < 1E-8) && (tol2[niter] < 1E-8))
-        loop = false
-    end
-    println(niter)
-    toc()
-    println(niter,"  ",tol1[niter],"  ",tol2[niter])
-
-end
 toc()
 figure(2)
 for z = 1:nfreq
