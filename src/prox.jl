@@ -20,10 +20,10 @@ function conjgrad(xw::Array,bw::Array,mypsfw::Array,mypsfadjw::Array,mu::Float64
         iter += 1
         Qp = imfilter_fft(imfilter_fft(p, mypsfw,"circular"), mypsfadjw,"circular") + mu*p
 
-        alpha = sum(r.*r)/sum(Qp.*p)
+        alpha = vecnorm(r)^2/sum(Qp.*p)
         xw = xw + alpha*p
         r = r - alpha*Qp
-        betaa = sum(r.*r)/sum(rm.*rm)
+        betaa = (vecnorm(r)/vecnorm(rm))^2
         rm = r
         p = r + betaa*p
         crit = vecnorm(r)
@@ -35,8 +35,4 @@ function conjgrad(xw::Array,bw::Array,mypsfw::Array,mypsfadjw::Array,mu::Float64
         end
     end
     return xw
-end
-
-function atax(xw::Array)
-    imfilter_fft(imfilter_fft(xw, mypsfw,"circular"), mypsfadjw,"circular") + mu*xw
 end
