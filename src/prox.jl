@@ -8,42 +8,35 @@ function prox_u(u::Array,μ)
 end
 
 
-@everywhere function gradD(x::Array,fty::Array,taup::Array,mypsf::Array,mypsfadj::Array,p::Array,z::Int64)
+function conjgrad(xw::Array,bw::Array,mypsfw::Array,mypsfadjw::Array,mu::Float64;tol = 1e-6,itermax = 1e3)
 
+    r = bw - atax(xw)
+    rm = r
+    p = r                                                 #
+    iter = 0
+    loop = true
 
+    while loop
+        iter += 1
+        Qp = atax(p)
+        alpha = sum(r.*r)/sum(Qp.*p)
+        xw = xw + alpha*p
+        r = r - alpha*Qp
+        betaa = sum(r.*r)/sum(rm.*rm)
+        rm = r
+        p = r + betaa*p
+        crit = vecnorm(r)
+        println(crit)
+        if iter > itermax
+            error("itermax reached")
+        end
+        if crit < tol
+            loop = false
+        end
+    end
+    return xw
+end
 
-                    b = fty + taup + rhop*p
-
-                    xm = x
-                    r = b - (imfilter_fft(imfilter_fft(x, mypsf), mypsfadj) + (muesp + rhop)*eye(nfty)*x)  # r0
-                    rm = r
-                    p = r                                                 # p0
-
-                    iter = 0
-                    loop = true
-                    figure(1)
-                    subplot(5,2,z)
-                    crit=Float64[]
-                    while loop
-
-                        iter += 1
-                        alpha = sum(r.*r)/sum((imfilter_fft(imfilter_fft(p, mypsf), mypsfadj) + (muesp + rhop)*eye(nfty)*p).*p)
-                        x = x + alpha*p
-                        r = r - alpha*(imfilter_fft(imfilter_fft(p, mypsf), mypsfadj) + (muesp + rhop)*eye(nfty)*p)
-                        betaa = sum(r.*r)/sum(rm.*rm)
-                        rm = r
-                        p = r + betaa*p
-                        push!(crit,(norm(x - xm)))
-                        plot(crit)
-
-
-                        if iter != 1
-                            if crit[iter-1] < crit[iter]
-                            loop = false
-                            end
-                        end
-                        xm = x
-                    end
-
-                    return x
-            end
+function atax(xw::Array)
+    imfilter_fft(imfilter_fft(xw, mypsfw), mypsfadjw) + mu*xw
+end

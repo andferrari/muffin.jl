@@ -22,6 +22,7 @@ loop = true
 nfty = size(fty)[1]
 rhop = 1.0
 muesp = 0.1
+mu = muesp + rhop
 taup = zeros(Float64,nfty,nfty,nfreq)
 
 
@@ -35,10 +36,9 @@ tic()
         niter +=1
 
         # update x
-        clf()
-
         for z = 1:nfreq
-            x[:,:,z] = gradD(x[:,:,z],fty[:,:,z],taup[:,:,z],mypsf[:,:,z],mypsfadj[:,:,z],p[:,:,z],z)
+            b = fty[:,:,z] + taup[:,:,z] + rhop*p[:,:,z]
+            x[:,:,z] = conjgrad(x[:,:,z],b,mypsf[:,:,z],mypsfadj[:,:,z],mu,tol=1e-2,itermax = 1e3)
         end
         println(norm(x[:,:,1]-xmm[:,:,1]))
         # x[:,:,1] = gradD(x[:,:,1],fty[:,:,1],taup[:,:,1],mypsf[:,:,1],mypsfadj[:,:,1],p[:,:,1])

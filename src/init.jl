@@ -3,7 +3,6 @@
 using FITSIO
 using Images
 using NetCDF
-using PyPlot
 
 
 function writecdf{T<:FloatingPoint}(filename::ASCIIString,datacube::Array{T,3},paraview = false)
