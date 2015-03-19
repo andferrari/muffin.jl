@@ -27,28 +27,19 @@ taup = zeros(Float64,nfty,nfty,nfreq)
 
 p = zeros(Float64,nfty,nfty,nfreq)
 x = zeros(Float64,nfty,nfty,nfreq)
-
+tic()
 while loop
     tic()
     niter +=1
 
     # update x
+    clf()
+    xm = x
     for z = 1:nfreq
-        x[:,:,z] = gradD(x[:,:,z],fty[:,:,z],taup[:,:,z],mypsf[:,:,z],mypsfadj[:,:,z],p[:,:,z])
+        x[:,:,z] = gradD(x[:,:,z],fty[:,:,z],taup[:,:,z],mypsf[:,:,z],mypsfadj[:,:,z],p[:,:,z],z)
     end
 
     # x[:,:,1] = gradD(x[:,:,1],fty[:,:,1],taup[:,:,1],mypsf[:,:,1],mypsfadj[:,:,1],p[:,:,1])
-
-
-
-
-
-
-
-
-
-    println("up_x")
-
 
     # prox positivity
     tmp = x-taup/rhop
@@ -56,7 +47,6 @@ while loop
 
 
     # update of Lagrange multipliers
-    println("up_lagr")
 
     taup = taup + rhop*(p-x)
 
@@ -71,4 +61,10 @@ while loop
     toc()
     println(niter,"  ",tol1[niter],"  ",tol2[niter])
 
+end
+toc()
+figure(2)
+for z = 1:nfreq
+    subplot(5,2,z)
+    imshow(x[:,:,z])
 end

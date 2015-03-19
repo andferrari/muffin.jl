@@ -8,7 +8,7 @@ function prox_u(u::Array,μ)
 end
 
 
-function gradD(x::Array,fty::Array,taup::Array,mypsf::Array,mypsfadj::Array,p::Array)
+@everywhere function gradD(x::Array,fty::Array,taup::Array,mypsf::Array,mypsfadj::Array,p::Array,z::Int64)
 
 
 
@@ -19,23 +19,31 @@ function gradD(x::Array,fty::Array,taup::Array,mypsf::Array,mypsfadj::Array,p::A
         rm = r
         p = r                                                 # p0
 
-        println(vecnorm(x - xm))
+        iter = 0
         loop = true
+        figure(1)
+        subplot(5,2,z)
+        crit=Float64[]
         while loop
 
+            iter += 1
             alpha = sum(r.*r)/sum((imfilter_fft(imfilter_fft(p, mypsf), mypsfadj) + (muesp + rhop)*eye(nfty)*p).*p)
             x = x + alpha*p
             r = r - alpha*(imfilter_fft(imfilter_fft(p, mypsf), mypsfadj) + (muesp + rhop)*eye(nfty)*p)
             betaa = sum(r.*r)/sum(rm.*rm)
             rm = r
             p = r + betaa*p
-            println(norm(x - xm))
+            push!(crit,(norm(x - xm)))
+            plot(crit)
 
 
-            if vecnorm(x - xm, 2) < 1E-8
+            if iter != 1
+                if crit[iter-1] < crit[iter]
                 loop = false
+                end
             end
             xm = x
         end
+
         return x
 end
