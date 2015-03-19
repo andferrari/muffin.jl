@@ -3,6 +3,7 @@
 using FITSIO
 using Images
 using NetCDF
+using PyPlot
 
 
 function writecdf{T<:FloatingPoint}(filename::ASCIIString,datacube::Array{T,3},paraview = false)
@@ -41,7 +42,7 @@ function cubefilter{T<:FloatingPoint}(imagecube::Array{T,2},psfcube::Array{T,3})
 end
 
 # load psf fits file created by meqtrees
-file = FITS("../data/meerkat_psf_32pix_100ch.fits")
+file = FITS("../data/meerkat_psf_33pix_100ch.fits")
 data = read(file[1])
 close(file)
 psfcube = squeeze(data,3)

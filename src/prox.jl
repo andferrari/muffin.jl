@@ -13,14 +13,13 @@ function conjgrad(xw::Array,bw::Array,mypsfw::Array,mypsfadjw::Array,mu::Float64
     r = bw - (imfilter_fft(imfilter_fft(xw, mypsfw,"circular"), mypsfadjw,"circular") + mu*xw)
     rm = r
     p = r
-    println("      ",size(p))                                          #
     iter = 0
     loop = true
 
     while loop
         iter += 1
         Qp = imfilter_fft(imfilter_fft(p, mypsfw,"circular"), mypsfadjw,"circular") + mu*p
-    
+
         alpha = sum(r.*r)/sum(Qp.*p)
         xw = xw + alpha*p
         r = r - alpha*Qp
@@ -28,7 +27,6 @@ function conjgrad(xw::Array,bw::Array,mypsfw::Array,mypsfadjw::Array,mu::Float64
         rm = r
         p = r + betaa*p
         crit = vecnorm(r)
-        println(crit)
         if iter > itermax
             error("itermax reached")
         end
