@@ -1,10 +1,8 @@
 # initialisation
 
 using FITSIO
-@everywhere using Images
-
 using PyPlot
-
+@everywhere using Images
 
 function writecdf{T<:FloatingPoint}(filename::ASCIIString,datacube::Array{T,3},paraview = false)
     if isfile(filename)

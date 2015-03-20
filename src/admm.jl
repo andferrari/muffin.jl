@@ -19,7 +19,8 @@ nbitermax = 1000
 
 tol1 = Float64[]
 tol2 = Float64[]
-err = Float64[]
+err = Array(Float64,nbitermax,nfreq)
+
 
 loop = true
 
@@ -81,9 +82,20 @@ tic()
         # computer residues
         push!(tol1,vecnorm(x - xmm, 2)^2)
         push!(tol2,vecnorm(x - p, 2)^2)
-        push!(err,vecnorm(x[:,:,z] - cluster[32:96,32:96], 2)^2)
 
-        plot(err)
+        # plot
+            for z = 1:nfreq
+                err[niter,z] = vecnorm(x[:,:,z] - cluster[32:96,32:96], 2)^2
+            end
+
+
+
+            clf()
+            for z = 1:nfreq
+                subplot(5,2,z)
+                plot(err[1:niter,z])
+            end
+
 
         # stopping rule
         if (niter >= nbitermax) || ((tol1[niter] < 1E-3) && (tol2[niter] < 1E-2))
