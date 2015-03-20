@@ -19,6 +19,7 @@ nbitermax = 1000
 
 tol1 = Float64[]
 tol2 = Float64[]
+err = Float64[]
 
 loop = true
 
@@ -35,6 +36,7 @@ errorrec = zeros(Float64,nfty,nfty,nfreq)
 errorest = zeros(Float64,nfreq)
 errorraw = zeros(Float64,nfreq)
 
+figure(1)
 tic()
     while loop
         tic()
@@ -77,8 +79,11 @@ tic()
         taup = taup + rhop*(p-x)
 
         # computer residues
-        push!(tol1,vecnorm(x - xmm, 2))
-        push!(tol2,vecnorm(x - p, 2))
+        push!(tol1,vecnorm(x - xmm, 2)^2)
+        push!(tol2,vecnorm(x - p, 2)^2)
+        push!(err,vecnorm(x[:,:,z] - cluster[32:96,32:96], 2)^2)
+
+        plot(err)
 
         # stopping rule
         if (niter >= nbitermax) || ((tol1[niter] < 1E-3) && (tol2[niter] < 1E-2))
@@ -105,8 +110,8 @@ end
 figure(3)
 for z = 1:nfreq
     errorrec[:,:,z] = cluster[32:96,32:96] - x[:,:,z]
-    errorest[z] =  vecnorm(cluster[32:96,32:96] - x[:,:,z])/vecnorm(cluster[32:96,32:96])
-    errorraw[z] =  vecnorm(mydata[:,:,z] - x[:,:,z])/vecnorm(mydata[:,:,z])
+    errorest[z] =  vecnorm(cluster[32:96,32:96] - x[:,:,z])^2/vecnorm(cluster[32:96,32:96])^2
+    errorraw[z] =  vecnorm(mydata[:,:,z] - x[:,:,z])^2/vecnorm(mydata[:,:,z])^2
     subplot(5,2,z)
     imshow(errorrec[:,:,z])
 end
