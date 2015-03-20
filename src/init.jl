@@ -1,8 +1,8 @@
 # initialisation
 
 using FITSIO
-using Images
-using NetCDF
+@everywhere using Images
+
 using PyPlot
 
 

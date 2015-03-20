@@ -8,7 +8,7 @@ function prox_u(u::Array,μ)
 end
 
 
-function conjgrad(xw::Array,bw::Array,mypsfw::Array,mypsfadjw::Array,mu::Float64;tol = 1e-6,itermax = 1e3)
+@everywhere function conjgrad(xw::Array,bw::Array,mypsfw::Array,mypsfadjw::Array,mu::Float64;tol = 1e-6,itermax = 1e3)
 
     r = bw - (imfilter_fft(imfilter_fft(xw, mypsfw,"circular"), mypsfadjw,"circular") + mu*xw)
     rm = r
@@ -39,9 +39,9 @@ end
 
 
 #
-# function conjgrad( M ;tol = 1e-6,itermax = 1e3)
+# function conjgrad2( M ;tol = 1e-6,itermax = 1e3)
 #
-#     r = M[z][2] - (imfilter_fft(imfilter_fft(M[z][1], M[z][3],"circular"), M[z][4],"circular") + M[z][5]*M[z][1])
+#     r = M[2] - (imfilter_fft(imfilter_fft(M[1], M[3],"circular"), M[4],"circular") + M[5]*M[1])
 #     rm = r
 #     p = r
 #     iter = 0
@@ -49,10 +49,10 @@ end
 #
 #     while loop
 #         iter += 1
-#         Qp = imfilter_fft(imfilter_fft(p, M[z][3],"circular"), M[z][4],"circular") + M[z][5]*p
+#         Qp = imfilter_fft(imfilter_fft(p, M[3],"circular"), M[4],"circular") + M[5]*p
 #
 #         alpha = vecnorm(r)^2/sum(Qp.*p)
-#         M[z][1] = M[z][1] + alpha*p
+#         M[1] = M[1] + alpha*p
 #         r = r - alpha*Qp
 #         betaa = (vecnorm(r)/vecnorm(rm))^2
 #         rm = r
@@ -65,5 +65,40 @@ end
 #             loop = false
 #         end
 #     end
-#     return M[z][1]
+#     return M[1]
+# end
+#
+# function conjgrad3(M;tol = 1e-6,itermax = 1e3)
+#
+#     xw = M[1]
+#     bw = M[2]
+#     mypsfw = M[3]
+#     mypsfadjw = M[4]
+#     mu = M[5]
+#
+#     r = bw - (imfilter_fft(imfilter_fft(xw, mypsfw,"circular"), mypsfadjw,"circular") + mu*xw)
+#     rm = r
+#     p = r
+#     iter = 0
+#     loop = true
+#
+#     while loop
+#         iter += 1
+#         Qp = imfilter_fft(imfilter_fft(p, mypsfw,"circular"), mypsfadjw,"circular") + mu*p
+#
+#         alpha = vecnorm(r)^2/sum(Qp.*p)
+#         xw = xw + alpha*p
+#         r = r - alpha*Qp
+#         betaa = (vecnorm(r)/vecnorm(rm))^2
+#         rm = r
+#         p = r + betaa*p
+#         crit = vecnorm(r)
+#         if iter > itermax
+#             error("itermax reached")
+#         end
+#         if crit < tol
+#             loop = false
+#         end
+#     end
+#     return xw
 # end

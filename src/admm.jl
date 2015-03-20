@@ -1,8 +1,8 @@
 include("init.jl")
 include("prox.jl")
 
-#nfreq = 10
-nfreq = size(psfcube)[3]
+nfreq = 10
+#nfreq = size(psfcube)[3]
 mydata = datacube[32:96,32:96,1:nfreq]
 mypsf = float64(psfcube[:,:,1:nfreq])
 mypsfadj = float64(flipdim(flipdim(mypsf,1),2))
@@ -15,24 +15,25 @@ nfty = size(fty)[1]
 # main admm loop
 
 niter = 0
-nbitermax = 20
+nbitermax = 1000
 
 tol1 = Float64[]
 tol2 = Float64[]
 
 loop = true
 
-rhop = 1.0
+rhop = 0.10
 muesp = 1.0
 mu = muesp + rhop
 
 taup = zeros(Float64,nfty,nfty,nfreq)
 p = zeros(Float64,nfty,nfty,nfreq)
-x = zeros(Float64,nfty,nfty,nfreq)
+x = SharedArray(Float64,nfty,nfty,nfreq)
 xmm = zeros(Float64,nfty,nfty,nfreq)
 
 errorrec = zeros(Float64,nfty,nfty,nfreq)
 errorest = zeros(Float64,nfreq)
+errorraw = zeros(Float64,nfreq)
 
 tic()
     while loop
@@ -41,23 +42,32 @@ tic()
         println("")
         println("ADMM iteration: $niter")
 
-#         MAPB =  { ( [fty[:,:,z] + taup[:,:,z] + rhop*p[:,:,z]] )  for z=1:nfreq}
-#         MAP = { ( ([x[:,:,z]],[MAPB[z]],[mypsf[:,:,z]],[mypsfadj[:,:,z]],mu) ) for z=1:nfreq}
-#
-#         bla = pmap(conjgrad, MAP)
-#
-# @sync @parallel for z = 1:nfreq
-#
-#                     x[:,:,z] = bla[z]
-#                 end
+        # #update x
 
+        ####################################
+        ####################################
+        # listmap_b =  { ( [fty[:,:,z] + taup[:,:,z] + rhop*p[:,:,z]] )  for z=1:nfreq}
+        # listmap = { ( ([x[:,:,z]],[listmap_b[z]],[mypsf[:,:,z]],[mypsfadj[:,:,z]],mu) ) for z=1:nfreq}
+        #
+        # fmap(M) = conjgrad(M[1],M[2],M[3],M[4],M[5])
+        # bla = pmap(fmap, listmap)
+        #
+        # @sync @parallel  for z = 1:nfreq
+        #                     x[:,:,z] = bla[z]
+        #                  end
+        ####################################
+        ####################################
+        # x = sum(reshape(pmap(fmap, listmap),1,nfreq),2)
 
+        ####################################
+        ####################################
+        @sync @parallel  for z = 1:nfreq
+                           b = fty[:,:,z] + taup[:,:,z] + rhop*p[:,:,z]
+                           x[:,:,z] = conjgrad(x[:,:,z],b,mypsf[:,:,z],mypsfadj[:,:,z],mu,tol=1e-4,itermax = 1e3)
+                         end
+        ####################################
+        ####################################
 
-        #update x
-        for z = 1:nfreq
-            b = fty[:,:,z] + taup[:,:,z] + rhop*p[:,:,z]
-            x[:,:,z] = conjgrad(x[:,:,z],b,mypsf[:,:,z],mypsfadj[:,:,z],mu,tol=1e-4,itermax = 1e3)
-        end
 
         # prox positivity
         tmp = x-taup/rhop
@@ -71,11 +81,11 @@ tic()
         push!(tol2,vecnorm(x - p, 2))
 
         # stopping rule
-        if (niter >= nbitermax) || ((tol1[niter] < 1E-3) && (tol2[niter] < 1E-3))
+        if (niter >= nbitermax) || ((tol1[niter] < 1E-3) && (tol2[niter] < 1E-2))
             loop = false
         end
 
-        xmm = x
+        xmm[:] = x
 
 
         @printf("| - error ||x - xm||: %02.04e \n", tol1[niter])
@@ -88,17 +98,19 @@ println("")
 
 figure(2)
 for z = 1:nfreq
-    subplot(10,10,z)
+    subplot(5,2,z)
     imshow(x[:,:,z])
 end
 
 figure(3)
 for z = 1:nfreq
-    errorrec[:,:,z] = data[32:96,32:96,1,1] - x[:,:,z]
-    errorest[z] =  vecnorm(data[32:96,32:96,1,1] - x[:,:,z])/vecnorm(data[32:96,32:96,1,1])
-    subplot(10,10,z)
+    errorrec[:,:,z] = cluster[32:96,32:96] - x[:,:,z]
+    errorest[z] =  vecnorm(cluster[32:96,32:96] - x[:,:,z])/vecnorm(cluster[32:96,32:96])
+    errorraw[z] =  vecnorm(mydata[:,:,z] - x[:,:,z])/vecnorm(mydata[:,:,z])
+    subplot(5,2,z)
     imshow(errorrec[:,:,z])
 end
 
 figure(4)
-plot(errorest)
+plot([1:nfreq],errorest,color="blue")
+plot([1:nfreq],errorraw,color="red")
