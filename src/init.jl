@@ -43,6 +43,8 @@ end
 
 # load psf fits file created by meqtrees
 file = FITS("../data/meerkat_psf_33pix_100ch.fits")
+#file = FITS("../data/meerkat_psf_17pix_100ch.fits")
+
 data = read(file[1])
 close(file)
 psfcube = squeeze(data,3)
