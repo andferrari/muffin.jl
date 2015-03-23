@@ -9,7 +9,7 @@ mypsf = float64(psfcube[:,:,1:nfreq])
 mypsfadj = float64(flipdim(flipdim(mypsf,1),2))
 
 spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
-nspat = lenght(spatialwlt)
+nspat = length(spatialwlt)
 
 
 # precompute
@@ -25,6 +25,8 @@ nbitermax = 1000
 
 tol1 = Float64[]
 tol2 = Float64[]
+tol3 = Float64[]
+
 err = Array(Float64,nbitermax,nfreq)
 
 
@@ -34,8 +36,9 @@ rhop = 0.10
 rhot = 1.0
 μt = 1.0
 muesp = 1.0
-mu = muesp + rhop
 tt = rhot*nspat
+mu = muesp + rhop + tt
+
 
 taup = zeros(Float64,nfty,nfty,nfreq)
 p = zeros(Float64,nfty,nfty,nfreq)
@@ -52,7 +55,7 @@ errorrec = zeros(Float64,nfty,nfty,nfreq)
 errorest = zeros(Float64,nfreq)
 errorraw = zeros(Float64,nfreq)
 
-figure(1)
+#figure(1)
 tic()
     while loop
         tic()
@@ -79,9 +82,9 @@ tic()
 
         ####################################
         ####################################
-        @sync @parallel for z = 1:nfreq, b = 1:nspat
-                            wlt[:,:,z] = sum(idwt(taut[:,:,z,b] + rhot*t[:,:,z,b],spatialwlt[b]),4)
-                        end
+        for z = 1:nfreq, b = 1:nspat
+            wlt[:,:,z] = sum(idwt(taut[:,:,z,b] + rhot*t[:,:,z,b],wavelet(spatialwlt[b])),4)
+        end
 
 
         @sync @parallel  for z = 1:nfreq
@@ -93,9 +96,9 @@ tic()
 
 
         # prox spat
-        @sync @parallel for z = 1:nfreq, b = 1:nspat
-                            Hx[:,:,z,b] = dwt(x[:,:,z],spatialwlt[b])
-                        end
+        for z = 1:nfreq, b = 1:nspat
+            Hx[:,:,z,b] = dwt(x[:,:,z],wavelet(spatialwlt[b]))
+        end
 
         tmp = Hx - taut/rhot
         t = prox_u(tmp,μt)
@@ -111,19 +114,20 @@ tic()
         # computer residues
         push!(tol1,vecnorm(x - xmm, 2)^2)
         push!(tol2,vecnorm(x - p, 2)^2)
+        push!(tol3,vecnorm(Hx - t, 2)^2)
 
         # plot
-            for z = 1:nfreq
-                err[niter,z] = vecnorm(x[:,:,z] - cluster[32:96,32:96], 2)^2
-            end
-
-
-
-            clf()
-            for z = 1:nfreq
-                subplot(5,2,z)
-                plot(err[1:niter,z])
-            end
+            # for z = 1:nfreq
+            #     err[niter,z] = vecnorm(x[:,:,z] - cluster[32:96,32:96], 2)^2
+            # end
+            #
+            #
+            #
+            # clf()
+            # for z = 1:nfreq
+            #     subplot(5,2,z)
+            #     plot(err[1:niter,z])
+            # end
 
 
         # stopping rule
@@ -136,27 +140,28 @@ tic()
 
         @printf("| - error ||x - xm||: %02.04e \n", tol1[niter])
         @printf("| - error ||x - xp||: %02.04e \n", tol2[niter])
+        @printf("| - error ||Hx - t||: %02.04e \n", tol3[niter])
         @printf("time for iteration : %f seconds \n", toq())
 
     end
 println("")
 @printf("time for ADMM : %f seconds \n", toq())
 
-figure(2)
-for z = 1:nfreq
-    subplot(5,2,z)
-    imshow(x[:,:,z])
-end
-
-figure(3)
-for z = 1:nfreq
-    errorrec[:,:,z] = cluster[32:96,32:96] - x[:,:,z]
-    errorest[z] =  vecnorm(cluster[32:96,32:96] - x[:,:,z])^2/vecnorm(cluster[32:96,32:96])^2
-    errorraw[z] =  vecnorm(mydata[:,:,z] - x[:,:,z])^2/vecnorm(mydata[:,:,z])^2
-    subplot(5,2,z)
-    imshow(errorrec[:,:,z])
-end
-
-figure(4)
-plot([1:nfreq],errorest,color="blue")
-plot([1:nfreq],errorraw,color="red")
+# figure(2)
+# for z = 1:nfreq
+#     subplot(5,2,z)
+#     imshow(x[:,:,z])
+# end
+#
+# figure(3)
+# for z = 1:nfreq
+#     errorrec[:,:,z] = cluster[32:96,32:96] - x[:,:,z]
+#     errorest[z] =  vecnorm(cluster[32:96,32:96] - x[:,:,z])^2/vecnorm(cluster[32:96,32:96])^2
+#     errorraw[z] =  vecnorm(mydata[:,:,z] - x[:,:,z])^2/vecnorm(mydata[:,:,z])^2
+#     subplot(5,2,z)
+#     imshow(errorrec[:,:,z])
+# end
+#
+# figure(4)
+# plot([1:nfreq],errorest,color="blue")
+# plot([1:nfreq],errorraw,color="red")

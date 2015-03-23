@@ -1,7 +1,7 @@
 # initialisation
 
 using FITSIO
-using PyPlot
+#using PyPlot
 @everywhere using Images
 @everywhere using Wavelets
 
