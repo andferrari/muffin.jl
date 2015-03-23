@@ -21,20 +21,21 @@ for z = 1:nfreq
 end
 
 figure(2)
-for niter = 1:1000
-    clf()
-    for z = 1:nfreq
-        subplot(5,2,z)
-        plot(err[1:niter,z])
-    end
-end
-
-figure(3)
 for z = 1:nfreq
     subplot(5,2,z)
     imshow(errorrec[:,:,z])
 end
 
-figure(4)
+figure(3)
 plot([1:nfreq],errorest,color="blue")
 plot([1:nfreq],errorraw,color="red")
+
+figure(4)
+for niter = 1:nbitermax
+    println(10*niter)
+    clf()
+    for z = 1:nfreq
+        subplot(5,2,z)
+        plot(err[1:10*niter,z])
+    end
+end
