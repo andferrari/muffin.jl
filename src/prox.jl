@@ -10,7 +10,7 @@ end
 
 @everywhere function conjgrad(xw::Array,bw::Array,mypsfw::Array,mypsfadjw::Array,mu::Float64;tol = 1e-6,itermax = 1e3)
 
-    r = bw - (imfilter_fft(imfilter_fft(xw, mypsfw,"circular"), mypsfadjw,"circular") + mu*xw)
+    r = bw - (imfilter_fft(imfilter_fft(xw, mypsfw,"circular"), mypsfadjw,"circular") + (mu + tt)*xw)
     rm = r
     p = r
     iter = 0
@@ -18,7 +18,7 @@ end
 
     while loop
         iter += 1
-        Qp = imfilter_fft(imfilter_fft(p, mypsfw,"circular"), mypsfadjw,"circular") + mu*p
+        Qp = imfilter_fft(imfilter_fft(p, mypsfw,"circular"), mypsfadjw,"circular") + (mu + tt)*p
 
         alpha = vecnorm(r)^2/sum(Qp.*p)
         xw = xw + alpha*p

@@ -1,16 +1,22 @@
 include("init.jl")
 include("prox.jl")
 
+
 nfreq = 10
 #nfreq = size(psfcube)[3]
 mydata = datacube[32:96,32:96,1:nfreq]
 mypsf = float64(psfcube[:,:,1:nfreq])
 mypsfadj = float64(flipdim(flipdim(mypsf,1),2))
 
+spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
+nspat = lenght(spatialwlt)
+
+
 # precompute
 
 fty = cubefilter(mydata,mypsfadj)
 nfty = size(fty)[1]
+
 
 # main admm loop
 
@@ -25,12 +31,21 @@ err = Array(Float64,nbitermax,nfreq)
 loop = true
 
 rhop = 0.10
+rhot = 1.0
+μt = 1.0
 muesp = 1.0
 mu = muesp + rhop
+tt = rhot*nspat
 
 taup = zeros(Float64,nfty,nfty,nfreq)
 p = zeros(Float64,nfty,nfty,nfreq)
+
+t = zeros(Float64,nfty,nfty,nfreq,nspat)
+taut = zeros(Float64,nfty,nfty,nfreq,nspat)
+wlt = SharedArray(Float64,nfty,nfty,nfreq)
+
 x = SharedArray(Float64,nfty,nfty,nfreq)
+Hx = SharedArray(Float64,nfty,nfty,nfreq,nspat)
 xmm = zeros(Float64,nfty,nfty,nfreq)
 
 errorrec = zeros(Float64,nfty,nfty,nfreq)
@@ -64,13 +79,26 @@ tic()
 
         ####################################
         ####################################
+        @sync @parallel for z = 1:nfreq, b = 1:nspat
+                            wlt[:,:,z] = sum(idwt(taut[:,:,z,b] + rhot*t[:,:,z,b],spatialwlt[b]),4)
+                        end
+
+
         @sync @parallel  for z = 1:nfreq
-                           b = fty[:,:,z] + taup[:,:,z] + rhop*p[:,:,z]
+                           b = fty[:,:,z] + taup[:,:,z] + rhop*p[:,:,z] + wlt[z]
                            x[:,:,z] = conjgrad(x[:,:,z],b,mypsf[:,:,z],mypsfadj[:,:,z],mu,tol=1e-4,itermax = 1e3)
                          end
         ####################################
         ####################################
 
+
+        # prox spat
+        @sync @parallel for z = 1:nfreq, b = 1:nspat
+                            Hx[:,:,z,b] = dwt(x[:,:,z],spatialwlt[b])
+                        end
+
+        tmp = Hx - taut/rhot
+        t = prox_u(tmp,μt)
 
         # prox positivity
         tmp = x-taup/rhop
@@ -78,6 +106,7 @@ tic()
 
         # update of Lagrange multipliers
         taup = taup + rhop*(p-x)
+        taut = taut + rhot*(t-Hx)
 
         # computer residues
         push!(tol1,vecnorm(x - xmm, 2)^2)
