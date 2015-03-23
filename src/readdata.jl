@@ -2,7 +2,7 @@ using HDF5, JLD
 using PyPlot
 
 x = load("../data/results/data.jld", "x")
-nbitermax = load("../data/results/../data/results/data.jld", "nbitermax")
+nbitermax = load("../data/results/data.jld", "nbitermax")
 nfreq = load("../data/results/data.jld", "nfreq")
 errorrec = load("../data/results/data.jld", "errorrec")
 errorest = load("../data/results/data.jld", "errorest")
