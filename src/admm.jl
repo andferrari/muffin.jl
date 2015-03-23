@@ -43,8 +43,8 @@ loop = true
 
 rhop = 1.0
 rhot = 1.0
-rhov = 1.0
-rhos = 1.0
+rhov = 10
+rhos = 10
 μt = 1.0
 μv = 1.0
 muesp = 1.0
@@ -126,16 +126,21 @@ tic()
         tmp = x-taup/rhop
         p = max(0,tmp)
 
-        # update of Lagrange multipliers
-        taup = taup + rhop*(p-x)
-        taut = taut + rhot*(t-Hx)
-
         # prox spec
-        s = estime_s(s)
+        tmp = permutedims(tauv + rhov*v,[3,1,2])
+        s = estime_s(s,tmp)
         sh = estime_sh(s)
 
         tmp = sh - tauv/rhov
         v = prox_u(tmp,μv)
+
+        # update of Lagrange multipliers
+        taup = taup + rhop*(p-x)
+        taut = taut + rhot*(t-Hx)
+        tauv = tauv + rhov*(v-sh)
+        taus = taus + rhos*(s-x)
+
+
 
 
         # computer residues

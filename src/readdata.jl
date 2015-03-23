@@ -1,18 +1,18 @@
 using HDF5, JLD
 using PyPlot
 
-x = load("data.jld", "x")
-nbitermax = load("data.jld", "nbitermax")
-nfreq = load("data.jld", "nfreq")
-errorrec = load("data.jld", "errorrec")
-errorest = load("data.jld", "errorest")
-errorraw = load("data.jld", "errorraw")
-err = load("data.jld", "err")
-tol1 = load("data.jld", "tol1")
-tol2 = load("data.jld", "tol2")
-tol3 = load("data.jld", "tol3")
-tol4 = load("data.jld", "tol4")
-tol5 = load("data.jld", "tol5")
+x = load("../data/results/data.jld", "x")
+nbitermax = load("../data/results/../data/results/data.jld", "nbitermax")
+nfreq = load("../data/results/data.jld", "nfreq")
+errorrec = load("../data/results/data.jld", "errorrec")
+errorest = load("../data/results/data.jld", "errorest")
+errorraw = load("../data/results/data.jld", "errorraw")
+err = load("../data/results/data.jld", "err")
+tol1 = load("../data/results/data.jld", "tol1")
+tol2 = load("../data/results/data.jld", "tol2")
+tol3 = load("../data/results/data.jld", "tol3")
+tol4 = load("../data/results/data.jld", "tol4")
+tol5 = load("../data/results/data.jld", "tol5")
 
 figure(1)
 for z = 1:nfreq
