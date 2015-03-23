@@ -41,12 +41,12 @@ err = Array(Float64,nbitermax,nfreq)
 
 loop = true
 
-rhop = 1.0
-rhot = 1.0
-rhov = 10
-rhos = 10
+rhop = 1e-9
+rhot = 1e-9
+rhov = 1e-9
+rhos = 1e-9
 μt = 1.0
-μv = 0.1
+μv = 1.0
 muesp = 1.0
 tt = rhot*nspat
 mu = muesp + rhop + tt +rhos
