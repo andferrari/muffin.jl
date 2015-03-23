@@ -17,25 +17,42 @@ tol5 = load("../data/results/data.jld", "tol5")
 figure(1)
 for z = 1:nfreq
     subplot(5,2,z)
-    imshow(x[:,:,z])
+    colorbar(imshow(x[:,:,z]))
 end
 
 figure(2)
 for z = 1:nfreq
     subplot(5,2,z)
-    imshow(errorrec[:,:,z])
+    colorbar(imshow(errorrec[:,:,z]))
 end
 
 figure(3)
 plot([1:nfreq],errorest,color="blue")
-plot([1:nfreq],errorraw,color="red")
+#plot([1:nfreq],errorraw,color="red")
 
 figure(4)
-for niter = 1:nbitermax
+for niter = 1:100
+
+    clf()
     println(10*niter)
+    subplot(5,1,1)
+    plot(tol1[1:10*niter])
+    subplot(5,1,2)
+    plot(tol2[1:10*niter])
+    subplot(5,1,3)
+    plot(tol3[1:10*niter])
+    subplot(5,1,4)
+    plot(tol4[1:10*niter])
+    subplot(5,1,5)
+    plot(tol5[1:10*niter])
+end
+
+figure(5)
+for niter = 1:40
+    println(25*niter)
     clf()
     for z = 1:nfreq
         subplot(5,2,z)
-        plot(err[1:10*niter,z])
+        plot(err[1:25*niter,z])
     end
 end
