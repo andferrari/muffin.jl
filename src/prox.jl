@@ -7,6 +7,10 @@ function prox_u(u::SharedArray,μ)
     return (max(1-μ./abs(u),0).*u)
 end
 
+function prox_u(u::Array,μ)
+    return (max(1-μ./abs(u),0).*u)
+end
+
 
 @everywhere function conjgrad(xw::Array,bw::Array,mypsfw::Array,mypsfadjw::Array,mu::Float64;tol = 1e-6,itermax = 1e3)
 
@@ -35,4 +39,19 @@ end
         end
     end
     return xw
+end
+
+function estime_s(s)
+    tmp = permutedims(tauv + rhov*v,[3,1,2])
+    for i = 1:nfty, j = 1:nfty
+     spectralwlt[i,j,:]= idct(tmp[:,i,j])
+    end
+    s = (spectralwlt + rhos*x - taus)/(rhov*nspec + rhos)
+end
+function estime_sh(s)
+    vecs = permutedims(s,[3,1,2])
+    for i = 1:nfty, j = 1:nfty
+     sh[i,j,:]   = dct(vecs[:,i,j] )
+    end
+    return sh
 end
