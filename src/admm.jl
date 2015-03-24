@@ -154,7 +154,7 @@ tic()
 
         # plot
             for z = 1:nfreq
-                err[niter,z] = vecnorm(x[:,:,z] - cluster[:,:], 2)^2
+                err[niter,z] = vecnorm(x[:,:,z] - cluster[:,:,z], 2)^2
             end
             #
             #
@@ -195,8 +195,8 @@ println("")
 #
 # figure(3)
 for z = 1:nfreq
-    errorrec[:,:,z] = cluster[:,:] - x[:,:,z]
-    errorest[z] =  vecnorm(cluster[:,:] - x[:,:,z])^2/vecnorm(cluster[:,:])^2
+    errorrec[:,:,z] = cluster[:,:,z] - x[:,:,z]
+    errorest[z] =  vecnorm(cluster[:,:,z] - x[:,:,z])^2/vecnorm(cluster[:,:,z])^2
     errorraw[z] =  vecnorm(mydata[:,:,z] - x[:,:,z])^2/vecnorm(mydata[:,:,z])^2
     #subplot(5,2,z)
     #imshow(errorrec[:,:,z])
