@@ -2,8 +2,8 @@ include("init.jl")
 include("prox.jl")
 
 
-nfreq = 10
-#nfreq = size(psfcube)[3]
+#nfreq = 10
+nfreq = size(psfcube)[3]
 mydata = datacube[:,:,1:nfreq]
 mypsf = float64(psfcube[:,:,1:nfreq])
 mypsfadj = float64(flipdim(flipdim(mypsf,1),2))
