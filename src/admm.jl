@@ -26,6 +26,7 @@ spectralwlt = zeros(Float64,nfty,nfty,nfreq)
 # main admm loop
 
 niter = 0
+lastiter = 0
 nbitermax = 1000
 
 tol1 = Float64[]
@@ -168,6 +169,7 @@ tic()
         # stopping rule
         if (niter >= nbitermax) || ((tol1[niter] < 1E-3) && (tol2[niter] < 1E-2))
             loop = false
+            lastiter = niter
         end
 
         xmm[:] = x

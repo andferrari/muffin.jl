@@ -1,8 +1,8 @@
 using HDF5, JLD
-using PyPlot
+#using PyPlot
 
 x = load("../data/results/data.jld", "x")
-nbitermax = load("../data/results/data.jld", "nbitermax")
+#lastiter = load("../data/results/data.jld", "lastiter")
 nfreq = load("../data/results/data.jld", "nfreq")
 errorrec = load("../data/results/data.jld", "errorrec")
 errorest = load("../data/results/data.jld", "errorest")
@@ -31,7 +31,7 @@ plot([1:nfreq],errorest,color="blue")
 #plot([1:nfreq],errorraw,color="red")
 
 figure(4)
-for niter = 1:100
+for niter = 1:5
 
     clf()
     println(10*niter)
@@ -48,7 +48,7 @@ for niter = 1:100
 end
 
 figure(5)
-for niter = 1:40
+for niter = 1:2
     println(25*niter)
     clf()
     for z = 1:nfreq
