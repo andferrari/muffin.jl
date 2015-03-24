@@ -45,12 +45,14 @@ file = FITS("../data/meerkat_psf_33pix_100ch.fits")
 
 data = read(file[1])
 close(file)
-psfcube = squeeze(data,3)
+psfcube = float64(squeeze(data,3))
 nxpsf, nypsf, nfreq = size(psfcube)
 
 # load gray sky model fits file
-file = FITS("../data/cluster.fits")
-data = read(file[1])
-cluster = squeeze(squeeze(data,4),3)
+# file = FITS("../data/cluster.fits")
+# data = read(file[1])
+# cluster = squeeze(squeeze(data,4),3)
+file = FITS("../data/testobject.fits")
+cluster = float64(read(file[1]))
 
 datacube = cubefilter(cluster,psfcube)

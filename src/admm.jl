@@ -5,7 +5,7 @@ include("prox.jl")
 #nfreq = 10
 nfreq = size(psfcube)[3]
 mydata = datacube[:,:,1:nfreq]
-mypsf = float64(psfcube[:,:,1:nfreq])
+mypsf = psfcube[:,:,1:nfreq]
 mypsfadj = float64(flipdim(flipdim(mypsf,1),2))
 
 spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
