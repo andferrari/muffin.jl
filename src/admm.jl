@@ -4,7 +4,7 @@ include("prox.jl")
 
 nfreq = 10
 #nfreq = size(psfcube)[3]
-mydata = datacube[32:95,32:95,1:nfreq]
+mydata = datacube[:,:,1:nfreq]
 mypsf = float64(psfcube[:,:,1:nfreq])
 mypsfadj = float64(flipdim(flipdim(mypsf,1),2))
 
@@ -153,7 +153,7 @@ tic()
 
         # plot
             for z = 1:nfreq
-                err[niter,z] = vecnorm(x[:,:,z] - cluster[32:95,32:95], 2)^2
+                err[niter,z] = vecnorm(x[:,:,z] - cluster[:,:], 2)^2
             end
             #
             #
@@ -193,8 +193,8 @@ println("")
 #
 # figure(3)
 for z = 1:nfreq
-    errorrec[:,:,z] = cluster[32:95,32:95] - x[:,:,z]
-    errorest[z] =  vecnorm(cluster[32:95,32:95] - x[:,:,z])^2/vecnorm(cluster[32:95,32:95])^2
+    errorrec[:,:,z] = cluster[:,:] - x[:,:,z]
+    errorest[z] =  vecnorm(cluster[:,:] - x[:,:,z])^2/vecnorm(cluster[:,:])^2
     errorraw[z] =  vecnorm(mydata[:,:,z] - x[:,:,z])^2/vecnorm(mydata[:,:,z])^2
     #subplot(5,2,z)
     #imshow(errorrec[:,:,z])
