@@ -3,6 +3,7 @@
 using FITSIO
 @everywhere using Images
 using Wavelets
+using GHF
 
 function writecdf{T<:FloatingPoint}(filename::ASCIIString,datacube::Array{T,3},paraview = false)
     if isfile(filename)
@@ -39,20 +40,73 @@ function cubefilter{T<:FloatingPoint}(imagecube::Array{T,2},psfcube::Array{T,3})
     return rescube
 end
 
-# load psf fits file created by meqtrees
-file = FITS("../data/meerkat_psf_33pix_100ch.fits")
-#file = FITS("../data/meerkat_psf_17pix_100ch.fits")
+function cubeaverage{T<:FloatingPoint}(imagecube::Array{T,3},M::Int)
+    nxpsf, nypsf, nfreq = size(imagecube)
+    if nfreq < M
+        error("Not enough channels to average!")
+    end
+    nfreqavg = itrunc(nfreq/M)
+    rescube = Array(Float64, nxpsf, nypsf, nfreqavg)
+    for k = 1:nfreqavg
+        rescube[:,:,k] = sum(imagecube[:,:,(k-1)*M+1:k*M], 3)
+    end
+    return rescube
+end
 
-data = read(file[1])
+function cropcubexy{T<:FloatingPoint}(imagecube::Array{T,3},M::Int)
+    nxpsf, nypsf, nfreq = size(imagecube)
+    if ~(nxpsf == nypsf)
+        error("Image must be squre!")
+    end
+    if nxpsf < M
+        error("Image too small to be croped!")
+    end
+
+    rescube = Array(Float64, M, M, nfreq)
+    if (iseven(nxpsf) && iseven(M)) | (isodd(nxpsf) && isodd(M))
+        nstart = (nxpsf-M)/2 +1
+        nend = (nxpsf+M)/2
+        rescube = imagecube[nstart:nend,nstart:nend,:]
+    else
+        error("size of image and crop must have same parity!")
+    end
+    return rescube
+end
+
+function sky2cube{T<:FloatingPoint}(sky::Array{T,2},nu::Array{T,1})
+    nx, ny = size(sky)
+    nbands = length(nu)
+    corl = minimum([nx,ny])/5.0
+    rho(x,y) = exp(-norm([x, y])/corl)
+    tx = linspace(0,nx-1,nx)
+    ty = linspace(0,ny-1,ny)
+    field = genghf(tx, ty, rho)
+    skycube = Array(Float64, nx, ny, nband)
+
+    sm, sM = extrema(sky)
+    fm, fM = extrema(field)
+
+    alpha = 2.5 + 0.5(sky-sm)/(sM-sm) + 0.5(field-fm)/(fM-fm)
+
+    nu0 = (nu[end]-nu[1])/2
+    for k =1:nband
+        skycube[:,:,k] = sky.* (nu[k]/nu0) .^(-alpha)
+    end
+end
+
+# load psf fits file created by meqtrees
+# file = FITS("../data/meerkat_psf_33pix_100ch.fits")
+file = FITS("../data/makems_meerkat_Jeremy.MS.psf.channel.75ch.fits")
+data = float64(read(file[1]))
 close(file)
-psfcube = float64(squeeze(data,3))
-nxpsf, nypsf, nfreq = size(psfcube)
+psfcube = squeeze(data,3)
+psfavg = cubeaverage(psfcube,5)
+psf = cropcubexy(psfavg,255)
 
 # load gray sky model fits file
 # file = FITS("../data/cluster.fits")
-# data = read(file[1])
-# cluster = squeeze(squeeze(data,4),3)
-file = FITS("../data/testobject.fits")
-cluster = float64(read(file[1]))
-
-datacube = cubefilter(cluster,psfcube)
+file = FITS("../data/M31.fits")
+data = float64(read(file[1]))
+close(file)
+sky = squeeze(data,3)
+datacube = cubefilter(sky,psf)
