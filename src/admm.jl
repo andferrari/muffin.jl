@@ -2,7 +2,7 @@ include("init.jl")
 include("prox.jl")
 
 
-#nfreq = 10
+#nfreq = 1
 nfreq = size(psfcube)[3]
 mydata = datacube[:,:,1:nfreq]
 mypsf = psfcube[:,:,1:nfreq]
@@ -106,14 +106,13 @@ tic()
             wlt[:,:,z] = sum(idwt(taut[:,:,z,b] + rhot*t[:,:,z,b],wavelet(spatialwlt[b])),4)
         end
 
-
         @sync @parallel  for z = 1:nfreq
+        println(z)
                            b = fty[:,:,z] + taup[:,:,z] + rhop*p[:,:,z] + wlt[z] + taus[:,:,z] + rhos*s[:,:,z]
                            x[:,:,z] = conjgrad(x[:,:,z],b,mypsf[:,:,z],mypsfadj[:,:,z],mu,tol=1e-4,itermax = 1e3)
                          end
         ####################################
         ####################################
-
 
         # prox spat
         for z = 1:nfreq, b = 1:nspat
@@ -154,7 +153,7 @@ tic()
 
         # plot
             for z = 1:nfreq
-                err[niter,z] = vecnorm(x[:,:,z] - cluster[:,:,z], 2)^2
+                err[niter,z] = vecnorm(x[:,:,z] - sky[:,:,z], 2)^2
             end
             #
             #
@@ -195,8 +194,8 @@ println("")
 #
 # figure(3)
 for z = 1:nfreq
-    errorrec[:,:,z] = cluster[:,:,z] - x[:,:,z]
-    errorest[z] =  vecnorm(cluster[:,:,z] - x[:,:,z])^2/vecnorm(cluster[:,:,z])^2
+    errorrec[:,:,z] = sky[:,:,z] - x[:,:,z]
+    errorest[z] =  vecnorm(sky[:,:,z] - x[:,:,z])^2/vecnorm(sky[:,:,z])^2
     errorraw[z] =  vecnorm(mydata[:,:,z] - x[:,:,z])^2/vecnorm(mydata[:,:,z])^2
     #subplot(5,2,z)
     #imshow(errorrec[:,:,z])
