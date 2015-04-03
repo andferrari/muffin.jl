@@ -2,7 +2,7 @@ using HDF5, JLD
 #using PyPlot
 
 x = load("../data/results/data.jld", "x")
-#lastiter = load("../data/results/data.jld", "lastiter")
+lastiter = load("../data/results/data.jld", "lastiter")
 nfreq = load("../data/results/data.jld", "nfreq")
 errorrec = load("../data/results/data.jld", "errorrec")
 errorest = load("../data/results/data.jld", "errorest")

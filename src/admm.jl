@@ -1,79 +1,10 @@
-include("init.jl")
-include("prox.jl")
-
-
-#nfreq = 1
-nfreq = size(psfcube)[3]
-mydata = datacube[:,:,1:nfreq]
-mypsf = psfcube[:,:,1:nfreq]
-mypsfadj = float64(flipdim(flipdim(mypsf,1),2))
-
-spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
-nspat = length(spatialwlt)
-
-nspec = 1
-
-
-# precompute
-
-fty = cubefilter(mydata,mypsfadj)
-nfty = size(fty)[1]
-
-spectralwlt = zeros(Float64,nfty,nfty,nfreq)
-
-
-
-# main admm loop
-
-niter = 0
-lastiter = 0
-nbitermax = 1000
-
-tol1 = Float64[]
-tol2 = Float64[]
-tol3 = Float64[]
-tol4 = Float64[]
-tol5 = Float64[]
-
-
-
-err = Array(Float64,nbitermax,nfreq)
-
+####################################################################
+########################## main admm loop ##########################
+####################################################################
+println("Initialisation...")
+include("init.jl");
 
 loop = true
-
-rhop = 2
-rhot = 1
-rhov = 5
-rhos = 5
-μt = 1.0
-μv = 1.0
-muesp = 1.0
-tt = rhot*nspat
-mu = muesp + rhop + tt +rhos
-
-s = zeros(Float64,nfty,nfty,nfreq)
-taus = zeros(Float64,nfty,nfty,nfreq)
-sh = zeros(Float64,nfty,nfty,nfreq)
-
-taup = zeros(Float64,nfty,nfty,nfreq)
-p = zeros(Float64,nfty,nfty,nfreq)
-
-tauv = zeros(Float64,nfty,nfty,nfreq)
-v = zeros(Float64,nfty,nfty,nfreq)
-
-
-t = zeros(Float64,nfty,nfty,nfreq,nspat)
-taut = zeros(Float64,nfty,nfty,nfreq,nspat)
-wlt = SharedArray(Float64,nfty,nfty,nfreq)
-
-x = SharedArray(Float64,nfty,nfty,nfreq)
-Hx = SharedArray(Float64,nfty,nfty,nfreq,nspat)
-xmm = zeros(Float64,nfty,nfty,nfreq)
-
-errorrec = zeros(Float64,nfty,nfty,nfreq)
-errorest = zeros(Float64,nfreq)
-errorraw = zeros(Float64,nfreq)
 
 #figure(1)
 tic()
@@ -107,7 +38,6 @@ tic()
         end
 
         @sync @parallel  for z = 1:nfreq
-        println(z)
                            b = fty[:,:,z] + taup[:,:,z] + rhop*p[:,:,z] + wlt[z] + taus[:,:,z] + rhos*s[:,:,z]
                            x[:,:,z] = conjgrad(x[:,:,z],b,mypsf[:,:,z],mypsfadj[:,:,z],mu,tol=1e-4,itermax = 1e3)
                          end
@@ -140,16 +70,12 @@ tic()
         tauv = tauv + rhov*(v-sh)
         taus = taus + rhos*(s-x)
 
-
-
-
         # computer residues
         push!(tol1,vecnorm(x - xmm, 2)^2)
         push!(tol2,vecnorm(x - p, 2)^2)
         push!(tol3,vecnorm(Hx - t, 2)^2)
         push!(tol4,vecnorm(x - s, 2)^2)
         push!(tol5,vecnorm(sh - v, 2)^2)
-
 
         # plot
             for z = 1:nfreq
@@ -163,7 +89,6 @@ tic()
             #     subplot(5,2,z)
             #     plot(err[1:niter,z])
             # end
-
 
         # stopping rule
         if (niter >= nbitermax) || ((tol1[niter] < 1E-3) && (tol2[niter] < 1E-2))
@@ -185,22 +110,12 @@ tic()
     end
 println("")
 @printf("time for ADMM : %f seconds \n", toq())
+####################################################################
+####################################################################
+####################################################################
 
-# figure(2)
-# for z = 1:nfreq
-#     subplot(5,2,z)
-#     imshow(x[:,:,z])
-# end
-#
-# figure(3)
 for z = 1:nfreq
     errorrec[:,:,z] = sky[:,:,z] - x[:,:,z]
     errorest[z] =  vecnorm(sky[:,:,z] - x[:,:,z])^2/vecnorm(sky[:,:,z])^2
     errorraw[z] =  vecnorm(mydata[:,:,z] - x[:,:,z])^2/vecnorm(mydata[:,:,z])^2
-    #subplot(5,2,z)
-    #imshow(errorrec[:,:,z])
 end
-
-# figure(4)
-# plot([1:nfreq],errorest,color="blue")
-# plot([1:nfreq],errorraw,color="red")
