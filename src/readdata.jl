@@ -16,13 +16,13 @@ tol5 = load("../data/results/data.jld", "tol5")
 
 figure(1)
 for z = 1:nfreq
-    subplot(5,2,z)
+    subplot(5,3,z)
     colorbar(imshow(x[:,:,z]))
 end
 
 figure(2)
 for z = 1:nfreq
-    subplot(5,2,z)
+    subplot(5,3,z)
     colorbar(imshow(errorrec[:,:,z]))
 end
 
@@ -52,7 +52,7 @@ for niter = 1:2
     println(25*niter)
     clf()
     for z = 1:nfreq
-        subplot(5,2,z)
+        subplot(5,3,z)
         plot(err[1:25*niter,z])
     end
 end

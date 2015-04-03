@@ -73,26 +73,37 @@ function cropcubexy{T<:FloatingPoint}(imagecube::Array{T,3},M::Int)
     return rescube
 end
 
-# function sky2cube{T<:FloatingPoint}(sky::Array{T,2},nu::Array{T,1})
-#     nx, ny = size(sky)
-#     nbands = length(nu)
-#     corl = minimum([nx,ny])/5.0
-#     rho(x,y) = exp(-norm([x, y])/corl)
-#     tx = linspace(0,nx-1,nx)
-#     ty = linspace(0,ny-1,ny)
-#     field = genghf(tx, ty, rho)
-#     skycube = Array(Float64, nx, ny, nband)
-#
-#     sm, sM = extrema(sky)
-#     fm, fM = extrema(field)
-#
-#     alpha = 2.5 + 0.5(sky-sm)/(sM-sm) + 0.5(field-fm)/(fM-fm)
-#
-#     nu0 = (nu[end]-nu[1])/2
-#     for k =1:nband
-#         skycube[:,:,k] = sky.* (nu[k]/nu0) .^(-alpha)
-#     end
-# end
+function sky2cube{T<:FloatingPoint}(sky::Array{T,2},nu::Array{T,1})
+    nx, ny = size(sky)
+    nbands = length(nu)
+    corl = minimum([nx,ny])/5.0
+    rho(x,y) = exp(-norm([x, y])/corl)
+    tx = linspace(0,nx-1,nx)
+    ty = linspace(0,ny-1,ny)
+    field = genghf(tx, ty, rho)
+    skycube = Array(Float64, nx, ny, nbands)
+
+    sm, sM = extrema(sky)
+    fm, fM = extrema(field)
+
+    alpha = 0.25 + 0.1(sky-sm)/(sM-sm) + 0.1(field-fm)/(fM-fm)
+
+    nu0 = (nu[end]-nu[1])/2
+    for k =1:nbands
+        skycube[:,:,k] = sky.* (nu[k]/nu0) .^(-alpha)
+    end
+    return skycube
+end
+
+# freq
+nw = 15
+nu = zeros(Float64,nw)
+for i = 1:nw
+    nu[i] = 1.025e9 + (i-1)*50e6
+end
+
+
+
 
 # load psf fits file created by meqtrees
  file = FITS("../data/meerkat_m30_25pix.psf.fits")
@@ -109,5 +120,6 @@ psfcube = psfavg
 file = FITS("../data/M31.fits")
 data = float64(read(file[1]))
 close(file)
-sky = squeeze(data,3)
+sky0 = squeeze(data,3)
+sky = sky2cube(sky0,nu)
 datacube = cubefilter(sky,psfcube)
