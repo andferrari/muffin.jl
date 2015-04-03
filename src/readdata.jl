@@ -13,6 +13,8 @@ tol2 = load("../data/results/data.jld", "tol2")
 tol3 = load("../data/results/data.jld", "tol3")
 tol4 = load("../data/results/data.jld", "tol4")
 tol5 = load("../data/results/data.jld", "tol5")
+mydata = load("../data/results/data.jld", "mydata")
+sky = load("../data/results/data.jld", "sky")
 
 figure(1)
 for z = 1:nfreq

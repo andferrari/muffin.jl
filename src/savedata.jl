@@ -3,6 +3,8 @@ using HDF5, JLD
 save("../data/results/data.jld","nfreq",nfreq,
                                 "lastiter",lastiter,
                                 "x", x,
+                                "mydata",mydata,
+                                "sky",sky,
                                 "errorest",errorest,
                                 "errorraw",errorraw,
                                 "errorrec",errorrec,
