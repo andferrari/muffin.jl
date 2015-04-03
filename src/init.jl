@@ -20,22 +20,16 @@ end
 
 
 # load psf fits file created by meqtrees
-
-file = FITS("../data/meerkat_m30_25pix.psf.fits")
-data = float64(read(file[1]))
-close(file)
-psfcube = squeeze(data,3)
+psf = "../data/meerkat_m30_25pix.psf.fits"
+psfcube = lecture(psf)
 psfavg = cubeaverage(psfcube,5)
 mypsf = cropcubexy(psfavg,255)
-mypsfadj = float64(flipdim(flipdim(mypsf,1),2))
+mypsfadj = flipdim(flipdim(mypsf,1),2)
 
 
 # load gray sky model fits file
-
-file = FITS("../data/M31.fits")
-data = float64(read(file[1]))
-close(file)
-sky0 = squeeze(data,3)
+obj = "../data/M31.fits"
+sky0 = lecture(obj)
 sky,alpha = sky2cube(sky0,nu)
 mydata = cubefilter(sky,mypsf)
 

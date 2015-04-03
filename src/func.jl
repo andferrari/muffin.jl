@@ -23,6 +23,7 @@ function cubefilter{T<:FloatingPoint}(imagecube::Array{T,3},psfcube::Array{T,3})
     return rescube
 end
 
+
 function cubefilter{T<:FloatingPoint}(imagecube::Array{T,2},psfcube::Array{T,3})
     nximg, nyimg = size(imagecube)
     nxpsf, nypsf, nfreq = size(psfcube)
@@ -32,6 +33,7 @@ function cubefilter{T<:FloatingPoint}(imagecube::Array{T,2},psfcube::Array{T,3})
     end
     return rescube
 end
+
 
 function cubeaverage{T<:FloatingPoint}(imagecube::Array{T,3},M::Int)
     nxpsf, nypsf, nfreq = size(imagecube)
@@ -45,6 +47,7 @@ function cubeaverage{T<:FloatingPoint}(imagecube::Array{T,3},M::Int)
     end
     return rescube
 end
+
 
 function cropcubexy{T<:FloatingPoint}(imagecube::Array{T,3},M::Int)
     nxpsf, nypsf, nfreq = size(imagecube)
@@ -67,6 +70,7 @@ function cropcubexy{T<:FloatingPoint}(imagecube::Array{T,3},M::Int)
     return rescube
 end
 
+
 function sky2cube{T<:FloatingPoint}(sky::Array{T,2},nu::Array{T,1})
     nx, ny = size(sky)
     nbands = length(nu)
@@ -87,4 +91,14 @@ function sky2cube{T<:FloatingPoint}(sky::Array{T,2},nu::Array{T,1})
         skycube[:,:,k] = sky.* (nu[k]/nu0) .^(-alpha)
     end
     return skycube,alpha
+end
+
+
+function lecture(directory::ASCIIString)
+
+    file = FITS(directory)
+    data = float64(read(file[1]))
+    close(file)
+    data = squeeze(data,3)
+    return data
 end
