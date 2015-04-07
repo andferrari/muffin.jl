@@ -63,6 +63,7 @@ tic()
 
         tmp = sh - tauv/rhov
         v = prox_u(tmp,μv)
+        println(length(nonzeros(v[:,:,1])))
 
         # update of Lagrange multipliers
         taup = taup + rhop*(p-x)
