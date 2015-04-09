@@ -17,6 +17,10 @@ for i = 1:nw
     nu[i] = 1.025e9 + (i-1)*50e6
 end
 
+const fov = 45
+const arcminrad = 2*pi*60/360
+const k = fov*arcminrad
+
 
 
 # load psf fits file created by meqtrees
@@ -26,18 +30,19 @@ psfavg = cubeaverage(psfcube,5)
 mypsf = cropcubexy(psfavg,255)
 mypsfadj = flipdim(flipdim(mypsf,1),2)
 
-
 # load gray sky model fits file
 obj = "../data/M31.fits"
-sky0 = lecture(obj)
+sky0 = lecture(obj)/maximum(lecture(obj))
 sky,alpha = sky2cube(sky0,nu)
-mydata = cubefilter(sky,mypsf)
+noise = randn(size(sky)[1],size(sky)[1],size(mypsf)[3])/k
+mydata = cubefilter(sky,mypsf) + 10*noise
 
 
 spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
 
 const nspat = length(spatialwlt)
-const nfreq = size(mypsf)[3]
+#const nfreq = size(mypsf)[3]
+nfreq = 1
 const nspec = 1
 const nxy = size(mydata)[1]
 
@@ -45,18 +50,20 @@ niter = 0
 lastiter = 0
 const nbitermax = 1000
 
-const rhop = 2
-const rhot = 1
-const rhov = 5
-const rhos = 5
-const μt = 0.5
-const μv = 0.5
+const rhop = 1
+const rhot = 5
+const rhov = 2
+const rhos = 1
+const μt = 1e-1
+const μv = 5e-3
 const muesp = 1.0
 const tt = rhot*nspat
 const mu = muesp + rhop + tt + rhos
 
+
 spectralwlt = zeros(Float64,nxy,nxy,nfreq)
 
+snr = Float64[]
 tol1 = Float64[]
 tol2 = Float64[]
 tol3 = Float64[]
@@ -89,3 +96,5 @@ xmm = zeros(Float64,nxy,nxy,nfreq)
 # precompute
 
 fty = cubefilter(mydata,mypsfadj)
+push!(snr,10*log(vecnorm(mydata[:,:,1]/40)^2/vecnorm(sky[:,:,1]-mydata[:,:,1]/40)^2))
+x = copy(mydata[:,:,1])

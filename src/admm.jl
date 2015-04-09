@@ -74,11 +74,15 @@ tic()
         taus = taus + rhos*(s-x)
 
         # computer residues
-        push!(tol1,vecnorm(x - xmm, 2)^2)
-        push!(tol2,vecnorm(x - p, 2)^2)
-        push!(tol3,vecnorm(Hx - t, 2)^2)
-        push!(tol4,vecnorm(x - s, 2)^2)
-        push!(tol5,vecnorm(sh - v, 2)^2)
+        push!(tol1,vecnorm(x - xmm, 2)^2/vecnorm(x, 2)^2)
+        push!(tol2,vecnorm(x - p, 2)^2/vecnorm(x, 2)^2)
+        push!(tol3,vecnorm(Hx - t, 2)^2/vecnorm(t, 2)^2)
+        push!(tol4,vecnorm(x - s, 2)^2/vecnorm(x, 2)^2)
+        push!(tol5,vecnorm(sh - v, 2)^2/vecnorm(v, 2)^2)
+
+
+        push!(snr,10*log(vecnorm(x[:,:,1])^2/vecnorm(sky[:,:,1]-x[:,:,1])^2))
+        @printf("SNR: %02.04e dB \n", snr[niter+1])
 
         # plot
             for z = 1:nfreq
@@ -94,7 +98,7 @@ tic()
             # end
 
         # stopping rule
-        if (niter >= nbitermax) || ((tol1[niter] < 1E-3) && (tol2[niter] < 1E-2))
+        if (niter >= nbitermax) || ((tol1[niter] < 1E-6) && (tol2[niter] < 1E-4))
             loop = false
             lastiter = niter
         end
@@ -110,6 +114,7 @@ tic()
 
         @printf("time for iteration : %f seconds \n", toq())
 
+        #include("plot_admm.jl")
     end
 println("")
 @printf("time for ADMM : %f seconds \n", toq())
