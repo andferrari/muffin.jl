@@ -41,8 +41,8 @@ mydata = cubefilter(sky,mypsf) + 10*noise
 spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
 
 const nspat = length(spatialwlt)
-#const nfreq = size(mypsf)[3]
-nfreq = 1
+const nfreq = size(mypsf)[3]
+#nfreq = 1
 const nspec = 1
 const nxy = size(mydata)[1]
 
@@ -97,4 +97,4 @@ xmm = zeros(Float64,nxy,nxy,nfreq)
 
 fty = cubefilter(mydata,mypsfadj)
 push!(snr,10*log(vecnorm(mydata[:,:,1]/40)^2/vecnorm(sky[:,:,1]-mydata[:,:,1]/40)^2))
-x = copy(mydata[:,:,1])
+x = copy(mydata)
