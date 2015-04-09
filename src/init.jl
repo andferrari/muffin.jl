@@ -97,4 +97,4 @@ xmm = zeros(Float64,nxy,nxy,nfreq)
 
 fty = cubefilter(mydata,mypsfadj)
 push!(snr,10*log(vecnorm(mydata[:,:,1]/40)^2/vecnorm(sky[:,:,1]-mydata[:,:,1]/40)^2))
-x = copy(mydata)
+x[:] = mydata
