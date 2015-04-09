@@ -74,11 +74,11 @@ tic()
         taus = taus + rhos*(s-x)
 
         # computer residues
-        push!(tol1,vecnorm(x - xmm, 2)^2/vecnorm(x, 2)^2)
-        push!(tol2,vecnorm(x - p, 2)^2/vecnorm(x, 2)^2)
-        push!(tol3,vecnorm(Hx - t, 2)^2/vecnorm(t, 2)^2)
-        push!(tol4,vecnorm(x - s, 2)^2/vecnorm(x, 2)^2)
-        push!(tol5,vecnorm(sh - v, 2)^2/vecnorm(v, 2)^2)
+        push!(tol1,vecnorm(x - xmm, 2)^2)
+        push!(tol2,vecnorm(x - p, 2)^2)
+        push!(tol3,vecnorm(Hx - t, 2)^2)
+        push!(tol4,vecnorm(x - s, 2)^2)
+        push!(tol5,vecnorm(sh - v, 2)^2)
 
 
         push!(snr,10*log(vecnorm(x[:,:,1])^2/vecnorm(sky[:,:,1]-x[:,:,1])^2))
