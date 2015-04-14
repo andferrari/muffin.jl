@@ -58,3 +58,5 @@ for niter = 1:2
         plot(err[1:25*niter,z])
     end
 end
+
+include("alpha_rec.jl")
