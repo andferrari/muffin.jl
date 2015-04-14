@@ -17,8 +17,17 @@ tol5 = load("../data/results/data.jld", "tol5")
 mydata = load("../data/results/data.jld", "mydata")
 sky = load("../data/results/data.jld", "sky")
 #snr = load("../data/results/data.jld", "snr")
+# nu = load("../data/results/data.jld", "nu")
+# nu0 = load("../data/results/data.jld", "nu0")
 
+#############################
+nw = 15
+nu = zeros(Float64,nw)
+for i = 1:nw
+    nu[i] = 1.025e9 + (i-1)*50e6
+end
 nxy = size(x)[1]
+##############################
 
 figure(1)
 for z = 1:nfreq
