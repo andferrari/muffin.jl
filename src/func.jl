@@ -86,7 +86,7 @@ function sky2cube{T<:FloatingPoint}(sky::Array{T,2},nu::Array{T,1})
 
     alpha = 0.8 + 0.4*(sky-sm)/(sM-sm) + 0.4*(field-fm)/(fM-fm)
 
-    nu0 = (nu[end]-nu[1])/2
+    nu0 = (nu[end]+nu[1])/2
     for k =1:nbands
         skycube[:,:,k] = sky.* (nu[k]/nu0) .^(-alpha)
     end

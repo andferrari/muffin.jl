@@ -5,10 +5,10 @@ function minisky(sky,nu,alpha)
     nx, ny = size(sky)
     nbands = length(nu)
     skycube = Array(Float64, nx, ny, nbands)
-    nu0 = (nu[end]-nu[1])/2
+    nu0 = (nu[end]+nu[1])/2
 
     for k =1:nbands
-        skyc = sky.* (nu[k]/nu0) .^(-alpha)
+        skyc = sky.* ((nu[k]/nu0).^(-alpha))
         skycube[:,:,k] = skyc
         end
     return skycube
@@ -16,8 +16,8 @@ end
 
 function createobj(toto;l=20,sig=400)
 
-
-    obj = zeros(Float64,nxy,nxy,nfreq)
+    nxy = size(toto)[1]
+    obj = zeros(Float64,nxy,nxy,nw)
 
     aa = nxy/2-l
     bb = nxy/2+l
