@@ -15,6 +15,7 @@ tol4 = load("../data/results/data.jld", "tol4")
 tol5 = load("../data/results/data.jld", "tol5")
 mydata = load("../data/results/data.jld", "mydata")
 sky = load("../data/results/data.jld", "sky")
+snr = load("../data/results/data.jld", "snr")
 
 figure(1)
 for z = 1:nfreq

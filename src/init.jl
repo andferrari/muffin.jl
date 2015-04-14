@@ -3,6 +3,7 @@
 ####################################################################
 include("func.jl")
 include("prox.jl")
+include("testobj.jl")
 
 using FITSIO
 @everywhere using Images
@@ -28,6 +29,9 @@ psf = "../data/meerkat_m30_25pix.psf.fits"
 psfcube = lecture(psf)
 psfavg = cubeaverage(psfcube,5)
 mypsf = cropcubexy(psfavg,255)
+for z = 1:nw
+    mypsf[:,:,z] = mypsf[:,:,z]/sum(mypsf[:,:,z])
+end
 mypsfadj = flipdim(flipdim(mypsf,1),2)
 
 # load gray sky model fits file
@@ -39,8 +43,8 @@ mypsfadj = flipdim(flipdim(mypsf,1),2)
 
 objdum = Array(Float64,256,1)
 sky = createobj(objdum)
-noise = randn(size(sky)[1],size(sky)[1],size(mypsf)[3])/k
-mydata = cubefilter(sky,mypsf)
+noise = randn(size(sky)[1],size(sky)[1],size(mypsf)[3])#/k
+mydata = cubefilter(sky,mypsf) #+ noise
 
 
 spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
@@ -99,7 +103,7 @@ Hx = SharedArray(Float64,nxy,nxy,nfreq,nspat)
 xmm = zeros(Float64,nxy,nxy,nfreq)
 
 # precompute
-
+snr0 = 10*log(vecnorm(cubefilter(sky,mypsf))^2/(vecnorm(noise)^2))
 fty = cubefilter(mydata,mypsfadj)
-push!(snr,10*log(vecnorm(mydata[:,:,1]/40)^2/vecnorm(sky[:,:,1]-mydata[:,:,1]/40)^2))
+push!(snr,10*log(vecnorm(sky[:,:,1])^2/vecnorm(sky[:,:,1]-mydata[:,:,1])^2))
 x[:] = mydata

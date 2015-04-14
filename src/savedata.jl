@@ -13,4 +13,5 @@ save("../data/results/data.jld","nfreq",nfreq,
                                 "tol2",tol2,
                                 "tol3",tol3,
                                 "tol4",tol4,
-                                "tol5",tol5)
+                                "tol5",tol5,
+                                "snr",snr)
