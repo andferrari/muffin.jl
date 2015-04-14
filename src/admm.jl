@@ -81,7 +81,7 @@ tic()
         push!(tol5,vecnorm(sh - v, 2)^2)
 
 
-        push!(snr,10*log(vecnorm(x[:,:,1])^2/vecnorm(sky[:,:,1]-x[:,:,1])^2))
+        push!(snr,10*log10(vecnorm(x[:,:,1])^2/vecnorm(sky[:,:,1]-x[:,:,1])^2))
         @printf("SNR: %02.04e dB \n", snr[niter+1])
 
         # plot

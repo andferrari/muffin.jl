@@ -103,7 +103,7 @@ Hx = SharedArray(Float64,nxy,nxy,nfreq,nspat)
 xmm = zeros(Float64,nxy,nxy,nfreq)
 
 # precompute
-snr0 = 10*log(vecnorm(cubefilter(sky,mypsf))^2/(vecnorm(noise)^2))
+snr0 = 10*log10(vecnorm(cubefilter(sky,mypsf))^2/(vecnorm(noise)^2))
 fty = cubefilter(mydata,mypsfadj)
-push!(snr,10*log(vecnorm(sky[:,:,1])^2/vecnorm(sky[:,:,1]-mydata[:,:,1])^2))
+push!(snr,10*log10(vecnorm(sky[:,:,1])^2/vecnorm(sky[:,:,1]-mydata[:,:,1])^2))
 x[:] = mydata
