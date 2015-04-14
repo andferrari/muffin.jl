@@ -1,5 +1,6 @@
 using HDF5, JLD
-#using PyPlot
+using PyPlot
+include("testobj.jl");
 
 x = load("../data/results/data.jld", "x")
 lastiter = load("../data/results/data.jld", "lastiter")
@@ -17,6 +18,8 @@ mydata = load("../data/results/data.jld", "mydata")
 sky = load("../data/results/data.jld", "sky")
 #snr = load("../data/results/data.jld", "snr")
 
+nxy = size(x)[1]
+
 figure(1)
 for z = 1:nfreq
     subplot(5,3,z)
@@ -33,31 +36,31 @@ figure(3)
 plot([1:nfreq],errorest,color="blue")
 #plot([1:nfreq],errorraw,color="red")
 
-figure(4)
-for niter = 1:5
-
-    clf()
-    println(10*niter)
-    subplot(5,1,1)
-    plot(tol1[1:10*niter])
-    subplot(5,1,2)
-    plot(tol2[1:10*niter])
-    subplot(5,1,3)
-    plot(tol3[1:10*niter])
-    subplot(5,1,4)
-    plot(tol4[1:10*niter])
-    subplot(5,1,5)
-    plot(tol5[1:10*niter])
-end
-
-figure(5)
-for niter = 1:2
-    println(25*niter)
-    clf()
-    for z = 1:nfreq
-        subplot(5,3,z)
-        plot(err[1:25*niter,z])
-    end
-end
+# figure(4)
+# for niter = 1:5
+#
+#     clf()
+#     println(10*niter)
+#     subplot(5,1,1)
+#     plot(tol1[1:10*niter])
+#     subplot(5,1,2)
+#     plot(tol2[1:10*niter])
+#     subplot(5,1,3)
+#     plot(tol3[1:10*niter])
+#     subplot(5,1,4)
+#     plot(tol4[1:10*niter])
+#     subplot(5,1,5)
+#     plot(tol5[1:10*niter])
+# end
+#
+# figure(5)
+# for niter = 1:2
+#     println(25*niter)
+#     clf()
+#     for z = 1:nfreq
+#         subplot(5,3,z)
+#         plot(err[1:25*niter,z])
+#     end
+# end
 
 include("alpha_rec.jl")

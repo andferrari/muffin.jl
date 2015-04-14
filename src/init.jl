@@ -41,7 +41,7 @@ mypsfadj = flipdim(flipdim(mypsf,1),2)
 # noise = randn(size(sky)[1],size(sky)[1],size(mypsf)[3])/k
 # mydata = cubefilter(sky,mypsf) + 10*noise
 
-objdum = Array(Float64,256,1)
+objdum = zeros(Float64,256,1)
 sky = createobj(objdum)
 noise = randn(size(sky)[1],size(sky)[1],size(mypsf)[3])#/k
 mydata = cubefilter(sky,mypsf) #+ noise
