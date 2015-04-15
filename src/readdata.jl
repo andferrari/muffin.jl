@@ -30,10 +30,15 @@ nxy = size(x)[1]
 ##############################
 
 figure(1)
+clf()
+title("Reconstructed object")
 for z = 1:nfreq
     subplot(5,3,z)
-    colorbar(imshow(x[:,:,z]))
+    a = nu[z]/1e9
+    colorbar(imshow(mypsf[:,:,z]))
+    ylabel("v = $a GHz")
 end
+savefig("rec_obj.pdf")
 
 figure(2)
 for z = 1:nfreq

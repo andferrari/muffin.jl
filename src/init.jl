@@ -23,14 +23,13 @@ const arcminrad = 2*pi*60/360
 const k = fov*arcminrad
 
 
-
 # load psf fits file created by meqtrees
 psf = "../data/meerkat_m30_25pix.psf.fits"
 psfcube = lecture(psf)
 psfavg = cubeaverage(psfcube,5)
 mypsf = cropcubexy(psfavg,255)
 for z = 1:nw
-    mypsf[:,:,z] = mypsf[:,:,z]/sum(mypsf[:,:,z])
+    mypsf[:,:,z] = mypsf[:,:,z]/abs(sum(mypsf[:,:,z]))
 end
 mypsfadj = flipdim(flipdim(mypsf,1),2)
 
