@@ -23,6 +23,16 @@ function cubefilter{T<:FloatingPoint}(imagecube::Array{T,3},psfcube::Array{T,3})
     return rescube
 end
 
+function cubefilter{T<:FloatingPoint}(imagecube::SharedArray{T,3},psfcube::Array{T,3})
+    nximg, nyimg, nfreq = size(imagecube)
+    nxpsf, nypsf, nfreq = size(psfcube)
+    rescube = Array(Float64,nximg,nyimg,nfreq)
+    for k = 1:nfreq
+        rescube[:,:,k] = imfilter_fft(imagecube[:,:,k],psfcube[:,:,k],"circular")
+    end
+    return rescube
+end
+
 
 function cubefilter{T<:FloatingPoint}(imagecube::Array{T,2},psfcube::Array{T,3})
     nximg, nyimg = size(imagecube)

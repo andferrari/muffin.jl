@@ -81,3 +81,35 @@ plot([1:nfreq],errorest,color="blue")
 # end
 
 include("alpha_rec.jl")
+
+
+figure(10)
+clf()
+title("multiplot")
+e = 1
+for z in [1 5 10 15]
+    subplot(4,3,e)
+    a = nu[z]/1e9
+    axis("off")
+    colorbar(imshow(sky[:,:,z]),format = "%.1e")
+    title("v = $a GHz")
+    e += 3
+end
+e = 2
+for z in [1 5 10 15]
+    subplot(4,3,e)
+    a = nu[z]/1e9
+    axis("off")
+    colorbar(imshow(mydata[:,:,z]),format = "%.1e")
+    title("v = $a GHz")
+    e += 3
+end
+e = 3
+for z in [1 5 10 15]
+    subplot(4,3,e)
+    a = nu[z]/1e9
+    axis("off")
+    colorbar(imshow(x[:,:,z]),format = "%.1e")
+    title("v = $a GHz")
+    e += 3
+end
