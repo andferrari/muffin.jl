@@ -56,7 +56,7 @@ const nxy = size(mydata)[1]
 
 niter = 0
 lastiter = 0
-const nbitermax = 1000
+const nbitermax = 350
 
 const rhop = 1
 const rhot = 5
@@ -64,7 +64,7 @@ const rhov = 2
 const rhos = 1
 const μt = 1e-1
 const μv = 5e-1
-const muesp = 1.0
+const muesp = 0.1
 const tt = rhot*nspat
 const mu = muesp + rhop + tt + rhos
 

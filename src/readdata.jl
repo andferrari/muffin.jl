@@ -38,7 +38,7 @@ for z in [1 5 10 15]
     subplot(2,2,e)
     a = nu[z]/1e9
     axis("off")
-    imshow(mypsf[108:148,108:148,z])
+    colorbar(imshow(x[108:148,108:148,z]))
     title("v = $a GHz")
 end
 subplots_adjust(bottom=0.1, right=0.8, top=0.9)

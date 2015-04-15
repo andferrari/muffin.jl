@@ -29,14 +29,14 @@ countnonzero = 0
 
 N = 15
 ν = nu./nu0
-A = [ones(N) log(ν) log(ν).^2]
+A = [ones(N) log10(ν) log10(ν).^2]
 for i = 1:nxy, j = 1:nxy
 
     if minimum(squeeze(squeeze(x[i,j,:],1),1)) <= 0
     alpharec[i,j,:] = 0
 
     elseif minimum(squeeze(squeeze(x[i,j,:],1),1)) > 0
-    b = squeeze(squeeze(log(x[i,j,:]),1),1)
+    b = squeeze(squeeze(log10(x[i,j,:]),1),1)
     c = A\b
     alpharec[i,j,1] = c[1]
     alpharec[i,j,2] = c[2]
@@ -66,6 +66,13 @@ clf()
 title("Coupe alpha")
 p = linspace(88,168,81)
 q = alpharec[128,88:168,2]'
+plot(p,q)
+
+figure(9)
+#clf()
+title("Coupe alpha")
+p = linspace(88,168,81)
+q = alpharecsky[128,88:168,2]'
 plot(p,q)
 
 v = createobjtheo(alpharec[:,:,2],alpharec[:,:,3])
