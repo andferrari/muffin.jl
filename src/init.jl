@@ -17,6 +17,7 @@ nu = zeros(Float64,nw)
 for i = 1:nw
     nu[i] = 1.025e9 + (i-1)*50e6
 end
+nu0 = (nu[end]+nu[1])/2
 
 const fov = 45
 const arcminrad = 2*pi*60/360
