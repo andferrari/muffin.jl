@@ -3,7 +3,7 @@ using PyPlot
 include("testobj.jl");
 
 x = load("../data/results/data.jld", "x")
-lastiter = load("../data/results/data.jld", "lastiter")
+#lastiter = load("../data/results/data.jld", "lastiter")
 nfreq = load("../data/results/data.jld", "nfreq")
 errorrec = load("../data/results/data.jld", "errorrec")
 errorest = load("../data/results/data.jld", "errorest")
@@ -14,7 +14,7 @@ tol2 = load("../data/results/data.jld", "tol2")
 tol3 = load("../data/results/data.jld", "tol3")
 tol4 = load("../data/results/data.jld", "tol4")
 tol5 = load("../data/results/data.jld", "tol5")
-mydata = load("../data/results/data.jld", "mydata")
+#ydata = load("../data/results/data.jld", "mydata")
 #sky = load("../data/results/data.jld", "sky")
 #snr = load("../data/results/data.jld", "snr")
 # nu = load("../data/results/data.jld", "nu")
@@ -38,7 +38,7 @@ for z in [1 5 10 15]
     subplot(2,2,e)
     a = nu[z]/1e9
     axis("off")
-    colorbar(imshow(x[108:148,108:148,z]))
+    colorbar(imshow(x[:,:,z]))
     title("v = $a GHz")
 end
 subplots_adjust(bottom=0.1, right=0.8, top=0.9)
@@ -85,43 +85,6 @@ plot([1:nfreq],errorest,color="blue")
 
 include("alpha_rec.jl")
 
-
-# figure(10)
-# clf()
-# title("multiplot")
-# e = 1
-# for z in [1 5 10 15]
-#     subplot(4,3,e)
-#     a = nu[z]/1e9
-#     axis("off")
-#     imshow(sky[:,:,z])
-#     title("v = $a GHz")
-#     e += 3
-# end
-# e = 2
-# for z in [1 5 10 15]
-#     subplot(4,3,e)
-#     a = nu[z]/1e9
-#     axis("off")
-#     imshow(mydata[:,:,z])
-#     title("v = $a GHz")
-#     e += 3
-# end
-# e = 3
-# for z in [1 5 10 15]
-#     subplot(4,3,e)
-#     a = nu[z]/1e9
-#     axis("off")
-#     imshow(x[:,:,z])
-#     title("v = $a GHz")
-#     e += 3
-# end
-#
-# subplots_adjust(bottom=0.1, right=0.8, top=0.9)
-# cax = axes([0.85, 0.1, 0.025, 0.8])
-# colorbar(cax=cax)
-
-
 figure(10)
 clf()
 title("multiplot")
@@ -157,3 +120,38 @@ end
 subplots_adjust(bottom=0.1, right=0.8, top=0.9)
 cax = axes([0.85, 0.1, 0.025, 0.8])
 colorbar(cax=cax)
+
+# figure(10)
+# clf()
+# title("multiplot")
+# e = 1
+# for z in [1 5 10 15]
+#     subplot(4,3,e)
+#     a = nu[z]/1e9
+#     axis("off")
+#     imshow(sky[:,:,z])
+#     title("v = $a GHz")
+#     e += 3
+# end
+# e = 2
+# for z in [1 5 10 15]
+#     subplot(4,3,e)
+#     a = nu[z]/1e9
+#     axis("off")
+#     imshow(mydata[:,:,z])
+#     title("v = $a GHz")
+#     e += 3
+# end
+# e = 3
+# for z in [1 5 10 15]
+#     subplot(4,3,e)
+#     a = nu[z]/1e9
+#     axis("off")
+#     imshow(x[:,:,z])
+#     title("v = $a GHz")
+#     e += 3
+# end
+#
+# subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+# cax = axes([0.85, 0.1, 0.025, 0.8])
+# colorbar(cax=cax)
