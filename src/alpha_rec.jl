@@ -71,20 +71,24 @@ plot(p,q)
 v = createobjtheo(alpharec[:,:,2],alpharec[:,:,3])
 figure(10)
 clf()
-title("spectre pix 128.128")
 p = nu
 q = squeeze(squeeze(x[128,128,:],1),1)
 r = squeeze(squeeze(sky[128,128,:],1),1)
 s = squeeze(squeeze(v[128,128,:],1),1)
+
+maax = r[1]
+q = q/q[1]*maax
+s = s/s[1]*maax
+
 # plot(p,q,label='toto',p,r,p,s)
 plot(p,q)
 plot(p,r)
 plot(p,s)
-label1 = "Rec. img"
-label2 = "Sky img"
-label3 = "Alpha/beta fit"
+label1 = "Reconstructed image"
+label2 = "Sky image"
+label3 = "alphabeta" #r"$\alpha \beta$""
 legend( (label1, label2, label3), loc="upper right")
-xlabel("nu")
+xlabel("Frequency bands")
 
 
 
