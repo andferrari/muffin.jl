@@ -104,8 +104,8 @@ figure(11)
 clf()
 subplot(1,2,1)
 p = nu./nu0
-i = 140
-j = 130
+i = 128
+j = 108
 
 q = 1*(squeeze(squeeze(x[i,j,:],1),1))
 d = (squeeze(squeeze(sky[i,j,:],1),1))
@@ -124,8 +124,8 @@ xlabel(L"$log(\nu/\nu0)$")
 
 subplot(1,2,2)
 p = nu./nu0
-i = 168
-j = 120
+i = 128
+j = 148
 
 q = 1.*(squeeze(squeeze(x[i,j,:],1),1))
 d = (squeeze(squeeze(sky[i,j,:],1),1))

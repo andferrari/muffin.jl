@@ -3,7 +3,7 @@ using PyPlot
 include("testobj.jl");
 
 x = load("../data/results/data.jld", "x")
-#lastiter = load("../data/results/data.jld", "lastiter")
+lastiter = load("../data/results/data.jld", "lastiter")
 nfreq = load("../data/results/data.jld", "nfreq")
 errorrec = load("../data/results/data.jld", "errorrec")
 errorest = load("../data/results/data.jld", "errorest")
@@ -14,11 +14,11 @@ tol2 = load("../data/results/data.jld", "tol2")
 tol3 = load("../data/results/data.jld", "tol3")
 tol4 = load("../data/results/data.jld", "tol4")
 tol5 = load("../data/results/data.jld", "tol5")
-#ydata = load("../data/results/data.jld", "mydata")
-#sky = load("../data/results/data.jld", "sky")
-#snr = load("../data/results/data.jld", "snr")
-# nu = load("../data/results/data.jld", "nu")
-# nu0 = load("../data/results/data.jld", "nu0")
+mydata = load("../data/results/data.jld", "mydata")
+sky = load("../data/results/data.jld", "sky")
+snr = load("../data/results/data.jld", "snr")
+nu = load("../data/results/data.jld", "nu")
+nu0 = load("../data/results/data.jld", "nu0")
 
 #############################
 nw = 15
