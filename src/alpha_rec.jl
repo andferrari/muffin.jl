@@ -133,6 +133,7 @@ d = (squeeze(squeeze(sky[i,j,:],1),1))
 
 plot(log10(p),log10(d))
 plot(log10(p),log10(q))
+
 #plot(log10(p),log10(s))
 
 label1 = "Sky spectrum"

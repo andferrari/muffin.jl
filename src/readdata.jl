@@ -16,7 +16,7 @@ tol4 = load("../data/results/data.jld", "tol4")
 tol5 = load("../data/results/data.jld", "tol5")
 mydata = load("../data/results/data.jld", "mydata")
 sky = load("../data/results/data.jld", "sky")
-snr = load("../data/results/data.jld", "snr")
+#snr = load("../data/results/data.jld", "snr")
 nu = load("../data/results/data.jld", "nu")
 nu0 = load("../data/results/data.jld", "nu0")
 
@@ -38,10 +38,10 @@ for z in [1 5 10 15]
     subplot(2,2,e)
     a = nu[z]/1e9
     axis("off")
-    colorbar(imshow(x[:,:,z]))
+    imshow(x[108:148,108:148,z],vmin=0,vmax=0.9)
     title("v = $a GHz")
 end
-subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+subplots_adjust(bottom=0.1, right=0.8, top=0.95)
 cax = axes([0.85, 0.1, 0.025, 0.8])
 colorbar(cax=cax)
 # savefig("psf.pdf")
@@ -93,7 +93,7 @@ for z in [1 5 10 15]
     subplot(3,4,e)
     a = nu[z]/1e9
     axis("off")
-    imshow(sky[:,:,z])
+    (imshow(sky[:,:,z],vmin=0,vmax=1.3))
     title("v = $a GHz")
     e += 1
 end
@@ -103,7 +103,7 @@ for z in [1 5 10 15]
     subplot(3,4,e)
     a = nu[z]/1e9
     axis("off")
-    imshow(mydata[:,:,z])
+    (imshow(mydata[:,:,z]./80.*1.2,vmin=0,vmax=1.3))
 
     e += 1
 end
@@ -112,7 +112,7 @@ for z in [1 5 10 15]
     subplot(3,4,e)
     a = nu[z]/1e9
     axis("off")
-    imshow(x[:,:,z])
+    (imshow(x[:,:,z],vmin=0,vmax=1.3))
 
     e += 1
 end
