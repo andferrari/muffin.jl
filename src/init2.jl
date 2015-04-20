@@ -62,7 +62,7 @@ const rhov = 2
 const rhos = 1
 const μt = 1e-1
 const μv = 5e-1
-const muesp = 0.01
+const muesp = 0.001
 const tt = rhot*nspat
 const mu = muesp + rhop + tt + rhos
 
@@ -75,7 +75,7 @@ tol2 = Float64[]
 tol3 = Float64[]
 tol4 = Float64[]
 tol5 = Float64[]
-err = Array(Float64,nbitermax,nfreq)
+err = zeros(Float64,nbitermax,nfreq)
 errorrec = zeros(Float64,nxy,nxy,nfreq)
 errorest = zeros(Float64,nfreq)
 errorraw = zeros(Float64,nfreq)
@@ -99,8 +99,11 @@ x = SharedArray(Float64,nxy,nxy,nfreq)
 Hx = SharedArray(Float64,nxy,nxy,nfreq,nspat)
 xmm = zeros(Float64,nxy,nxy,nfreq)
 
+spectrex = zeros(Float64,nfreq,nbitermax)
+spectresky = zeros(Float64,nfreq,nbitermax)
+
 # precompute
 snr0 = 10*log10(vecnorm(cubefilter(sky,mypsf))^2/(vecnorm(noise)^2))
 fty = cubefilter(mydata,mypsfadj)
-push!(snr,10*log10(vecnorm(sky[:,:,1])^2/vecnorm(sky[:,:,1]-mydata[:,:,1])^2))
+push!(snr,10*log10(vecnorm(cubefilter(x,mypsf))^2/(vecnorm(noise)^2)))
 x[:] = mydata
