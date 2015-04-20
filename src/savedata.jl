@@ -16,4 +16,6 @@ save("../data/results/data.jld","nfreq",nfreq,
                                 "tol5",tol5,
                                 "snr",snr,
                                 "nu",nu,
-                                "nu0",nu0)
+                                "nu0",nu0,
+                                "spectrex",spectrex,
+                                "spectresky",spectresky)
