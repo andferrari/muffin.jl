@@ -1,6 +1,7 @@
 using HDF5, JLD
 
-save("../data/results/datamuesp001_m31.jld","nfreq",nfreq,
+save("../data/results/data_2gauss_1000ite_muesp0.jld",
+                                "nfreq",nfreq,
                                 "lastiter",lastiter,
                                 "x", x,
                                 "mydata",mydata,
@@ -15,5 +16,6 @@ save("../data/results/datamuesp001_m31.jld","nfreq",nfreq,
                                 "tol4",tol4,
                                 "tol5",tol5,
                                 "snr",snr,
-                                "nu",nu,
-                                "nu0",nu0)
+                                "nu0",nu0,
+                                "spectrex",spectrex,
+                                "spectresky",spectresky)

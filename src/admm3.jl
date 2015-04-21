@@ -2,7 +2,7 @@
 ########################## main admm loop ##########################
 ####################################################################
 println("Initialisation...")
-include("init3.jl");
+include("init2.jl");
 
 loop = true
 
@@ -86,7 +86,7 @@ tic()
 
         # plot
             for z = 1:nfreq
-                err[niter,z] = vecnorm(x[:,:,z] - sky[:,:,z], 2)^2
+                err[niter,z] = sqrt(sum(x[:,:,z] - sky[:,:,z]).^2/sum(sky[:,:,z].^2))
             end
             #
             #
@@ -96,6 +96,14 @@ tic()
             #     subplot(5,2,z)
             #     plot(err[1:niter,z])
             # end
+
+        # Spectre
+
+        i = 128
+        j = 108
+
+        spectrex[:,niter] = (squeeze(squeeze(x[i,j,:],1),1))
+        spectresky[:,niter] = (squeeze(squeeze(sky[i,j,:],1),1))
 
         # stopping rule
         if (niter >= nbitermax) || ((tol1[niter] < 1E-6) && (tol2[niter] < 1E-4))
