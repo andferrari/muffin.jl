@@ -62,7 +62,7 @@ const rhov = 2
 const rhos = 1
 const μt = 1e-1
 const μv = 5e-1
-const muesp = 10.0
+const muesp = 100.0
 const tt = rhot*nspat
 const mu = muesp + rhop + tt + rhos
 
