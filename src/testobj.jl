@@ -21,7 +21,7 @@ function miniskybeta(sky,nu,alpha,beta)
     nu0 = (nu[end]+nu[1])/2
 
     for k =1:nbands
-        skyc = sky[:,:,1].* ((nu[k]/nu0).^(alpha +beta*log(nu[k]/nu0)))
+        skyc = sky[:,:,1].* ((nu[k]/nu0).^(alpha +beta*log10(nu[k]/nu0)))
         skycube[:,:,k] = skyc
         end
     return skycube

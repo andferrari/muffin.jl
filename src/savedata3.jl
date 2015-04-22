@@ -1,6 +1,6 @@
 using HDF5, JLD
 
-save("../data/results/data_2gauss_1000ite_muesp0.jld",
+save("../data/results/data_2gauss_muesp0001_noise.jld",
                                 "nfreq",nfreq,
                                 "lastiter",lastiter,
                                 "x", x,

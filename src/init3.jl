@@ -41,7 +41,7 @@ mypsfadj = flipdim(flipdim(mypsf,1),2)
 objdum = zeros(Float64,256,1)
 sky = createobj(objdum)
 noise = randn(size(sky)[1],size(sky)[1],size(mypsf)[3])#/k
-mydata = cubefilter(sky,mypsf) #+ noise
+mydata = cubefilter(sky,mypsf) + noise
 
 
 spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
@@ -62,7 +62,7 @@ const rhov = 2
 const rhos = 1
 const μt = 1e-1
 const μv = 5e-1
-const muesp = 0.0
+const muesp = 0.001
 const tt = rhot*nspat
 const mu = muesp + rhop + tt + rhos
 
