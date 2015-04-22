@@ -54,7 +54,7 @@ const nxy = size(mydata)[1]
 
 niter = 0
 lastiter = 0
-const nbitermax = 1000
+const nbitermax = 350
 
 const rhop = 1
 const rhot = 5
