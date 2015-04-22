@@ -56,7 +56,7 @@ tic()
 
         # prox positivity
         tmp = x-taup/rhop
-        p = max(0,tmp)
+        p = max(0,tmp.*mask)
 
         # prox spec
         tmp = permutedims(tauv + rhov*v,[3,1,2])

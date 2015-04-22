@@ -32,17 +32,18 @@ mypsf = cropcubexy(psfavg,255)
 mypsfadj = flipdim(flipdim(mypsf,1),2)
 
 # load gray sky model fits file
-obj = "../data/M31.fits"
-sky0 = lecture(obj)/maximum(lecture(obj))
-sky,alpha = sky2cube(sky0,nu)
-noise = 10*randn(size(sky)[1],size(sky)[1],size(mypsf)[3])/k
-mydata = cubefilter(sky,mypsf) + noise
+# obj = "../data/M31.fits"
+# sky0 = lecture(obj)/maximum(lecture(obj))
+# sky,alpha = sky2cube(sky0,nu)
+# noise = 10*randn(size(sky)[1],size(sky)[1],size(mypsf)[3])/k
+# mydata = cubefilter(sky,mypsf) + noise
 
-# objdum = zeros(Float64,256,1)
-# sky = createobj(objdum)
-# noise = randn(size(sky)[1],size(sky)[1],size(mypsf)[3])#/k
-# mydata = cubefilter(sky,mypsf) #+ noise
-
+objdum = zeros(Float64,256,1)
+sky = createobj(objdum)
+noise = randn(size(sky)[1],size(sky)[1],size(mypsf)[3])#/k
+mydata = cubefilter(sky,mypsf) #+ noise
+mask = zeros(Float64,size(sky)[1],size(sky)[1],size(sky)[3])
+mask = sky.>0
 
 spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
 
