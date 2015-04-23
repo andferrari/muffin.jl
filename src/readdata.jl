@@ -73,7 +73,7 @@ end
 plot(nu./1e9,errr[:],marker="o",linewidth=2)
 xlabel(L"\nu \; (GHz)",fontsize=18)
 ylabel(L"Relative \, rmse",fontsize=16)
-axis([1, 1.8, 0, 0.1])
+axis([1, 1.8, 0.15, 0.22])
 #############################################################################
 #############################################################################
 ######################################  cste / alpha / beta
@@ -186,7 +186,7 @@ for z in [1 5 10 15]
     axis("off")
     a = nu[z]/1e9
     imshow(sky[:,:,z],vmin=0,vmax=1.3)
-    title("v = $a GHz")
+    title(string(L"$\nu \, = \,$","$a ", L"\, GHz"),fontsize=14)
     e += 1
 end
 
@@ -194,7 +194,7 @@ e = 5
 for z in [1 5 10 15]
     subplot(3,4,e)
     axis("off")
-    imshow(mydata[:,:,z]./80.*1.2,vmin=0,vmax=1.3)
+    imshow(mydata[:,:,z]./maximum(mydata).*1.2,vmin=0,vmax=1.3)
 
     e += 1
 end
@@ -220,7 +220,8 @@ for z in [1 5 10 15]
     subplot(2,2,e)
     axis("off")
     a = nu[z]/1e9
-    imshow(sqrt(abs(sky[:,:,z]-x[:,:,z])),vmin = 0, vmax = vmax = round(maximum(sqrt(abs(sky[:,:,:]-x[:,:,:]))),1))
+    #imshow(sqrt(abs(sky[:,:,z]-x[:,:,z])),vmin = 0, vmax = round(maximum(sqrt(abs(sky[:,:,:]-x[:,:,:]))),1))
+    imshow(((sky[:,:,z]-x[:,:,z])),vmin = 0, vmax = 0.1)
     title(string(L"$\nu \, = \,$","$a ", L"\, GHz"))
     e += 1
 end
@@ -247,7 +248,7 @@ e = 5
 for z in [1 5 10 15]
     subplot(4,4,e)
     axis("off")
-    imshow(mydata[:,:,z]./80.*1.2,vmin=0,vmax=1.3)
+    imshow(mydata[:,:,z]./maximum(mydata).*1.2,vmin=0,vmax=1.3)
     e += 1
 end
 e = 9
@@ -267,7 +268,7 @@ e = 13
 for z in [1 5 10 15]
     subplot(4,4,e)
     axis("off")
-    imshow((sky[:,:,z]-x[:,:,z]),vmin = 0, vmax = 0.08)
+    imshow(((sky[:,:,z]-x[:,:,z])),vmin = 0, vmax = 0.08)
     e += 1
 end
 
@@ -293,7 +294,7 @@ e = 5
 for z in [1 5 10 15]
     subplot(3,4,e)
     axis("off")
-    imshow(mydata[:,:,z]./80.*1.2,vmin=0,vmax=1.3)
+    imshow(mydata[:,:,z]./maximum(mydata).*1.2,vmin=0,vmax=1.3)
     e += 1
 end
 
@@ -305,7 +306,7 @@ e = 9
 for z in [1 5 10 15]
     subplot(3,4,e)
     axis("off")
-    imshow((sky[:,:,z]-x[:,:,z]),vmin = 0, vmax = 0.1)
+    imshow(sqrt(abs(sky[:,:,z]-x[:,:,z])),vmin = 0, vmax = round(maximum(sqrt(abs(sky[:,:,:]-x[:,:,:]))),1))
     e += 1
 end
 #vmax = round(maximum(sky[:,:,:]-x[:,:,:]),1)
