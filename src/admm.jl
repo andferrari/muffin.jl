@@ -81,7 +81,8 @@ tic()
         push!(tol5,vecnorm(sh - v, 2)^2)
 
 
-        push!(snr,10*log10(mean(x.^2)/(var)))
+        push!(snr,10*log10(mean(cubefilter(x,mypsf).^2)/(sig)^2)
+)
         @printf("SNR: %02.04e dB \n", snr[niter+1])
 
         # plot
