@@ -35,7 +35,9 @@ mypsfadj = flipdim(flipdim(mypsf,1),2)
 obj = "../data/M31.fits"
 sky0 = lecture(obj)/maximum(lecture(obj))
 sky,alpha = sky2cube(sky0,nu)
-noise = 10*randn(size(sky)[1],size(sky)[1],size(mypsf)[3])/k
+sig = sqrt(mean(sky.^2)/1000)
+var = sig*sig
+noise = sig*randn(size(sky)[1],size(sky)[1],size(mypsf)[3])
 mydata = cubefilter(sky,mypsf) + noise
 
 # objdum = zeros(Float64,256,1)
@@ -104,7 +106,7 @@ spectrex = zeros(Float64,nfreq,nbitermax)
 spectresky = zeros(Float64,nfreq,nbitermax)
 
 # precompute
-snr0 = 10*log10(vecnorm(cubefilter(sky,mypsf))^2/(vecnorm(noise)^2))
+snr0 = 10*log10(mean(sky.^2)/(var))
 fty = cubefilter(mydata,mypsfadj)
-push!(snr,10*log10(vecnorm(cubefilter(x,mypsf))^2/(vecnorm(noise)^2)))
+push!(snr,snr0)
 x[:] = mydata
