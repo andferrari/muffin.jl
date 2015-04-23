@@ -35,10 +35,12 @@ mypsfadj = flipdim(flipdim(mypsf,1),2)
 obj = "../data/M31.fits"
 sky0 = lecture(obj)/maximum(lecture(obj))
 sky,alpha = sky2cube(sky0,nu)
-sig = 10/k
+#sig = 10/k
+skyconv = cubefilter(sky,mypsf)
+sig = sqrt(mean(skyconv.^2)/100)
 var = sig*sig
 noise = sig*randn(size(sky)[1],size(sky)[1],size(mypsf)[3])
-mydata = cubefilter(sky,mypsf) + noise
+mydata = skyconv + noise
 
 # objdum = zeros(Float64,256,1)
 # sky = createobj(objdum)
