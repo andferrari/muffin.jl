@@ -18,5 +18,5 @@ save("../data/results/data_m31_muesp0001.jld","nfreq",nfreq,
                                 "nu",nu,
                                 "nu0",nu0,
                                 "spectrex",spectrex,
-                                "spectresky",spectresky
+                                "spectresky",spectresky,
                                 "noise",noise)
