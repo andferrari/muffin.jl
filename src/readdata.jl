@@ -2,7 +2,7 @@ using HDF5, JLD
 using PyPlot
 include("testobj.jl");
 
-file = string("../data/results/data_m31_muesp0001_20db.jld")
+file = string("../data/results/data_2g.jld")
 # m31 => data_m31_muesp0001_20db.jld
 # 2g  => data_2gauss_muesp0001.jld
 
