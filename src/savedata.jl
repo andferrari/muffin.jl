@@ -1,6 +1,6 @@
 using HDF5, JLD
 
-save("../data/results/data_2g.jld","nfreq",nfreq,
+save("../data/results/data_2g_2000iter.jld","nfreq",nfreq,
                                 "lastiter",lastiter,
                                 "x", x,
                                 "mydata",mydata,

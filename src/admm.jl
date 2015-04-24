@@ -51,7 +51,6 @@ tic()
 
         tmp = Hx - taut/rhot
         t = prox_u(tmp,μt/rhot)
-        println("nonzeros t","  ",length(nonzeros(t[:,:,1,1])))
 
 
         # prox positivity
@@ -65,8 +64,7 @@ tic()
 
         tmp = sh - tauv/rhov
         v = prox_u(tmp,μv/rhov)
-        println("nonzeros v","  ",length(nonzeros(v[:,:,1])))
-
+    
         # update of Lagrange multipliers
         taup = taup + rhop*(p-x)
         taut = taut + rhot*(t-Hx)
