@@ -50,7 +50,7 @@ tic()
         end
 
         tmp = Hx - taut/rhot
-        t = prox_u(tmp,μt)
+        t = prox_u(tmp,μt/rhot)
         println("nonzeros t","  ",length(nonzeros(t[:,:,1,1])))
 
 
@@ -64,7 +64,7 @@ tic()
         sh = estime_sh(s)
 
         tmp = sh - tauv/rhov
-        v = prox_u(tmp,μv)
+        v = prox_u(tmp,μv/rhov)
         println("nonzeros v","  ",length(nonzeros(v[:,:,1])))
 
         # update of Lagrange multipliers
@@ -86,7 +86,7 @@ tic()
 
         # plot
             for z = 1:nfreq
-                err[niter,z] = sqrt(sum((x[:,:,z] - sky[:,:,z]).^2)/sum(sky[:,:,z].^2))
+                err[niter,z] = sqrt(sum((x[:,:,z] - sky[:,:,z]).^2)/sumsky2[z])
             end
             #
             #
@@ -129,9 +129,11 @@ println("")
 ####################################################################
 ####################################################################
 ####################################################################
-include("savedata.jl")
+
 for z = 1:nfreq
     errorrec[:,:,z] = sky[:,:,z] - x[:,:,z]
     errorest[z] =  vecnorm(sky[:,:,z] - x[:,:,z])^2/vecnorm(sky[:,:,z])^2
     errorraw[z] =  vecnorm(mydata[:,:,z] - x[:,:,z])^2/vecnorm(mydata[:,:,z])^2
 end
+
+include("savedata.jl")

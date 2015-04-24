@@ -49,6 +49,11 @@ mydata = skyconv + noise
 # mask = zeros(Float64,size(sky)[1],size(sky)[1],size(sky)[3])
 # mask = sky.>0
 
+sumsky2 = zeros(Float64,nw)
+for z = 1:nw
+    sumsky2[z] = sum(sky[:,:,z].^2)
+end
+
 spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
 
 const nspat = length(spatialwlt)
@@ -65,8 +70,8 @@ const rhop = 1
 const rhot = 5
 const rhov = 2
 const rhos = 1
-const μt = 1e-1
-const μv = 5e-1
+const μt = 5e-1
+const μv = 1e-0
 const muesp = 0.001
 const tt = rhot*nspat
 const mu = muesp + rhop + tt + rhos
