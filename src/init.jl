@@ -49,8 +49,7 @@ sig = sqrt(mean(skyconv.^2)/100)
 var = sig*sig
 noise = sig*randn(size(sky)[1],size(sky)[1],size(mypsf)[3])
 mydata = cubefilter(sky,mypsf) #+ noise
-mask = zeros(Float64,size(sky)[1],size(sky)[1],size(sky)[3])
-mask = sky.>0
+
 
 sumsky2 = zeros(Float64,nw)
 for z = 1:nw

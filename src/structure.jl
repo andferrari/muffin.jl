@@ -68,7 +68,7 @@ type Admm_array
 end
 
 
-type toto
+type TOOLS
     snr::Array{Float64}
     tol1::Array{Float64}
     tol2::Array{Float64}
@@ -96,6 +96,6 @@ end
 function init_Admmarray()
     return Admm_array([],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[])
 end
-function init_toto()
-    return toto([],[],[],[],[],[],[],[],[],[])
+function init_TOOLS()
+    return TOOLS([],[],[],[],[],[],[],[],[],[])
 end
