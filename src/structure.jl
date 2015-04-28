@@ -26,7 +26,7 @@ type Algo_param
     nxy::Int64
     niter::Int64
     lastiter::Int64
-    nbitermax::Int64
+    nitermax::Int64
 end
 
 type Admm_param
