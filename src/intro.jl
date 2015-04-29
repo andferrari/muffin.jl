@@ -55,7 +55,6 @@ admmst.x[:] = skyst.mydata
 ########################## main admm loop ##########################
 ####################################################################
 println("Initialisation...")
-include("init.jl");
 
 loop = true
 
@@ -89,7 +88,7 @@ tic()
         #            end
 
         admmst.x = forconjgrad(admmst.x, b, psfst.mypsf, psfst.mypsfadj, mu, admmst.wlt, nfreq)
-        
+
         # admmst.x = xx
         # prox spat
         for z in 1:nfreq, b in 1:nspat

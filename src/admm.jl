@@ -38,7 +38,7 @@ tic()
         end
 
         @sync @parallel  for z = 1:nfreq
-                           b = fty[:,:,z] + taup[:,:,z] + rhop*p[:,:,z] + wlt[z] + taus[:,:,z] + rhos*s[:,:,z]
+                           b = fty[:,:,z] + taup[:,:,z] + rhop*p[:,:,z] + wlt[:,:,z] + taus[:,:,z] + rhos*s[:,:,z]
                            x[:,:,z] = conjgrad(x[:,:,z],b,mypsf[:,:,z],mypsfadj[:,:,z],mu,tol=1e-4,itermax = 1e3)
                          end
         ####################################
@@ -64,7 +64,7 @@ tic()
 
         tmp = sh - tauv/rhov
         v = prox_u(tmp,μv/rhov)
-    
+
         # update of Lagrange multipliers
         taup = taup + rhop*(p-x)
         taut = taut + rhot*(t-Hx)
