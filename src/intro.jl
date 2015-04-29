@@ -75,6 +75,8 @@ tic()
 
         b = fty + admmst.taup + rhop*admmst.p + admmst.taus + rhos*admmst.s
 
+        admmst.x = forconjgrad(admmst.x, b, psfst.mypsf, psfst.mypsfadj, mu, admmst.wlt, nfreq)
+
 
         # xx = admmst.x
         # wwlt = admmst.wlt
@@ -87,7 +89,7 @@ tic()
         #                 #xx[:,:,z] = conjgrad(xx[:,:,z], b[:,:,z] + admmst.wwlt[z], pmypsf[:,:,z], psfadj[:,:,z], mu, tol=1e-4, itermax = 1e3)
         #            end
 
-        admmst.x = forconjgrad(admmst.x, b, psfst.mypsf, psfst.mypsfadj, mu, admmst.wlt, nfreq)
+
 
         # admmst.x = xx
         # prox spat
@@ -105,8 +107,8 @@ tic()
 
         # prox spec
         tmp = permutedims(admmst.tauv + rhov*admmst.v,[3,1,2])
-        admmst.s = estime_s(admmst.s,tmp)
-        admmst.sh = estime_sh(admmst.s)
+        admmst.s = st_estime_s(admmst.s,tmp)
+        admmst.sh = st_estime_sh(admmst.s)
 
         tmp = admmst.sh - admmst.tauv/rhov
         admmst.v = prox_u(tmp,μv/rhov)
@@ -149,7 +151,7 @@ tic()
         admmst.spectresky[:,niter] = (squeeze(squeeze(skyst.sky[i,j,:],1),1))
 
         # stopping rule
-        if (niter >= nbitermax) || ((toolst.tol1[niter] < 1E-6) && (toolst.tol2[niter] < 1E-4))
+        if (niter >= nitermax) || ((toolst.tol1[niter] < 1E-6) && (toolst.tol2[niter] < 1E-4))
             loop = false
             lastiter = niter
         end
