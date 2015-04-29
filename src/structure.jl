@@ -2,6 +2,8 @@ type PSF
     psf::ASCIIString
     psfcube::Array{Float64}
     psfavg::Array{Float64}
+    nu::Array{Float64}
+    nu0::Float64
     mypsf::Array{Float64}
     mypsfadj::Array{Float64}
 end
@@ -29,31 +31,23 @@ type Algo_param
     nitermax::Int64
 end
 
-type Admm_param
-    rhop::Float64
-    rhot::Float64
-    rhov::Float64
-    rhos::Float64
-    μt::Float64
-    μv::Float64
-    muesp::Float64
-    tt::Float64
-    mu::Float64
-end
-
 type Admm_array
     s::Array{Float64}
     taus::Array{Float64}
+    rhos::Float64
     sh::Array{Float64}
 
     taup::Array{Float64}
     p::Array{Float64}
+    rhop::Float64
 
     tauv::Array{Float64}
     v::Array{Float64}
+    rhov::Float64
 
     t::Array{Float64}
     taut::Array{Float64}
+    rhot::Float64
 
     wlt::SharedArray{Float64}
 
@@ -64,6 +58,12 @@ type Admm_array
     spectrex::Array{Float64}
     spectresky::Array{Float64}
     spectralwlt::Array{Float64}
+
+    μt::Float64
+    μv::Float64
+    mueps::Float64
+    tt::Float64
+    mu::Float64
 
 end
 
@@ -82,7 +82,7 @@ type TOOLS
 end
 
 function init_PSF()
-    return PSF("",[],[],[],[])
+    return PSF("",[],[],[],0.,[],[])
 end
 function init_SKY()
     return SKY("",[],[],[],[],0.,0.,[],[],[])
@@ -90,11 +90,8 @@ end
 function init_Algoparam()
     return Algo_param(0,0,0,0,0,0,0)
 end
-function init_Admmparam()
-    return Admm_param(0.,0.,0.,0.,0.,0.,0.,0.,0.)
-end
 function init_Admmarray()
-    return Admm_array([],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[])
+    return Admm_array([],[],0.,[],[],[],0.,[],[],0.,[],[],0.,[],[],[],[],[],[],[],0.,0.,0.,0.,0.)
 end
 function init_TOOLS()
     return TOOLS([],[],[],[],[],[],[],[],[],[])

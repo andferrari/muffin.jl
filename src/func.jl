@@ -55,7 +55,27 @@ function cubeaverage{T<:FloatingPoint}(imagecube::Array{T,3},M::Int)
     for k = 1:nfreqavg
         rescube[:,:,k] = sum(imagecube[:,:,(k-1)*M+1:k*M], 3)/M
     end
+
     return rescube
+end
+
+function cubefreq(psf::ASCIIString,imagecube::Array,M::Int)
+    nxpsf, nypsf, nfreq = size(imagecube)
+    if nfreq < M
+        error("Not enough channels to average!")
+    end
+    nfreqavg = itrunc(nfreq/M)
+    file = FITS(psf)
+    header = readheader(file[1])
+    nustart = header["CRVAL4"]
+    nustep = header["CDELT4"]
+    nu0 = header["RESTFRQ"]
+    nu = zeros(Float64,nfreqavg)
+    for i = 1:nfreqavg
+        nu[i] = nustart + (M-1)*nustep + (i-1)*M*nustep
+    end
+    close(file)
+    return nu,nu0
 end
 
 

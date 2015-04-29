@@ -8,17 +8,18 @@ function loadsky(obj::ASCIIString,nu::Array)
     skyst.var = skyst.sig*skyst.sig
     skyst.noise = skyst.sig*randn(size(skyst.sky)[1],size(skyst.sky)[1],size(psfst.mypsf)[3])
     skyst.mydata = skyst.skyconv + skyst.noise
-    for z = 1:nw
+    for z = 1:length(psfst.nu)
         push!(skyst.sumsky2, sum(skyst.sky[:,:,z].^2))
     end
     return skyst
 end
 
-function loadpsf(psf::ASCIIString)
+function loadpsf(psf::ASCIIString,M::Int)
     psfst = init_PSF()
     psfst.psf = psf
     psfst.psfcube = lecture(psfst.psf)
-    psfst.psfavg = cubeaverage(psfst.psfcube,5)
+    psfst.psfavg = cubeaverage(psfst.psfcube,M)
+    psfst.nu, psfst.nu0 = cubefreq(psfst.psf,psfst.psfcube,M)
     psfst.mypsf = cropcubexy(psfst.psfavg,255)
     psfst.mypsfadj = flipdim(flipdim(psfst.mypsf,1),2)
     return psfst
@@ -47,9 +48,9 @@ function loadarray()
     admmst.v = zeros(Float64,nxy,nxy,nfreq)
     admmst.t = zeros(Float64,nxy,nxy,nfreq,nspat)
     admmst.taut = zeros(Float64,nxy,nxy,nfreq,nspat)
-    admmst.wlt = zeros(Float64,nxy,nxy,nfreq)
-    admmst.x = zeros(Float64,nxy,nxy,nfreq)
-    admmst.Hx = zeros(Float64,nxy,nxy,nfreq)
+    admmst.wlt = SharedArray(Float64,nxy,nxy,nfreq)
+    admmst.x = SharedArray(Float64,nxy,nxy,nfreq)
+    admmst.Hx = SharedArray(Float64,nxy,nxy,nfreq)
     admmst.xmm = zeros(Float64,nxy,nxy,nfreq)
     admmst.spectrex = zeros(Float64,nfreq,nitermax)
     admmst.spectresky = zeros(Float64,nfreq,nitermax)
