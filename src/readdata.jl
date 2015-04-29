@@ -2,7 +2,7 @@ using HDF5, JLD
 using PyPlot
 include("testobj.jl");
 
-file = string("../data/results/data_2g.jld")
+file = string("../data/results/data_2g_2000iter.jld")
 # m31 => data_m31_muesp0001_20db.jld
 # 2g  => data_2gauss_muesp0001.jld
 
@@ -73,7 +73,7 @@ end
 plot(nu./1e9,errr[:],marker="o",linewidth=2)
 xlabel(L"\nu \; (GHz)",fontsize=18)
 ylabel(L"Relative \, rmse",fontsize=16)
-axis([1, 1.8, 0.15, 0.22])
+axis([1, 1.8, 0.1, 0.2])
 #############################################################################
 #############################################################################
 ######################################  cste / alpha / beta
