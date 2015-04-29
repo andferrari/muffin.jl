@@ -58,13 +58,6 @@ type Admm_array
     spectrex::Array{Float64}
     spectresky::Array{Float64}
     spectralwlt::Array{Float64}
-
-    μt::Float64
-    μv::Float64
-    mueps::Float64
-    tt::Float64
-    mu::Float64
-
 end
 
 
@@ -91,7 +84,7 @@ function init_Algoparam()
     return Algo_param(0,0,0,0,0,0,0)
 end
 function init_Admmarray()
-    return Admm_array([],[],0.,[],[],[],0.,[],[],0.,[],[],0.,[],[],[],[],[],[],[],0.,0.,0.,0.,0.)
+    return Admm_array([],[],0.,[],[],[],0.,[],[],0.,[],[],0.,[],[],[],[],[],[],[])
 end
 function init_TOOLS()
     return TOOLS([],[],[],[],[],[],[],[],[],[])
