@@ -77,18 +77,20 @@ tic()
         b = fty + admmst.taup + rhop*admmst.p + admmst.taus + rhos*admmst.s
 
 
-        xx = admmst.x
-        wwlt = admmst.wlt
-        pmypsf = psfst.mypsf
-        psfadj = psfst.mypsfadj
+        # xx = admmst.x
+        # wwlt = admmst.wlt
+        # pmypsf = psfst.mypsf
+        # psfadj = psfst.mypsfadj
 
-        @sync @parallel  for z in 1:nfreq
-                            #b = fty[:,:,z] + admmst.taup[:,:,z] + rhop*admmst.p[:,:,z] + admmst.wlt[z] + admmst.taus[:,:,z] + rhos*admmst.s[:,:,z]
-                            #admmst.x[:,:,z] = conjgrad(admmst.x[:,:,z],b,psfst.mypsf[:,:,z],psfst.mypsfadj[:,:,z],mu,tol=1e-4,itermax = 1e3)
-                            xx[:,:,z] = conjgrad(xx[:,:,z], b[:,:,z] + wwlt[z], pmypsf[:,:,z], psfadj[:,:,z], mu, tol=1e-4, itermax = 1e3)
-                            println(z)
-                         end
-        admmst.x = xx
+        # @sync @parallel  for z in 1:nfreq
+        #                 b = fty[:,:,z] + admmst.taup[:,:,z] + rhop*admmst.p[:,:,z] + admmst.wlt[:,:,z] + admmst.taus[:,:,z] + rhos*admmst.s[:,:,z]
+        #                 admmst.x[:,:,z] = conjgrad(admmst.x[:,:,z],b,psfst.mypsf[:,:,z],psfst.mypsfadj[:,:,z],mu,tol=1e-4,itermax = 1e3)
+        #                 #xx[:,:,z] = conjgrad(xx[:,:,z], b[:,:,z] + admmst.wwlt[z], pmypsf[:,:,z], psfadj[:,:,z], mu, tol=1e-4, itermax = 1e3)
+        #            end
+
+        admmst.x = forconjgrad(admmst.x, b, psfst.mypsf, psfst.mypsfadj, mu, admmst.wlt, nfreq)
+        
+        # admmst.x = xx
         # prox spat
         for z in 1:nfreq, b in 1:nspat
             admmst.Hx[:,:,z,b] = dwt(admmst.x[:,:,z],wavelet(spatialwlt[b]))
