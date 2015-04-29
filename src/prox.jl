@@ -1,3 +1,5 @@
+include("structure.jl")
+
 # proximity operators
 function prox_visi(y_est::Array)
     return (2.*visi + rho_y.*y_est)./(rho_y + 2)
