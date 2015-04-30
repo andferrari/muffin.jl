@@ -18,6 +18,7 @@ module Muffin
     include("muffinprox.jl")
     include("muffinloop.jl")
     include("muffininit.jl")
+    
 end
 
 
