@@ -14,14 +14,21 @@ tic()
         ##############################
         ########## update x ##########
 
+        # for z in 1:nfreq, b in 1:nspat
+        #     admmst.wlt[:,:,z] = sum(idwt(admmst.taut[:,:,z,b] + rhot*admmst.t[:,:,z,b],wavelet(spatialwlt[b])),4)
+        # end
+        #
+        # b = admmst.fty + admmst.taup + rhop*admmst.p + admmst.taus + rhos*admmst.s
+        #
+        # admmst.x = forconjgrad(admmst.x, b, psfst.mypsf, psfst.mypsfadj, mu, admmst.wlt, nfreq)
+
         for z in 1:nfreq, b in 1:nspat
-            admmst.wlt[:,:,z] = sum(idwt(admmst.taut[:,:,z,b] + rhot*admmst.t[:,:,z,b],wavelet(spatialwlt[b])),4)
+            admmst.wlt[:,:,z] = sum(idwt(admmst.taut[:,:,z,b] + admmst.rhot*admmst.t[:,:,z,b],wavelet(spatialwlt[b])),4)
         end
 
-        b = admmst.fty + admmst.taup + rhop*admmst.p + admmst.taus + rhos*admmst.s
+        b = admmst.fty + admmst.taup + admmst.rhop*admmst.p + admmst.taus + admmst.rhos*admmst.s
 
-        admmst.x = forconjgrad(admmst.x, b, psfst.mypsf, psfst.mypsfadj, mu, admmst.wlt, nfreq)
-
+        admmst.x = forconjgrad(admmst.x, b, psfst.mypsf, psfst.mypsfadj, admmst.mu, admmst.wlt, nfreq)
 
         ##############################
         ######### prox spat ##########
@@ -30,35 +37,35 @@ tic()
             admmst.Hx[:,:,z,b] = dwt(admmst.x[:,:,z],wavelet(spatialwlt[b]))
         end
 
-        tmp = admmst.Hx - admmst.taut/rhot
-        admmst.t = prox_u(tmp,μt/rhot)
+        tmp = admmst.Hx - admmst.taut/admmst.rhot
+        admmst.t = prox_u(tmp,admmst.μt/admmst.rhot)
 
 
         ##############################
         ###### prox positivity #######
 
-        tmp = admmst.x-admmst.taup/rhop
+        tmp = admmst.x-admmst.taup/admmst.rhop
         admmst.p = max(0,tmp)
 
 
         ##############################
         ######### prox spec ##########
 
-        tmp = permutedims(admmst.tauv + rhov*admmst.v,[3,1,2])
+        tmp = permutedims(admmst.tauv + admmst.rhov*admmst.v,[3,1,2])
         admmst.s = estime_s(admmst.s,tmp)
         admmst.sh = estime_sh(admmst.s)
 
-        tmp = admmst.sh - admmst.tauv/rhov
-        admmst.v = prox_u(tmp,μv/rhov)
+        tmp = admmst.sh - admmst.tauv/admmst.rhov
+        admmst.v = prox_u(tmp,admmst.μv/admmst.rhov)
 
 
         ########################################
         #### update of Lagrange multipliers ####
 
-        admmst.taup = admmst.taup + rhop*(admmst.p-admmst.x)
-        admmst.taut = admmst.taut + rhot*(admmst.t-admmst.Hx)
-        admmst.tauv = admmst.tauv + rhov*(admmst.v-admmst.sh)
-        admmst.taus = admmst.taus + rhos*(admmst.s-admmst.x)
+        admmst.taup = admmst.taup + admmst.rhop*(admmst.p-admmst.x)
+        admmst.taut = admmst.taut + admmst.rhot*(admmst.t-admmst.Hx)
+        admmst.tauv = admmst.tauv + admmst.rhov*(admmst.v-admmst.sh)
+        admmst.taus = admmst.taus + admmst.rhos*(admmst.s-admmst.x)
 
 
         ##############################
