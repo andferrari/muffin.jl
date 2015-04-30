@@ -38,7 +38,12 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             end
 
             b = admmst.fty + admmst.taup + rhop*admmst.p + admmst.taus + rhos*admmst.s
-            admmst.x = forconjgrad(admmst.x, b, psfst.mypsf, psfst.mypsfadj, mu, admmst.wlt, nfreq)
+            #admmst.x = forconjgrad(admmst.x, b, psfst.mypsf, psfst.mypsfadj, mu, admmst.wlt, nfreq)
+
+            @sync @parallel for z in 1:nfreq
+                            (admmst.x)[:,:,z] = conjgrad((admmst.x)[:,:,z], b[:,:,z] + (admmst.wlt)[:,:,z],
+                             (admmst.mypsf)[:,:,z], (admmst.mypsfadj)[:,:,z], admmst.mu, tol=1e-4, itermax = 1e3)
+                            end
 
             ##############################
             ######### prox spat ##########
