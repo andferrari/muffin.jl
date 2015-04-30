@@ -78,21 +78,9 @@ tic()
         admmst.x = forconjgrad(admmst.x, b, psfst.mypsf, psfst.mypsfadj, mu, admmst.wlt, nfreq)
 
 
-        # xx = admmst.x
-        # wwlt = admmst.wlt
-        # pmypsf = psfst.mypsf
-        # psfadj = psfst.mypsfadj
+        ##############################
+        ######### prox spat ##########
 
-        # @sync @parallel  for z in 1:nfreq
-        #                 b = fty[:,:,z] + admmst.taup[:,:,z] + rhop*admmst.p[:,:,z] + admmst.wlt[:,:,z] + admmst.taus[:,:,z] + rhos*admmst.s[:,:,z]
-        #                 admmst.x[:,:,z] = conjgrad(admmst.x[:,:,z],b,psfst.mypsf[:,:,z],psfst.mypsfadj[:,:,z],mu,tol=1e-4,itermax = 1e3)
-        #                 #xx[:,:,z] = conjgrad(xx[:,:,z], b[:,:,z] + admmst.wwlt[z], pmypsf[:,:,z], psfadj[:,:,z], mu, tol=1e-4, itermax = 1e3)
-        #            end
-
-
-
-        # admmst.x = xx
-        # prox spat
         for z in 1:nfreq, b in 1:nspat
             admmst.Hx[:,:,z,b] = dwt(admmst.x[:,:,z],wavelet(spatialwlt[b]))
         end
@@ -101,11 +89,16 @@ tic()
         admmst.t = prox_u(tmp,μt/rhot)
 
 
-        # prox positivity
+        ##############################
+        ###### prox positivity #######
+
         tmp = admmst.x-admmst.taup/rhop
         admmst.p = max(0,tmp)
 
-        # prox spec
+
+        ##############################
+        ######### prox spec ##########
+
         tmp = permutedims(admmst.tauv + rhov*admmst.v,[3,1,2])
         admmst.s = st_estime_s(admmst.s,tmp)
         admmst.sh = st_estime_sh(admmst.s)
@@ -113,13 +106,19 @@ tic()
         tmp = admmst.sh - admmst.tauv/rhov
         admmst.v = prox_u(tmp,μv/rhov)
 
-        # update of Lagrange multipliers
+
+        ########################################
+        #### update of Lagrange multipliers ####
+
         admmst.taup = admmst.taup + rhop*(admmst.p-admmst.x)
         admmst.taut = admmst.taut + rhot*(admmst.t-admmst.Hx)
         admmst.tauv = admmst.tauv + rhov*(admmst.v-admmst.sh)
         admmst.taus = admmst.taus + rhos*(admmst.s-admmst.x)
 
-        # computer residues
+
+        ##############################
+        ##### computer residues ######
+
         push!(toolst.tol1,vecnorm(admmst.x - admmst.xmm, 2)^2)
         push!(toolst.tol2,vecnorm(admmst.x - admmst.p, 2)^2)
         push!(toolst.tol3,vecnorm(admmst.Hx - admmst.t, 2)^2)
@@ -129,28 +128,16 @@ tic()
         push!(toolst.snr,10*log10(mean(cubefilter(admmst.x,psfst.mypsf).^2)/(skyst.sig)^2))
         @printf("SNR : %02.04e dB \n", toolst.snr[niter+1])
 
-        # plot
-            for z = 1:nfreq
-                toolst.err[niter,z] = sqrt(sum((admmst.x[:,:,z] - skyst.sky[:,:,z]).^2)/skyst.sumsky2[z])
-            end
-            #
-            #
-            #
-            # clf()
-            # for z = 1:nfreq
-            #     subplot(5,2,z)
-            #     plot(toolst.err[1:niter,z])
-            # end
 
-        # Spectre
+        ##############################
+        ############ RMSE ############
+        for z = 1:nfreq
+            toolst.err[niter,z] = sqrt(sum((admmst.x[:,:,z] - skyst.sky[:,:,z]).^2)/skyst.sumsky2[z])
+        end
 
-        i = 128
-        j = 108
+        ##############################
+        ####### stopping rule ########
 
-        admmst.spectrex[:,niter] = (squeeze(squeeze(admmst.x[i,j,:],1),1))
-        admmst.spectresky[:,niter] = (squeeze(squeeze(skyst.sky[i,j,:],1),1))
-
-        # stopping rule
         if (niter >= nitermax) || ((toolst.tol1[niter] < 1E-6) && (toolst.tol2[niter] < 1E-4))
             loop = false
             lastiter = niter
@@ -167,7 +154,6 @@ tic()
 
         @printf("time for iteration : %f seconds \n", toq())
 
-        #include("plot_admm.jl")
     end
 println("")
 @printf("time for ADMM : %f seconds \n", toq())
