@@ -1,4 +1,4 @@
-function loadsky(obj::ASCIIString,psfst.mypsf::Array,nu::Array)
+function loadsky(obj::ASCIIString,psfst.mypsf,nu::Array)
     skyst = init_SKY()
     skyst.obj = obj
     skyst.sky0 = lecture(obj)/maximum(lecture(obj))
