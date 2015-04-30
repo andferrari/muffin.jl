@@ -8,7 +8,7 @@ function loadsky(obj::ASCIIString,nu::Array)
     skyst.var = skyst.sig*skyst.sig
     skyst.noise = skyst.sig*randn(size(skyst.sky)[1],size(skyst.sky)[1],size(psfst.mypsf)[3])
     skyst.mydata = skyst.skyconv + skyst.noise
-    for z = 1:length(psfst.nu)
+    for z = 1:length(nu)
         push!(skyst.sumsky2, sum(skyst.sky[:,:,z].^2))
     end
     return skyst
