@@ -17,7 +17,7 @@ const nxy = size(skyst.mydata)[1]
 niter = 0
 lastiter = 0
 const nitermax = 2000
-# algost = loadparam(nspat,nfreq,nspec,nxy,niter,lastiter,nitermax)
+algost = loadparam(nspat,nfreq,nspec,nxy,niter,lastiter,nitermax)
 ##################################
 const rhop = 1
 const rhot = 5
@@ -35,6 +35,7 @@ toolst = loadtools()
 
 # precompute
 snr0 = 10*log10(mean(cubefilter(skyst.sky,psfst.mypsf).^2)/(skyst.sig)^2)
-admmst.fty = cubefilter(skyst.mydata,psfst.mypsfadj)
 push!(toolst.snr,snr0)
+
+admmst.fty = cubefilter(skyst.mydata,psfst.mypsfadj)
 admmst.x[:] = skyst.mydata
