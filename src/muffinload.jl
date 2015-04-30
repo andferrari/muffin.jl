@@ -37,7 +37,7 @@ function loadparam(nspat,nfreq,nspec,nxy,niter,lastiter,nitermax)
     return algost
 end
 
-function loadarray(rhop,rhot,rhov,rhos,μt,μv,muesp)
+function loadarray(rhop,rhot,rhov,rhos,μt,μv,muesp,nspat,nfreq,nxy,mydata,mypsfadj)
     admmst = init_Admmarray()
     admmst.s = zeros(Float64,nxy,nxy,nfreq)
     admmst.taus = zeros(Float64,nxy,nxy,nfreq)
@@ -49,11 +49,11 @@ function loadarray(rhop,rhot,rhov,rhos,μt,μv,muesp)
     admmst.t = zeros(Float64,nxy,nxy,nfreq,nspat)
     admmst.taut = zeros(Float64,nxy,nxy,nfreq,nspat)
     admmst.wlt = SharedArray(Float64,nxy,nxy,nfreq)
-    admmst.x = copy(skyst.mydata)
+    admmst.x = copy(mydata)
     admmst.Hx = SharedArray(Float64,nxy,nxy,nfreq,nspat)
     admmst.xmm = zeros(Float64,nxy,nxy,nfreq)
     admmst.spectralwlt = zeros(Float64,nxy,nxy,nfreq)
-    admmst.fty = cubefilter(skyst.mydata,psfst.mypsfadj)
+    admmst.fty = cubefilter(mydata,mypsfadj)
     admmst.rhop = rhop
     admmst.rhot = rhot
     admmst.rhov = rhov
@@ -62,11 +62,11 @@ function loadarray(rhop,rhot,rhov,rhos,μt,μv,muesp)
     admmst.μv = 1e-0
     admmst.muesp = 0.001
     admmst.tt = rhot*nspat
-    admmst.mu = muesp + rhop + tt + rhos
+    admmst.mu = muesp + rhop + admmst.tt + rhos
     return admmst
 end
 
-function loadtools()
+function loadtools(nitermax,nfreq,nxy)
     toolst = init_TOOLS()
     toolst.snr = Float64[]
     toolst.tol1 = Float64[]

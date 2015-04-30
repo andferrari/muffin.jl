@@ -20,6 +20,7 @@ function muffin(;nitermax = 2000, rhop = 1, rhot = 2, rhov = 2, rhos = 1,
     const nfreq = size(psfst.mypsf)[3]
     const nspec = 1
     const nxy = size(skyst.mydata)[1]
+
     niter = 0
     lastiter = 0
     #const nitermax = 2000
@@ -28,22 +29,16 @@ function muffin(;nitermax = 2000, rhop = 1, rhot = 2, rhov = 2, rhos = 1,
     ##################################
 
     ##################################
-    # const rhop = 1
-    # const rhot = 5
-    # const rhov = 2
-    # const rhos = 1
-    # const μt = 5e-1
-    # const μv = 1e-0
-    # const muesp = 0.001
-    # const tt = rhot*nspat
-    # const mu = muesp + rhop + tt + rhos
 
-    admmst = loadarray(rhop,rhot,rhov,rhos,μt,μv,muesp)
-    toolst = loadtools()
+
+    admmst = loadarray(rhop,rhot,rhov,rhos,μt,μv,muesp,nspat,nfreq,nxy,
+                        skyst.mydata,psfst.mypsfadj)
+    toolst = loadtools(nitermax,nfreq,nxy)
     ##################################
 
 
-    include("muffinloop.jl")
+    psfst, skyst, algost, admmst, toolst = muffinadmm(psfst, skyst, algost, admmst, toolst)
+
 
 
     return psfst, skyst, algost, admmst, toolst
