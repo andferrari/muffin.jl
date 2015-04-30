@@ -55,8 +55,6 @@ type Admm_array
     Hx::SharedArray{Float64}
     xmm::Array{Float64}
 
-    spectrex::Array{Float64}
-    spectresky::Array{Float64}
     spectralwlt::Array{Float64}
 
     fty::Array{Float64}
@@ -86,7 +84,7 @@ function init_Algoparam()
     return Algo_param(0,0,0,0,0,0,0)
 end
 function init_Admmarray()
-    return Admm_array([],[],0.,[],[],[],0.,[],[],0.,[],[],0.,[],[],[],[],[],[],[],[])
+    return Admm_array([],[],0.,[],[],[],0.,[],[],0.,[],[],0.,[],[],[],[],[],[])
 end
 function init_TOOLS()
     return TOOLS([],[],[],[],[],[],[],[],[],[])

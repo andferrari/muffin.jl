@@ -52,8 +52,6 @@ function loadarray()
     admmst.x = SharedArray(Float64,nxy,nxy,nfreq)
     admmst.Hx = SharedArray(Float64,nxy,nxy,nfreq,nspat)
     admmst.xmm = zeros(Float64,nxy,nxy,nfreq)
-    admmst.spectrex = zeros(Float64,nfreq,nitermax)
-    admmst.spectresky = zeros(Float64,nfreq,nitermax)
     admmst.spectralwlt = zeros(Float64,nxy,nxy,nfreq)
     admmst.fty = zeros(Float64,nxy,nxy,nfreq)
     return admmst

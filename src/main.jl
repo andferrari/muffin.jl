@@ -22,12 +22,6 @@ include("intro.jl")
 include("admmloop.jl")
 ########
 
-
-
-
-
-
-
 ################################
 
 # Pkg.clone("https://github.com/andferrari/GHF.jl.git")
