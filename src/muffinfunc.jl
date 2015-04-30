@@ -1,18 +1,3 @@
-function writecdf{T<:FloatingPoint}(filename::ASCIIString,datacube::Array{T,3},paraview = false)
-    if isfile(filename)
-        error("file $filename already exists")
-    end
-    nx, ny, nfreq = size(datacube)
-    nccreate(filename,"datacube","x",nx,"y",ny,"frequency",nfreq)
-    ncwrite(datacube,filename,"datacube")
-    ncclose()
-    if paraview ==  true
-        path = pwd()
-        run(`open -a paraview --args --data=$path/$filename`)
-    end
-end
-
-
 function cubefilter{T<:FloatingPoint}(imagecube::Array{T,3},psfcube::Array{T,3})
     nximg, nyimg, nfreq = size(imagecube)
     nxpsf, nypsf, nfreq = size(psfcube)
@@ -125,7 +110,6 @@ end
 
 
 function lecture(directory::ASCIIString)
-
     file = FITS(directory)
     data = float64(read(file[1]))
     close(file)

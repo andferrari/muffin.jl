@@ -45,8 +45,8 @@ tic()
         ######### prox spec ##########
 
         tmp = permutedims(admmst.tauv + rhov*admmst.v,[3,1,2])
-        admmst.s = st_estime_s(admmst.s,tmp)
-        admmst.sh = st_estime_sh(admmst.s)
+        admmst.s = estime_s(admmst.s,tmp)
+        admmst.sh = estime_sh(admmst.s)
 
         tmp = admmst.sh - admmst.tauv/rhov
         admmst.v = prox_u(tmp,μv/rhov)

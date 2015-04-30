@@ -1,6 +1,5 @@
-include("structure.jl")
-
-# proximity operators
+#################################
+###### proximity operators ######
 function prox_u(u::SharedArray,μ)
     return (max(1-μ./abs(u),0).*u)
 end
@@ -8,8 +7,11 @@ end
 function prox_u(u::Array,μ)
     return (max(1-μ./abs(u),0).*u)
 end
+##################################
 
 
+##########################################
+###### Conjugate Gradient Algorithm ######
 @everywhere function conjgrad(xw::Array,bw::Array,mypsfw::Array,mypsfadjw::Array,mu::Float64;tol = 1e-6,itermax = 1e3)
 
     r = bw - (imfilter_fft(imfilter_fft(xw, mypsfw,"circular"), mypsfadjw,"circular") + mu*xw)
@@ -38,24 +40,10 @@ end
     end
     return xw
 end
+##########################################
 
+##########################################
 function estime_s(s,tmp)
-    for i = 1:nxy, j = 1:nxy
-     spectralwlt[i,j,:]= idct(tmp[:,i,j])
-    end
-    s = (spectralwlt + rhos*x - taus)/(rhov*nspec + rhos)
-    return s
-end
-
-function estime_sh(s)
-    vecs = permutedims(s,[3,1,2])
-    for i = 1:nxy, j = 1:nxy
-     sh[i,j,:]   = dct(vecs[:,i,j] )
-    end
-    return sh
-end
-
-function st_estime_s(s,tmp)
     for i = 1:nxy, j = 1:nxy
      admmst.spectralwlt[i,j,:]= idct(tmp[:,i,j])
     end
@@ -63,10 +51,11 @@ function st_estime_s(s,tmp)
     return s
 end
 
-function st_estime_sh(s)
+function estime_sh(s)
     vecs = permutedims(s,[3,1,2])
     for i = 1:nxy, j = 1:nxy
      admmst.sh[i,j,:]   = dct(vecs[:,i,j] )
     end
     return admmst.sh
 end
+##########################################

@@ -11,15 +11,15 @@ using GHF
 ########
 
 ########
-include("structure.jl")
-include("tmp.jl")
-include("func.jl")
-include("prox.jl")
+include("muffintype.jl")
+include("muffinload.jl")
+include("muffinfunc.jl")
+include("muffinprox.jl")
 ########
 
 ########
-include("intro.jl")
-include("admmloop.jl")
+include("muffininit.jl")
+include("muffinloop.jl")
 ########
 
 
