@@ -10,7 +10,7 @@ function muffin(;nitermax = 2000, rhop = 1, rhot = 2, rhov = 2, rhos = 1,
     obj = "../data/M31.fits"
     ##################################
     psfst = loadpsf(psf,5)
-    skyst = loadsky(obj,psfst.nu)
+    skyst = loadsky(obj,psfst.mypsf,psfst.nu)
     ##################################
 
 
