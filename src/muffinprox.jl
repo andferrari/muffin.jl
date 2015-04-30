@@ -68,7 +68,7 @@ end
 ##########################################
 
 
-function estime_s(s,tmp,nxy,admmst)
+function estime_s(s,tmp,nxy,nspec,admmst)
     for i in 1:nxy, j in 1:nxy
      admmst.spectralwlt[i,j,:]= idct(tmp[:,i,j])
     end
