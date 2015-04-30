@@ -49,11 +49,11 @@ function loadarray()
     admmst.t = zeros(Float64,nxy,nxy,nfreq,nspat)
     admmst.taut = zeros(Float64,nxy,nxy,nfreq,nspat)
     admmst.wlt = SharedArray(Float64,nxy,nxy,nfreq)
-    admmst.x = SharedArray(Float64,nxy,nxy,nfreq)
+    admmst.x = copy(skyst.mydata)
     admmst.Hx = SharedArray(Float64,nxy,nxy,nfreq,nspat)
     admmst.xmm = zeros(Float64,nxy,nxy,nfreq)
     admmst.spectralwlt = zeros(Float64,nxy,nxy,nfreq)
-    admmst.fty = zeros(Float64,nxy,nxy,nfreq)
+    admmst.fty = cubefilter(skyst.mydata,psfst.mypsfadj)
     return admmst
 end
 

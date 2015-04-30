@@ -38,11 +38,3 @@ const mu = muesp + rhop + tt + rhos
 admmst = loadarray()
 toolst = loadtools()
 ##################################
-
-##################################
-snr0 = 10*log10(mean(cubefilter(skyst.sky,psfst.mypsf).^2)/(skyst.sig)^2)
-push!(toolst.snr,snr0)
-
-admmst.fty = cubefilter(skyst.mydata,psfst.mypsfadj)
-admmst.x[:] = skyst.mydata
-##################################
