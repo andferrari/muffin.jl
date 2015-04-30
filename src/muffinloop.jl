@@ -14,7 +14,7 @@ tic()
         ##############################
         ########## update x ##########
 
-        for z = 1:nfreq, b = 1:nspat
+        for z in 1:nfreq, b in 1:nspat
             admmst.wlt[:,:,z] = sum(idwt(admmst.taut[:,:,z,b] + rhot*admmst.t[:,:,z,b],wavelet(spatialwlt[b])),4)
         end
 
@@ -76,7 +76,7 @@ tic()
 
         ##############################
         ############ RMSE ############
-        for z = 1:nfreq
+        for z in 1:nfreq
             toolst.err[niter,z] = sqrt(sum((admmst.x[:,:,z] - skyst.sky[:,:,z]).^2)/skyst.sumsky2[z])
         end
 

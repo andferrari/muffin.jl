@@ -2,7 +2,7 @@ function cubefilter{T<:FloatingPoint}(imagecube::Array{T,3},psfcube::Array{T,3})
     nximg, nyimg, nfreq = size(imagecube)
     nxpsf, nypsf, nfreq = size(psfcube)
     rescube = Array(Float64,nximg,nyimg,nfreq)
-    for k = 1:nfreq
+    for k in 1:nfreq
         rescube[:,:,k] = imfilter_fft(imagecube[:,:,k],psfcube[:,:,k],"circular")
     end
     return rescube
@@ -12,23 +12,21 @@ function cubefilter{T<:FloatingPoint}(imagecube::SharedArray{T,3},psfcube::Array
     nximg, nyimg, nfreq = size(imagecube)
     nxpsf, nypsf, nfreq = size(psfcube)
     rescube = Array(Float64,nximg,nyimg,nfreq)
-    for k = 1:nfreq
+    for k in 1:nfreq
         rescube[:,:,k] = imfilter_fft(imagecube[:,:,k],psfcube[:,:,k],"circular")
     end
     return rescube
 end
 
-
 function cubefilter{T<:FloatingPoint}(imagecube::Array{T,2},psfcube::Array{T,3})
     nximg, nyimg = size(imagecube)
     nxpsf, nypsf, nfreq = size(psfcube)
     rescube = Array(Float64,nximg,nyimg,nfreq)
-    for k = 1:nfreq
+    for k in 1:nfreq
         rescube[:,:,k] = imfilter_fft(imagecube,psfcube[:,:,k],"circular")
     end
     return rescube
 end
-
 
 function cubeaverage{T<:FloatingPoint}(imagecube::Array{T,3},M::Int)
     nxpsf, nypsf, nfreq = size(imagecube)
@@ -37,7 +35,7 @@ function cubeaverage{T<:FloatingPoint}(imagecube::Array{T,3},M::Int)
     end
     nfreqavg = itrunc(nfreq/M)
     rescube = Array(Float64, nxpsf, nypsf, nfreqavg)
-    for k = 1:nfreqavg
+    for k in 1:nfreqavg
         rescube[:,:,k] = sum(imagecube[:,:,(k-1)*M+1:k*M], 3)/M
     end
 
@@ -56,7 +54,7 @@ function cubefreq(psf::ASCIIString,imagecube::Array,M::Int)
     nustep = header["CDELT4"]
     nu0 = header["RESTFRQ"]
     nu = zeros(Float64,nfreqavg)
-    for i = 1:nfreqavg
+    for i in 1:nfreqavg
         nu[i] = nustart + (M-1)*nustep + (i-1)*M*nustep
     end
     close(file)
@@ -102,12 +100,11 @@ function sky2cube{T<:FloatingPoint}(sky::Array{T,2},nu::Array{T,1})
     alpha = 0.8 + 0.4*(sky-sm)/(sM-sm) + 0.4*(field-fm)/(fM-fm)
 
     nu0 = (nu[end]+nu[1])/2
-    for k =1:nbands
+    for k in 1:nbands
         skycube[:,:,k] = sky.* (nu[k]/nu0) .^(-alpha)
     end
     return skycube,alpha
 end
-
 
 function lecture(directory::ASCIIString)
     file = FITS(directory)
