@@ -22,7 +22,7 @@ function muffin(;nitermax = 2000, rhop = 1, rhot = 2, rhov = 2, rhos = 1,
     const nxy = size(skyst.mydata)[1]
     niter = 0
     lastiter = 0
-    const nitermax = 2000
+    #const nitermax = 2000
 
     algost = loadparam(nspat,nfreq,nspec,nxy,niter,lastiter,nitermax)
     ##################################
