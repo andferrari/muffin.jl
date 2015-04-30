@@ -103,9 +103,9 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             ##############################
             ####### stopping rule ########
 
-            if (niter >= nitermax) || ((toolst.tol1[niter] < 1E-6) && (toolst.tol2[niter] < 1E-4))
+            if (niter >= algost.nitermax) || ((toolst.tol1[niter] < 1E-6) && (toolst.tol2[niter] < 1E-4))
                 loop = false
-                lastiter = niter
+                algost.lastiter = niter
             end
 
             admmst.xmm[:] = admmst.x
