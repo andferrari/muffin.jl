@@ -16,6 +16,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
     const nfreq = algost.nfreq
     const nspec = algost.nspec
     const nxy = algost.nxy
+
     spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
 
     niter = 0
@@ -66,8 +67,8 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             ######### prox spec ##########
 
             tmp = permutedims(admmst.tauv + rhov*admmst.v,[3,1,2])
-            admmst.s = estime_s(admmst.s,tmp)
-            admmst.sh = estime_sh(admmst.s)
+            admmst.s = estime_s(admmst.s,tmp,nxy)
+            admmst.sh = estime_sh(admmst.s,nxy)
 
             tmp = admmst.sh - admmst.tauv/rhov
             admmst.v = prox_u(tmp,μv/rhov)
