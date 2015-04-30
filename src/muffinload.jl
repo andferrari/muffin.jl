@@ -1,12 +1,12 @@
-function loadsky(obj::ASCIIString,psfst.mypsf,nu::Array)
+function loadsky(obj::ASCIIString,mypsf,nu::Array)
     skyst = init_SKY()
     skyst.obj = obj
     skyst.sky0 = lecture(obj)/maximum(lecture(obj))
     skyst.sky,skyst.alpha = sky2cube(skyst.sky0,nu)
-    skyst.skyconv = cubefilter(skyst.sky,psfst.mypsf)
+    skyst.skyconv = cubefilter(skyst.sky,mypsf)
     skyst.sig = sqrt(mean(skyst.skyconv.^2)/100)
     skyst.var = skyst.sig*skyst.sig
-    skyst.noise = skyst.sig*randn(size(skyst.sky)[1],size(skyst.sky)[1],size(psfst.mypsf)[3])
+    skyst.noise = skyst.sig*randn(size(skyst.sky)[1],size(skyst.sky)[1],size(mypsf)[3])
     skyst.mydata = skyst.skyconv + skyst.noise
     for z in 1:length(nu)
         push!(skyst.sumsky2, sum(skyst.sky[:,:,z].^2))
