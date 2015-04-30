@@ -71,7 +71,7 @@ tic()
         push!(toolst.tol5,vecnorm(admmst.sh - admmst.v, 2)^2)
 
         push!(toolst.snr,10*log10(mean(cubefilter(admmst.x,psfst.mypsf).^2)/(skyst.sig)^2))
-        @printf("SNR : %02.04e dB \n", toolst.snr[niter+1])
+        @printf("SNR : %02.04e dB \n", toolst.snr[niter])
 
 
         ##############################
