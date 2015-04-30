@@ -5,7 +5,7 @@
 
 module Muffin
     using FITSIO
-    @everywhere using Images
+    using Images
     using Wavelets
     using GHF
 
@@ -18,11 +18,13 @@ module Muffin
     include("muffinprox.jl")
     include("muffinloop.jl")
     include("muffininit.jl")
-    
+
 end
 
 
 # psfst, skyst, algost, admmst, toolst = muffin()
+
+# @everywhere using Muffin
 
 
 
