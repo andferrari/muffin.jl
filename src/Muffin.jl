@@ -13,11 +13,14 @@ module Muffin
     export muffin
 
     include("muffintype.jl")
-    include("muffinload.jl")
-    include("muffinfunc.jl")
+
+    export admmst
+
     include("muffinprox.jl")
-    include("muffinloop.jl")
+    include("muffinfunc.jl")
     include("muffininit.jl")
+    include("muffinloop.jl")
+    include("muffinload.jl")
 
 end
 

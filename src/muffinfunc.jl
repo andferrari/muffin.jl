@@ -113,10 +113,3 @@ function lecture(directory::ASCIIString)
     data = squeeze(data,3)
     return data
 end
-
-function forconjgrad(xw::SharedArray{Float64,3},bw::Array,mypsfw::Array,mypsfadjw::Array,mu::Float64,wlt::SharedArray{Float64,3},nfreq::Int64)
-    @sync @parallel for z in 1:nfreq
-                    xw[:,:,z] = conjgrad(xw[:,:,z], bw[:,:,z] + wlt[:,:,z], mypsfw[:,:,z], mypsfadjw[:,:,z], mu, tol=1e-4, itermax = 1e3)
-                    end
-    return xw
-end
