@@ -1,10 +1,6 @@
 include("structure.jl")
 
 # proximity operators
-function prox_visi(y_est::Array)
-    return (2.*visi + rho_y.*y_est)./(rho_y + 2)
-end
-
 function prox_u(u::SharedArray,μ)
     return (max(1-μ./abs(u),0).*u)
 end
@@ -44,13 +40,13 @@ end
 end
 
 function estime_s(s,tmp)
-
     for i = 1:nxy, j = 1:nxy
      spectralwlt[i,j,:]= idct(tmp[:,i,j])
     end
     s = (spectralwlt + rhos*x - taus)/(rhov*nspec + rhos)
     return s
 end
+
 function estime_sh(s)
     vecs = permutedims(s,[3,1,2])
     for i = 1:nxy, j = 1:nxy
@@ -60,13 +56,13 @@ function estime_sh(s)
 end
 
 function st_estime_s(s,tmp)
-
     for i = 1:nxy, j = 1:nxy
      admmst.spectralwlt[i,j,:]= idct(tmp[:,i,j])
     end
     s = (admmst.spectralwlt + rhos*admmst.x - admmst.taus)/(rhov*nspec + rhos)
     return s
 end
+
 function st_estime_sh(s)
     vecs = permutedims(s,[3,1,2])
     for i = 1:nxy, j = 1:nxy

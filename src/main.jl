@@ -2,26 +2,29 @@
 ############################### Main ###############################
 ####################################################################
 
-
+########
+println("Initialisation...")
+using FITSIO
+@everywhere using Images
+using Wavelets
+using GHF
+########
 
 ########
+include("structure.jl")
+include("tmp.jl")
 include("func.jl")
 include("prox.jl")
-include("testobj.jl")
+########
+
+########
+include("intro.jl")
+include("admmloop.jl")
 ########
 
 
-########
-include("init.jl")
-include("admm.jl")  # include("plot_admm.jl")
-include("savedata.jl")
-########
 
 
-########
-include("readdata.jl")
-include("alpha_rec.jl")
-########
 
 
 
