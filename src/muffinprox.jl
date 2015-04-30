@@ -11,7 +11,6 @@ end
 
 function forconjgrad(xw::SharedArray{Float64,3},bw::Array,mypsfw::Array,mypsfadjw::Array,mu::Float64,wlt::SharedArray{Float64,3},nfreq::Int64)
     @sync @parallel for z in 1:nfreq
-    # for z in 1:nfreq
                     xw[:,:,z] = conjgrad(xw[:,:,z], bw[:,:,z] + wlt[:,:,z], mypsfw[:,:,z], mypsfadjw[:,:,z], mu, tol=1e-4, itermax = 1e3)
                     end
     return xw
@@ -20,7 +19,6 @@ end
 ##########################################
 ###### Conjugate Gradient Algorithm ######
 function conjgrad(xw::Array,bw::Array,mypsfw::Array,mypsfadjw::Array,mu::Float64;tol = 1e-6,itermax = 1e3)
-# function conjgrad(xw::Array,bw::Array,mypsfw::Array,mypsfadjw::Array,mu::Float64;tol = 1e-6,itermax = 1e3)
     r = bw - (imfilter_fft(imfilter_fft(xw, mypsfw,"circular"), mypsfadjw,"circular") + mu*xw)
     rm = r
     p = r
