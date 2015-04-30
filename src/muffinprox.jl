@@ -68,7 +68,7 @@ end
 ##########################################
 
 
-function estime_s(s,tmp,nxy)
+function estime_s(s,tmp,nxy,admmst)
     for i in 1:nxy, j in 1:nxy
      admmst.spectralwlt[i,j,:]= idct(tmp[:,i,j])
     end
@@ -76,7 +76,7 @@ function estime_s(s,tmp,nxy)
     return s
 end
 
-function estime_sh(s,nxy)
+function estime_sh(s,nxy,admmst)
     vecs = permutedims(s,[3,1,2])
     for i in 1:nxy, j in 1:nxy
      admmst.sh[i,j,:]   = dct(vecs[:,i,j] )

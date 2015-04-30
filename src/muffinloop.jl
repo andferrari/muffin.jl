@@ -41,7 +41,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             end
 
             b = admmst.fty + admmst.taup + rhop*admmst.p + admmst.taus + rhos*admmst.s
-            admmst.x = forconjgrad(admmst.x, b, psfst.mypsf, psfst.mypsfadj, mu, admmst.wlt, nfreq)            
+            admmst.x = forconjgrad(admmst.x, b, psfst.mypsf, psfst.mypsfadj, mu, admmst.wlt, nfreq)
 
             ##############################
             ######### prox spat ##########
@@ -65,8 +65,8 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             ######### prox spec ##########
 
             tmp = permutedims(admmst.tauv + rhov*admmst.v,[3,1,2])
-            admmst.s = estime_s(admmst.s,tmp,nxy)
-            admmst.sh = estime_sh(admmst.s,nxy)
+            admmst.s = estime_s(admmst.s,tmp,nxy,admmst)
+            admmst.sh = estime_sh(admmst.s,nxy,admmst)
 
             tmp = admmst.sh - admmst.tauv/rhov
             admmst.v = prox_u(tmp,μv/rhov)
