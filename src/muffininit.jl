@@ -2,7 +2,7 @@
 #### Structure initialisation ####
 ##################################
 
-function muffin(;nitermax = 2000, rhop = 1, rhot = 2, rhov = 2, rhos = 1,
+function muffin(;nitermax = 2000, rhop = 1, rhot = 5, rhov = 2, rhos = 1,
                  μt = 5e-1, μv = 1e-0, muesp = 1e-3)
 
     ##################################
