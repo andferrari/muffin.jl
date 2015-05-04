@@ -26,14 +26,14 @@ function conjgrad(xw::Array,bw::Array,mypsfw::Array,mypsfadjw::Array,mu::Float64
     iter = 0
     loop = true
     a = toq()
-    println("init conjgrad", "   ", a)
+    # println("init conjgrad", "   ", a)
 
     while loop
         iter += 1
         tic()
         Qp = imfilter_fft(imfilter_fft(p, mypsfw,"circular"), mypsfadjw,"circular") + mu*p
         a = toq()
-        println("iteration int conjgrad","  ",a)
+        # println("iteration int conjgrad","  ",a)
 
         alpha = vecnorm(r)^2/sum(Qp.*p)
         xw = xw + alpha*p
@@ -47,7 +47,7 @@ function conjgrad(xw::Array,bw::Array,mypsfw::Array,mypsfadjw::Array,mu::Float64
         end
         if crit < tol
             loop = false
-            println("iteration conjgrad","  ",iter)
+            # println("iteration conjgrad","  ",iter)
         end
     end
     return xw
