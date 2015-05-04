@@ -55,8 +55,8 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             mumu = admmst.mu
 
             @sync @parallel for z in 1:nfreq
-            E[:,:,z] = conjgrad(B[:,:,z], A[:,:,z],
-             C[:,:,z], D[:,:,z], mumu, tol=1e-4, itermax = 1e0)                
+            B[:,:,z] = conjgrad(B[:,:,z], A[:,:,z],
+             C[:,:,z], D[:,:,z], mumu, tol=1e-4, itermax = 1e0)
                             # c = b[:,:,z] + (admmst.wlt)[:,:,z]
                             # (admmst.x)[:,:,z] = conjgrad((admmst.x)[:,:,z], c,
                             #  (psfst.mypsf)[:,:,z], (psfst.mypsfadj)[:,:,z], admmst.mu, tol=1e-4, itermax = 1e0)
