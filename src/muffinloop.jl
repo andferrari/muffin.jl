@@ -47,7 +47,8 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             tic()
             @sync @parallel for z in 1:nfreq
-                            (admmst.x)[:,:,z] = conjgrad((admmst.x)[:,:,z], b[:,:,z] + (admmst.wlt)[:,:,z],
+                            c = b[:,:,z] + (admmst.wlt)[:,:,z]
+                            (admmst.x)[:,:,z] = conjgrad((admmst.x)[:,:,z], c,
                              (psfst.mypsf)[:,:,z], (psfst.mypsfadj)[:,:,z], admmst.mu, tol=1e-4, itermax = 1e3)
                             end
             a = toq()
