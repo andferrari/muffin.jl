@@ -37,18 +37,12 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
                 admmst.wlt[:,:,z] = sum(idwt(admmst.taut[:,:,z,b] + rhot*admmst.t[:,:,z,b],wavelet(spatialwlt[b])),4)
             end
 
-            #b = admmst.fty + admmst.taup + rhop*admmst.p + admmst.taus + rhos*admmst.s
+            b = admmst.fty + admmst.taup + rhop*admmst.p + admmst.taus + rhos*admmst.s
             #admmst.x = forconjgrad(admmst.x, b, psfst.mypsf, psfst.mypsfadj, mu, admmst.wlt, nfreq)
 
             @sync @parallel for z in 1:nfreq
-                            b = (admmst.fty)[:,:,z] + (admmst.taup)[:,:,z] + rhop*(admmst.p)[:,:,z] +
-                                (admmst.wlt)[:,:,z] + (admmst.taus)[:,:,z] + rhos*(admmst.s)[:,:,z]
-
-                                (admmst.x)[:,:,z] = conjgrad((admmst.x)[:,:,z], b ,
-                                 (psfst.mypsf)[:,:,z], (psfst.mypsfadj)[:,:,z], admmst.mu, tol=1e-4, itermax = 1e3)
-
-                            # (admmst.x)[:,:,z] = conjgrad((admmst.x)[:,:,z], b + (admmst.wlt)[:,:,z],
-                            #  (psfst.mypsf)[:,:,z], (psfst.mypsfadj)[:,:,z], admmst.mu, tol=1e-4, itermax = 1e3)
+                            (admmst.x)[:,:,z] = conjgrad((admmst.x)[:,:,z], b[:,:,z] + (admmst.wlt)[:,:,z],
+                             (psfst.mypsf)[:,:,z], (psfst.mypsfadj)[:,:,z], admmst.mu, tol=1e-4, itermax = 1e3)
                             end
 
             ##############################
