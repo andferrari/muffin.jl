@@ -41,6 +41,7 @@ function conjgrad(xw::Array,bw::Array,mypsfw::Array,mypsfadjw::Array,mu::Float64
         end
         if crit < tol
             loop = false
+            println("iteration conjgrad","  ",iter)
         end
     end
     return xw
