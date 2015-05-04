@@ -25,8 +25,7 @@ function conjgrad(xw::Array,bw::Array,mypsfw::Array,mypsfadjw::Array,mu::Float64
     p = r
     iter = 0
     loop = true
-    a = toq()
-    # println("init conjgrad", "   ", a)
+    
 
     while loop
         iter += 1
