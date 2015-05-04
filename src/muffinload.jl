@@ -1,7 +1,7 @@
 function loadsky(obj::ASCIIString,mypsf,nu::Array)
     skyst = init_SKY()
     skyst.obj = obj
-    skyst.sky0 = lecture(obj)/maximum(lecture(obj))
+    skyst.sky0 = (lecture(obj)/maximum(lecture(obj)))[112:143,112:143]
     skyst.sky,skyst.alpha = sky2cube(skyst.sky0,nu)
     skyst.skyconv = cubefilter(skyst.sky,mypsf)
     skyst.sig = sqrt(mean(skyst.skyconv.^2)/100)
@@ -20,7 +20,7 @@ function loadpsf(psf::ASCIIString,M::Int)
     psfst.psfcube = lecture(psfst.psf)
     psfst.psfavg = cubeaverage(psfst.psfcube,M)
     psfst.nu, psfst.nu0 = cubefreq(psfst.psf,psfst.psfcube,M)
-    psfst.mypsf = cropcubexy(psfst.psfavg,255)
+    psfst.mypsf = cropcubexy(psfst.psfavg,31)
     psfst.mypsfadj = flipdim(flipdim(psfst.mypsf,1),2)
     return psfst
 end
