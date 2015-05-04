@@ -49,7 +49,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             @sync @parallel for z in 1:nfreq
                             c = b[:,:,z] + (admmst.wlt)[:,:,z]
                             (admmst.x)[:,:,z] = conjgrad((admmst.x)[:,:,z], c,
-                             (psfst.mypsf)[:,:,z], (psfst.mypsfadj)[:,:,z], admmst.mu, tol=1e-4, itermax = 1e3)
+                             (psfst.mypsf)[:,:,z], (psfst.mypsfadj)[:,:,z], admmst.mu, tol=1e-4, itermax = 1e0)
                             end
             a = toq()
             println("calcul parallel","  ",a)
