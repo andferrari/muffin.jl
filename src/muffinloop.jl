@@ -32,19 +32,26 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             ##############################
             ########## update x ##########
-
+            tic()
             for z in 1:nfreq, b in 1:nspat
                 admmst.wlt[:,:,z] = sum(idwt(admmst.taut[:,:,z,b] + rhot*admmst.t[:,:,z,b],wavelet(spatialwlt[b])),4)
             end
+            a = toq()
+            println("calcul wlt","  ",a)
 
+            tic()
             b = admmst.fty + admmst.taup + rhop*admmst.p + admmst.taus + rhos*admmst.s
+            a = toq()
+            println("calcul b","  ",a)
             #admmst.x = forconjgrad(admmst.x, b, psfst.mypsf, psfst.mypsfadj, mu, admmst.wlt, nfreq)
 
+            tic()
             @sync @parallel for z in 1:nfreq
                             (admmst.x)[:,:,z] = conjgrad((admmst.x)[:,:,z], b[:,:,z] + (admmst.wlt)[:,:,z],
                              (psfst.mypsf)[:,:,z], (psfst.mypsfadj)[:,:,z], admmst.mu, tol=1e-4, itermax = 1e3)
                             end
-
+            a = toq()
+            println("calcul parallel","  ",a)
             ##############################
             ######### prox spat ##########
 
@@ -65,10 +72,12 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             ##############################
             ######### prox spec ##########
-
+            tic()
             tmp = permutedims(admmst.tauv + rhov*admmst.v,[3,1,2])
             admmst.s = estime_s(admmst.s,tmp,nxy,nspec,admmst)
             admmst.sh = estime_sh(admmst.s,nxy,admmst)
+            a = toq()
+            println("calcul s sh","  ",a)
 
             tmp = admmst.sh - admmst.tauv/rhov
             admmst.v = prox_u(tmp,μv/rhov)
