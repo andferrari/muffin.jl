@@ -19,11 +19,14 @@ end
 ##########################################
 ###### Conjugate Gradient Algorithm ######
 function conjgrad(xw::Array,bw::Array,mypsfw::Array,mypsfadjw::Array,mu::Float64;tol = 1e-6,itermax = 1e3)
+    tic()
     r = bw - (imfilter_fft(imfilter_fft(xw, mypsfw,"circular"), mypsfadjw,"circular") + mu*xw)
     rm = r
     p = r
     iter = 0
     loop = true
+    a = toq()
+    println("init conjgrad", "   ", a)
 
     while loop
         iter += 1
