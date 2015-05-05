@@ -67,7 +67,7 @@ end
 
 
 function estime_s(s::Array{Float64,3},tmp::Array{Float64,3},nxy::Int64,nspec::Int64,spectralwlt::Array{Float64,3},
-                  rhos::Float64,x::SharedArray{Float64,3},taus::Array{Float64,3},rhov::Float64,rhos::Float64)
+                 x::SharedArray{Float64,3},taus::Array{Float64,3},rhov::Float64,rhos::Float64)
     for i in 1:nxy, j in 1:nxy
      spectralwlt[i,j,:]= idct(tmp[:,i,j])
     end
