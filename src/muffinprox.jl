@@ -30,7 +30,6 @@ function conjgrad(xw::Array{Float64,2},bw::Array{Float64,2},mypsfw::Array{Float6
         alpha = vecnorm(r)^2/sum(Qp.*p)
         xw = xw + alpha*p
         r = r - alpha*Qp
-        println("r"," ",r," ","rm"," ",rm)
         betaa = (vecnorm(r)/vecnorm(rm))^2
         rm = r
         p = r + betaa*p
