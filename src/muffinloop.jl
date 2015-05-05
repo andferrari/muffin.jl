@@ -43,21 +43,9 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             b = admmst.fty + admmst.taup + rhop*admmst.p + admmst.taus + rhos*admmst.s
             a = toq()
             println("calcul b","  ",a)
-            #admmst.x = forconjgrad(admmst.x, b, psfst.mypsf, psfst.mypsfadj, mu, admmst.wlt, nfreq)
 
             tic()
-
-            # A = b + (admmst.wlt)
-            # B = (admmst.x)
-            # C = (psfst.mypsf)
-            # D = (psfst.mypsfadj)
-            # E = zeros((admmst.x))
-            # mumu = admmst.mu
-
-
-
             admmst.x = estime_x_par(admmst.x,psfst.mypsf,psfst.mypsfadj,admmst.wlt + b,mu,nfreq)
-
             a = toq()
             println("calcul parallel","  ",a)
             ##############################
