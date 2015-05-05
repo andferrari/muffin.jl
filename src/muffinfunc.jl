@@ -115,7 +115,7 @@ function lecture(directory::ASCIIString)
 end
 
 function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj::Array{Float64,3},
-                        wlt_b::Array{Float64,3},mu::Float64,)
+                        wlt_b::SharedArray{Float64,3},mu::Float64,)
 
             @sync @parallel for z in 1:nfreq
             x[:,:,z] = conjgrad(x[:,:,z], wlt_b[:,:,z], mypsf[:,:,z], mypsfadj[:,:,z], mu, tol=1e-4, itermax = 1e0)
