@@ -56,7 +56,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
 
 
-            admmst.x = estime_x_par(admmst.x,psfst.mypsf,psfst.mypsfadj,wlt+b,mu)
+            admmst.x = estime_x_par(admmst.x,psfst.mypsf,psfst.mypsfadj,admmst.wlt + b,mu)
 
             a = toq()
             println("calcul parallel","  ",a)
