@@ -51,10 +51,15 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             ##############################
             ######### prox spat ##########
 
+            tic()
+
             for z in 1:nfreq, b in 1:nspat
                 admmst.Hx[:,:,z,b] = dwt(admmst.x[:,:,z],wavelet(spatialwlt[b]))
             end
+            a = toq()
+            println("calcul HX", "  ", a)
 
+            tic()
             tmp = admmst.Hx - admmst.taut/rhot
             admmst.t = prox_u(tmp,μt/rhot)
 
@@ -64,7 +69,8 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             tmp = admmst.x-admmst.taup/rhop
             admmst.p = max(0,tmp)
-
+            a = toq()
+            println("calcul prox","  ", a)
 
             ##############################
             ######### prox spec ##########
