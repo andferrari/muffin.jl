@@ -3,6 +3,13 @@
 ####### Multi-Frequency Sparse Radio Interferometric imaging #######
 ####################################################################
 
+################################
+
+# psfst, skyst, algost, admmst, toolst = muffin()
+
+################################
+
+
 module Muffin
     using FITSIO
     using Images
@@ -23,13 +30,6 @@ module Muffin
     include("muffinload.jl")
 
 end
-
-
-# psfst, skyst, algost, admmst, toolst = muffin()
-
-# @everywhere using Muffin
-
-
 
 
 ################################
