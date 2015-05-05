@@ -32,7 +32,7 @@ type Algo_param
 end
 
 type Admm_array
-    s::Array{Float64}
+    s::SharedArray{Float64}
     taus::Array{Float64}
     rhos::Float64
     sh::SharedArray{Float64}
