@@ -147,7 +147,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
     for z in 1:nfreq
         toolst.errorrec[:,:,z] = skyst.sky[:,:,z] - admmst.x[:,:,z]
-        toolst.errorest[z] =  vecnorm(skyst.sky[:,:,z] - admmst.x[:,:,z])^2/vecnorm(skyst.sky[:,:,z])^2
+        toolst.errorest[z] =  vecnorm(skyst.sky[:,:,z] - admmst.x[:,:,z])^2/skyst.sumsky2[z]
         toolst.errorraw[z] =  vecnorm(skyst.mydata[:,:,z] - admmst.x[:,:,z])^2/vecnorm(skyst.mydata[:,:,z])^2
     end
 
