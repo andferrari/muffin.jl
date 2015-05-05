@@ -79,7 +79,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             admmst.s = estime_s(admmst.s,tmp,nxy,nspec,admmst.spectralwlt,
                                 admmst.x,admmst.taus,admmst.rhov,admmst.rhos)
             #admmst.sh = estime_sh(admmst.s,nxy,admmst)
-            admmst.sh = estime_sh(admmst.s,nxy)
+            admmst.sh = estime_sh(admmst.s,admmst.sh,nxy)
             a = toq()
             println("calcul s sh","  ",a)
 
