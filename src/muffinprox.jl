@@ -12,7 +12,7 @@ end
 
 ##########################################
 ###### Conjugate Gradient Algorithm ######
-function conjgrad(xw::SharedArray{Float64,2},bw::SharedArray{Float64,2},mypsf::Array{Float64,2},
+function conjgrad(xw::Array{Float64,2},bw::Array{Float64,2},mypsf::Array{Float64,2},
                   mypsfadj::Array{Float64,2},mu::Float64; tol = 1e-6,itermax = 1e3)
 
     r = bw - (imfilter_fft(imfilter_fft(xw, mypsfw,"circular"), mypsfadjw,"circular") + mu*xw)
