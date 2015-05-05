@@ -32,10 +32,10 @@ type Algo_param
 end
 
 type Admm_array
-    s::SharedArray{Float64}
+    s::Array{Float64}
     taus::Array{Float64}
     rhos::Float64
-    sh::SharedArray{Float64}
+    sh::Array{Float64}
 
     taup::Array{Float64}
     p::Array{Float64}
