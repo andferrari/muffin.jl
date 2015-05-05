@@ -16,6 +16,8 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
     const nfreq = algost.nfreq
     const nspec = algost.nspec
     const nxy = algost.nxy
+    const fty = admmst.fty
+    const nitermax = algost.nitermax
 
     spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
 
@@ -40,7 +42,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             println("calcul wlt","  ",a)
 
             tic()
-            b = admmst.fty + admmst.taup + rhop*admmst.p + admmst.taus + rhos*admmst.s
+            b = fty + admmst.taup + rhop*admmst.p + admmst.taus + rhos*admmst.s
             a = toq()
             println("calcul b","  ",a)
 
@@ -81,7 +83,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
                                 admmst.x,admmst.taus,rhov,rhos)
 
             admmst.sh = estime_sh(admmst.s,admmst.sh,nxy)
-            
+
             a = toq()
             println("calcul s sh","  ",a)
 
@@ -120,7 +122,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             ##############################
             ####### stopping rule ########
 
-            if (niter >= algost.nitermax) || ((toolst.tol1[niter] < 1E-6) && (toolst.tol2[niter] < 1E-4))
+            if (niter >= nitermax) || ((toolst.tol1[niter] < 1E-6) && (toolst.tol2[niter] < 1E-4))
                 loop = false
                 algost.lastiter = niter
             end
