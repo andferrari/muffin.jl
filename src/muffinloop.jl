@@ -76,8 +76,10 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             ######### prox spec ##########
             tic()
             tmp = permutedims(admmst.tauv + rhov*admmst.v,[3,1,2])
-            admmst.s = estime_s(admmst.s,tmp,nxy,nspec,admmst)
-            admmst.sh = estime_sh(admmst.s,nxy,admmst)
+            admmst.s = estime_s(admmst.s,tmp,nxy,nspec,admmst.spectralwlt,admmst.rhos,
+                                admmst.x,admmst.taus,admmst.rhov,admmst.rhos)
+            #admmst.sh = estime_sh(admmst.s,nxy,admmst)
+            admmst.sh = estime_sh(admmst.s,nxy)
             a = toq()
             println("calcul s sh","  ",a)
 

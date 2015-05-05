@@ -66,18 +66,19 @@ end
 ##########################################
 
 
-function estime_s(s,tmp,nxy,nspec,admmst)
+function estime_s(s::Array{Float64,3},tmp::Array{Float64,3},nxy::Int64,nspec::Int64,spectralwlt::Array{Float64,3},
+                  rhos::Float64,x::SharedArray{Float64,3},taus::Array{Float64,3},rhov::Float64,rhos::Float64)
     for i in 1:nxy, j in 1:nxy
-     admmst.spectralwlt[i,j,:]= idct(tmp[:,i,j])
+     spectralwlt[i,j,:]= idct(tmp[:,i,j])
     end
-    s = (admmst.spectralwlt + admmst.rhos*admmst.x - admmst.taus)/(admmst.rhov*nspec + admmst.rhos)
+    s = (spectralwlt + rhos*x - taus)/(rhov*nspec + rhos)
     return s
 end
 
-function estime_sh(s,nxy,admmst)
+function estime_sh(s::Array{Float64,3},nxy::Int64)
     vecs = permutedims(s,[3,1,2])
     for i in 1:nxy, j in 1:nxy
-     admmst.sh[i,j,:]   = dct(vecs[:,i,j] )
+     sh[i,j,:]   = dct(vecs[:,i,j] )
     end
-    return admmst.sh
+    return sh
 end
