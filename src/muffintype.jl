@@ -35,7 +35,7 @@ type Admm_array
     s::Array{Float64}
     taus::Array{Float64}
     rhos::Float64
-    sh::Array{Float64}
+    sh::SharedArray{Float64}
 
     taup::Array{Float64}
     p::Array{Float64}
