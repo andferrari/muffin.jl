@@ -75,10 +75,10 @@ function estime_s(s::Array{Float64,3},tmp::Array{Float64,3},nxy::Int64,nspec::In
     return s
 end
 
-function estime_sh(s::Array{Float64,3},nxy::Int64)
+function estime_sh(s::Array{Float64,3},sh::Array{Float64,3},nxy::Int64)
     vecs = permutedims(s,[3,1,2])
     for i in 1:nxy, j in 1:nxy
-     s[i,j,:]   = dct(vecs[:,i,j] )
+     sh[i,j,:]   = dct(vecs[:,i,j] )
     end
     return sh
 end
