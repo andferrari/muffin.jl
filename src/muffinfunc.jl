@@ -113,3 +113,16 @@ function lecture(directory::ASCIIString)
     data = squeeze(data,3)
     return data
 end
+
+function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj::Array{Float64,3},
+                        wlt_b::Array{Float64,3},mu::Float64,)
+
+            @sync @parallel for z in 1:nfreq
+            x[:,:,z] = conjgrad(x[:,:,z], wlt_b[:,:,z], mypsf[:,:,z], mypsfadj[:,:,z], mu, tol=1e-4, itermax = 1e0)
+                            # c = b[:,:,z] + (admmst.wlt)[:,:,z]
+                            # (admmst.x)[:,:,z] = conjgrad((admmst.x)[:,:,z], c,
+                            #  (psfst.mypsf)[:,:,z], (psfst.mypsfadj)[:,:,z], admmst.mu, tol=1e-4, itermax = 1e0)
+                            end
+        return x
+
+end
