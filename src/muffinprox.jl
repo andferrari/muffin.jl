@@ -59,8 +59,8 @@ end
 
 function estime_sh(s::Array{Float64,3},sh::Array{Float64,3},nxy::Int64)
     vecs = permutedims(s,[3,1,2])
-    for i in 1:nxy, j in 1:nxy
-        sh[i,j,:] = dct(vecs[:,i,j])
-    end
+ @parallel    for i in 1:nxy, j in 1:nxy
+                    sh[i,j,:] = dct(vecs[:,i,j])
+              end
     return sh
 end
