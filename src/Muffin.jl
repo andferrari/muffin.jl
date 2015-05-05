@@ -24,10 +24,10 @@ module Muffin
 
     export admmst
 
-    include("muffinprox.jl")
+    #include("muffinprox.jl")
     include("muffinfunc.jl")
-    include("muffininit.jl")
-    include("muffinloop.jl")
+    #include("muffininit.jl")
+    #include("muffinloop.jl")
     include("muffinload.jl")
 
 end
