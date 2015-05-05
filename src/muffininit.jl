@@ -1,9 +1,12 @@
-##################################
-#### Structure initialisation ####
-##################################
 
-function muffin(;nitermax = 2000, rhop = 1, rhot = 5, rhov = 2, rhos = 1,
+
+function muffin(;nitermax = 500, rhop = 1, rhot = 5, rhov = 2, rhos = 1,
                  μt = 5e-1, μv = 1e-0, muesp = 1e-3)
+
+
+                 ##################################
+    ################# Structure initialisation #################
+                 ##################################
 
     ##################################
     psf = "../data/meerkat_m30_25pix.psf.fits"
@@ -20,25 +23,26 @@ function muffin(;nitermax = 2000, rhop = 1, rhot = 5, rhov = 2, rhos = 1,
     const nfreq = size(psfst.mypsf)[3]
     const nspec = 1
     const nxy = size(skyst.mydata)[1]
-
     niter = 0
     lastiter = 0
-    #const nitermax = 2000
+    #################################
 
+    #################################
     algost = loadparam(nspat,nfreq,nspec,nxy,niter,lastiter,nitermax)
-    ##################################
-
-    ##################################
-
 
     admmst = loadarray(rhop,rhot,rhov,rhos,μt,μv,muesp,nspat,nfreq,nxy,
                         skyst.mydata,psfst.mypsfadj)
+
     toolst = loadtools(nitermax,nfreq,nxy)
     ##################################
 
+                 ##################################
+    #####################  Main Admm Loop  #####################   
+                 ##################################
 
+    #################################
     psfst, skyst, algost, admmst, toolst = muffinadmm(psfst, skyst, algost, admmst, toolst)
-
+    #################################
 
 
     return psfst, skyst, algost, admmst, toolst

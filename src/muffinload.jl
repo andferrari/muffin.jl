@@ -58,9 +58,9 @@ function loadarray(rhop,rhot,rhov,rhos,μt,μv,muesp,nspat,nfreq,nxy,mydata,myps
     admmst.rhot = rhot
     admmst.rhov = rhov
     admmst.rhos = rhos
-    admmst.μt = 5e-1
-    admmst.μv = 1e-0
-    admmst.muesp = 0.001
+    admmst.μt = μt
+    admmst.μv = μv
+    admmst.muesp = muesp
     admmst.tt = rhot*nspat
     admmst.mu = muesp + rhop + admmst.tt + rhos
     return admmst
