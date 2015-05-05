@@ -1,8 +1,10 @@
 using HDF5, JLD
 
-save("../data/results/data_2g_2000iter.jld","nfreq",nfreq,
-                                "lastiter",lastiter,
-                                "psfst",psfst,
-                                "skyst",skyst,
-                                "admmst",admmst,
-                                "toolst",toolst)
+function savedata(psfst, skyst, algost, admmst, toolst)
+
+
+save("../data/results/savetest_structure.jld", "psfst",psfst,
+                                             "skyst",skyst,
+                                             "algost",algost,
+                                             "admmst",admmst,
+                                             "toolst",toolst)
