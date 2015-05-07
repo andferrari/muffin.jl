@@ -3,7 +3,7 @@
 ####################################################################
 
 function muffin(;nitermax = 500, rhop = 1, rhot = 5, rhov = 2, rhos = 1,
-                 μt = 5e-1, μv = 1e-0, muesp = 1e-3)
+                 μt = 5e-1, μv = 1e-0, mueps = 1e-3)
 
 
                  ##################################
@@ -32,7 +32,7 @@ function muffin(;nitermax = 500, rhop = 1, rhot = 5, rhov = 2, rhos = 1,
     #################################
     algost = loadparam(nspat,nfreq,nspec,nxy,niter,lastiter,nitermax)
 
-    admmst = loadarray(rhop,rhot,rhov,rhos,μt,μv,muesp,nspat,nfreq,nxy,
+    admmst = loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,
                         skyst.mydata,psfst.mypsfadj)
 
     toolst = loadtools(nitermax,nfreq,nxy)
@@ -64,7 +64,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
     const rhos = admmst.rhos
     const μt = admmst.μt
     const μv = admmst.μv
-    const muesp = admmst.muesp
+    const mueps = admmst.mueps
     const tt = admmst.tt
     const mu = admmst.mu
     const nspat = algost.nspat

@@ -61,7 +61,7 @@ type Admm_array
 
     μt::Float64
     μv::Float64
-    muesp::Float64
+    mueps::Float64
     tt::Float64
     mu::Float64
 end

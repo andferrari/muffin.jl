@@ -37,7 +37,7 @@ function loadparam(nspat,nfreq,nspec,nxy,niter,lastiter,nitermax)
     return algost
 end
 
-function loadarray(rhop,rhot,rhov,rhos,μt,μv,muesp,nspat,nfreq,nxy,mydata,mypsfadj)
+function loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,mydata,mypsfadj)
     admmst = init_Admmarray()
     admmst.s = zeros(Float64,nxy,nxy,nfreq)
     admmst.taus = zeros(Float64,nxy,nxy,nfreq)
@@ -60,9 +60,9 @@ function loadarray(rhop,rhot,rhov,rhos,μt,μv,muesp,nspat,nfreq,nxy,mydata,myps
     admmst.rhos = rhos
     admmst.μt = μt
     admmst.μv = μv
-    admmst.muesp = muesp
+    admmst.mueps = mueps
     admmst.tt = rhot*nspat
-    admmst.mu = muesp + rhop + admmst.tt + rhos
+    admmst.mu = mueps + rhop + admmst.tt + rhos
     return admmst
 end
 
