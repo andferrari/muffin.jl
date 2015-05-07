@@ -9,7 +9,7 @@ see http://arxiv.org/abs/1504.06847
 
 ####Installation
 
-Muffin.jl uses the following Julia packages :
+``Muffin.jl` uses the following Julia packages :
 
 * FITSIO.jl : reading and writing FITS.
 * Images.jl : Fast Fourier Transform implementation.
@@ -20,17 +20,17 @@ Muffin.jl uses the following Julia packages :
 
 The installation is as simple as : 
 
-```Julia  
+.. code:: julia
+
  Pkg.clone("https://github.com/andferrari/GHF.jl.git")  
  Pkg.add("PyPlot")   
  Pkg.add("FITSIO")   
  Pkg.add("Images")    
  Pkg.add("Wavelets")   
  Pkg.add("HDF5")   
-  
-```
-
-To install `Muffin.jl`, type from a Julia session the following command :
+ 
+ 
+To install ``Muffin.jl``, type from a Julia session the following command :
 
 	Pkg.clone("https://github.com/andferrari/Muffin.jl.git")
 
@@ -40,11 +40,15 @@ To install `Muffin.jl`, type from a Julia session the following command :
 
 ####Usage
 
-To load the `Muffin.jl module, type from a Julia session :
+To load the ``Muffin.jl`` module, type from a Julia session :
+
+.. code:: julia
 
 	using Muffin
 
 To use parallel computing, start Julia with **nprocs** local process and load the module :
+
+.. code:: julia
 
 	$ julia -p nprocs  
 	julia> using Muffin
@@ -54,9 +58,12 @@ To use parallel computing, start Julia with **nprocs** local process and load th
 ##Functions
 
 ####Main Function 
-`muffin(...)`
+``muffin(...)``
 
 * **muffin** is called with parameters definition :
+
+.. code:: julia
+
 
 	  psfst, skyst, algost, admmst, toolst = muffin(nitermax, rhop, rhot, rhov, rhos, μt, μv, mueps)
 
