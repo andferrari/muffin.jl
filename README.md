@@ -1,4 +1,4 @@
-Muffin.jl
+
 =========
 
 `Muffin.jl` is a julia implementation of MUFFIN: Multi-Frequency Sparse Radio Interferometric imaging
@@ -16,7 +16,7 @@ see http://arxiv.org/abs/1504.06847
 * Wavelets.jl : package for fast wavelet transforms. 
 * HDF5.jl : for writing JLD ("Julia data") variables.
 * GHF.jl : generation of Gaussian homogeneous spatial field.
-* PyPlot.jl : provides a Julia interface to the Matplotlib plotting library
+* PyPlot.jl : provides a Julia interface to the Matplotlib plotting library.
 
 The installation is as simple as : 
 
@@ -74,6 +74,16 @@ To use parallel computing, start Julia with **nprocs** local process and load th
 	* algost : contains algorithm parameters
 	* admmst : datas related to the admm method
 	* toolst : contains error calculation arrays
+	
+* Parameters are :
+	* nitermax : maximum number of  ADMM iterations. Default : `500`
+	* rhop : ADMM parameter for positivity constraint. Default : `1`
+	* rhot : ADMM parameter for spatial constraint. Default : `5`
+	* rhov : ADMM parameter for spectral constraint. Default : `2`
+	* rhos : ADMM parameter for spectral constraint. Default : `1`
+	* μt : Spatial regularization parameter. Default : `5e-1`
+	* μv : Spectral regularization parameter. Default : `1`
+	* mueps : Ridge/Tikhonov regularization parameter : `1e-3`
  
 
 
