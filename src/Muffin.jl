@@ -27,6 +27,7 @@ module Muffin
 
     include("muffinfunc.jl")
     include("muffinload.jl")
+    include("savedata.jl")
 
 end
 

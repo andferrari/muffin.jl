@@ -1,6 +1,6 @@
 using HDF5, JLD
 using PyPlot
-include("testobj.jl");
+#include("testobj.jl");
 
 file = string("../data/results/savetest_structure.jld")
 
