@@ -18,7 +18,7 @@ module Muffin
     using GHF
 
 
-    export muffin
+    export muffin,savedata
 
     include("muffintype.jl")
 
