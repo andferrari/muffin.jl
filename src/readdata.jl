@@ -2,7 +2,7 @@ using HDF5, JLD
 using PyPlot
 #include("testobj.jl");
 
-file = string("../data/results/savetest_structure.jld")
+file = string("/Users/deguignet/Documents/Git/Rec3d/data/results/savetest_structure.jld")
 
 x = load(file, "admmst.x")
 lastiter = load(file, "algost.lastiter")
