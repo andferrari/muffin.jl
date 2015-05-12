@@ -2,12 +2,12 @@
 #######                Main Muffin function                  #######
 ####################################################################
 
-function muffin(;folder,dataobj,datapsf,nitermax = 500, rhop = 1, rhot = 5, rhov = 2, rhos = 1,
+function muffin(;folder="",dataobj="",datapsf="",nitermax = 500, rhop = 1, rhot = 5, rhov = 2, rhos = 1,
                  μt = 5e-1, μv = 1e-0, mueps = 1e-3)
 
 
                  ##################################
-    ################# Structure initialisation #################
+    ################### data initialisation #################
                  ##################################
 
 
@@ -29,12 +29,11 @@ function muffin(;folder,dataobj,datapsf,nitermax = 500, rhop = 1, rhot = 5, rhov
         end
     end
 
-    ##################################
-    psf = "../data/meerkat_m30_25pix.psf.fits"
-    obj = "../data/M31.fits"
 
-
-
+                ##################################
+    ################# Structure initialisation #################
+                ##################################
+                
     ##################################
     psfst = loadpsf(psf,5)
     skyst = loadsky(obj,psfst.mypsf,psfst.nu)
