@@ -365,7 +365,10 @@ function lecture(directory::ASCIIString)
     file = FITS(directory)
     data = float64(read(file[1]))
     close(file)
-    data = squeeze(data,3)
+    if length(size(data)) == 3
+        data = squeeze(data,3)
+    end
+    println("size sata",length(size(data)) )
     return data
 end
 ##################################
