@@ -2,7 +2,7 @@
 #######                Main Muffin function                  #######
 ####################################################################
 
-function muffin(;nitermax = 500, rhop = 1, rhot = 5, rhov = 2, rhos = 1,
+function muffin(;folder,dataobj,datapsf,nitermax = 500, rhop = 1, rhot = 5, rhov = 2, rhos = 1,
                  μt = 5e-1, μv = 1e-0, mueps = 1e-3)
 
 
@@ -10,9 +10,31 @@ function muffin(;nitermax = 500, rhop = 1, rhot = 5, rhov = 2, rhos = 1,
     ################# Structure initialisation #################
                  ##################################
 
+
+    if isempty(dataobj)
+        psf = "../data/meerkat_m30_25pix.psf.fits"
+        obj = "../data/M31.fits"
+    elseif dataobj == ASCIIString
+        if isempty(folder)
+            tmp = pwd()
+            psf = string(tmp,tmp[1],datapsf)
+            obj = string(tmp,tmp[1],dataobj)
+        end
+
+        if typeof(folder) == ASCIIString
+             psf = string(folder,folder[1],datapsf)
+             obj = string(folder,folder[1],dataobj)
+        else
+             error("data folder is not correct")
+        end
+    end
+
     ##################################
     psf = "../data/meerkat_m30_25pix.psf.fits"
     obj = "../data/M31.fits"
+
+
+
     ##################################
     psfst = loadpsf(psf,5)
     skyst = loadsky(obj,psfst.mypsf,psfst.nu)
