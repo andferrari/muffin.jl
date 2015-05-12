@@ -65,7 +65,7 @@ To use parallel computing, start Julia with **nprocs** local process and load th
 * **muffin** is called with parameters definition :
 
 ```julia
-	  psfst, skyst, algost, admmst, toolst = muffin(nitermax, rhop, rhot, rhov, rhos, μt, μv, mueps)
+	  psfst, skyst, algost, admmst, toolst = muffin(folder, dataobj, datapsf, nitermax, rhop, rhot, rhov, rhos, μt, μv, mueps)
 ```
 
 * It returns 5 structures :
@@ -76,6 +76,9 @@ To use parallel computing, start Julia with **nprocs** local process and load th
 	* toolst : contains error calculation arrays
 	
 * Parameters are :
+	* folder : path to the folder containing FITS files. Default : installation folder, containing FITS files for the demo
+	* dataobj : FITS object.
+	* datapsf : FITS psf.
 	* nitermax : maximum number of  ADMM iterations. Default : `500`
 	* rhop : ADMM parameter for positivity constraint. Default : `1`
 	* rhot : ADMM parameter for spatial constraint. Default : `5`
