@@ -365,9 +365,7 @@ function lecture(directory::ASCIIString)
     file = FITS(directory)
     data = float64(read(file[1]))
     close(file)
-    if length(size(data)) == 4
-        data = squeeze(data,3)
-    end
+    data = squeeze(data,3)
     return data
 end
 ##################################
