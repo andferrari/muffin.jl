@@ -14,7 +14,7 @@ function muffin(;folder="",dataobj="",datapsf="",nitermax = 500, rhop = 1, rhot 
     if isempty(dataobj)
         psf = "../data/meerkat_m30_25pix.psf.fits"
         obj = "../data/M31.fits"
-    elseif dataobj == ASCIIString
+    else dataobj == ASCIIString
         if isempty(folder)
             tmp = pwd()
             psf = string(tmp,tmp[1],datapsf)
@@ -29,11 +29,13 @@ function muffin(;folder="",dataobj="",datapsf="",nitermax = 500, rhop = 1, rhot 
         end
     end
 
+println(psf)
+println(obj)
 
                 ##################################
     ################# Structure initialisation #################
                 ##################################
-                
+
     ##################################
     psfst = loadpsf(psf,5)
     skyst = loadsky(obj,psfst.mypsf,psfst.nu)
