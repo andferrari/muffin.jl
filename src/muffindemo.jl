@@ -16,14 +16,22 @@ myrhos = 1
 myμt = 5e-1
 myμv = 1
 mymueps = 1e-3
-mysavepath = string(folder,folder[1],"data/results/demo_results.jld")
+mysavepath = string(myfolder,myfolder[1],"data/results/demo_results.jld")
 
 ################################
 
 
-psfst, skyst, algost, admmst, toolst = muffin(folder = myfolder,mydataobj,mydatapsf,
-                                              mynitermax, myrhop, myrhot, myrhov, myrhos,
-                                              myμt, myμv, mymueps)
+psfst, skyst, algost, admmst, toolst = muffin(folder = myfolder,
+                                              dataobj = mydataobj,
+                                              datapsf = mydatapsf,
+                                              nitermax = mynitermax,
+                                              rhop = myrhop,
+                                              rhot = myrhot,
+                                              rhov = myrhov,
+                                              rhos = myrhos,
+                                              μt = myμt,
+                                              μv = myμv,
+                                              mueps = mymueps)
 
 
 ################################
