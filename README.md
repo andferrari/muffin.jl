@@ -5,7 +5,7 @@
 
 see http://arxiv.org/abs/1504.06847
 
-##Getting Started
+#Getting Started
 
 ####Installation
 
@@ -57,7 +57,7 @@ To use parallel computing, start Julia with **nprocs** local process and load th
 	
 	
 	
-##Functions
+#Functions
 
 ####Main Function 
 `muffin(...)`
@@ -88,9 +88,43 @@ To use parallel computing, start Julia with **nprocs** local process and load th
 	* μv : Spectral regularization parameter. Default : `1`
 	* mueps : Ridge/Tikhonov regularization parameter : `1e-3`
  
+ 
+####Save data
+`savedata(...)`
+
+* **savedata** is called by :
+
+```julia
+	savedata(savepath, psfst, skyst, algost, admmst, toolst)
+```
+ 
 
 
+#Muffin Demo
 
+`Muffin.jl` contains a demo file `muffindemo.jl` in the default installation folder. 
+To run the demo, type :
+
+	using Muffin
+	demo = string(Pkg.dir("Muffin"),"/src/muffindemo.jl")
+	include(demo);
+
+The demo will run with the following parameters :
+
+	myfolder = string(Pkg.dir("Muffin"))
+	mydataobj =  "data/M31.fits"
+	mydatapsf =  "data/meerkat_m30_25pix.psf.fits"
+	mynitermax = 1
+	myrhop = 1
+	myrhot = 5
+	myrhov = 2
+	myrhos = 1
+	myμt = 5e-1
+	myμv = 1
+	mymueps = 1e-3
+	mysavepath = string(myfolder,myfolder[1],"data/demo_results.jld")
+	
+and the results will be saved in the `demo_results.jld` file.
 
 
 
