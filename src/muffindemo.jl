@@ -16,7 +16,7 @@ myrhos = 1
 myμt = 5e-1
 myμv = 1
 mymueps = 1e-3
-mysavepath = string(myfolder,myfolder[1],"data/results/demo_results.jld")
+mysavepath = string(myfolder,myfolder[1],"data/demo_results.jld")
 
 ################################
 
