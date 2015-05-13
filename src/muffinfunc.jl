@@ -12,8 +12,8 @@ function muffin(;folder="",dataobj="",datapsf="",nitermax = 500, rhop = 1,
 
 
     if isempty(dataobj)
-        psf = "../data/meerkat_m30_25pix.psf.fits"
-        obj = "../data/M31.fits"
+        psf = "/data/meerkat_m30_25pix.psf.fits"
+        obj = "/data/M31.fits"
     else dataobj == ASCIIString
         if isempty(folder)
             tmp = pwd()
