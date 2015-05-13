@@ -102,7 +102,8 @@ To use parallel computing, start Julia with **nprocs** local process and load th
 
 #Muffin Demo
 
-`Muffin.jl` contains a demo file `muffindemo.jl` in the default installation folder. 
+`Muffin.jl` contains a demo file `muffindemo.jl` in the default installation folder.
+ 
 To run the demo, type :
 
 	using Muffin
