@@ -97,7 +97,8 @@ To use parallel computing, start Julia with **nprocs** local process and load th
 ```julia
 	savedata(savepath, psfst, skyst, algost, admmst, toolst)
 ```
- 
+
+where `savepath` is the path/JLD file name where datas will be saved. 
 
 
 #Muffin Demo
