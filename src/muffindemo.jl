@@ -5,24 +5,25 @@
 
 ################################
 
-folder = string(Pkg.dir("Muffin"))
-dataobj =  "data/M31.fits"
-datapsf =  "data/meerkat_m30_25pix.psf.fits"
-nitermax = 10
-rhop = 1
-rhot = 5
-rhov = 2
-rhos = 1
-μt = 5e-1
-μv = 1
-mueps = 1e-3
-savepath = string(folder,folder[1],"data/results/demo_results.jld")
+myfolder = string(Pkg.dir("Muffin"))
+mydataobj =  "data/M31.fits"
+mydatapsf =  "data/meerkat_m30_25pix.psf.fits"
+mynitermax = 10
+myrhop = 1
+myrhot = 5
+myrhov = 2
+myrhos = 1
+myμt = 5e-1
+myμv = 1
+mymueps = 1e-3
+mysavepath = string(folder,folder[1],"data/results/demo_results.jld")
 
 ################################
 
 
-psfst, skyst, algost, admmst, toolst = muffin(folder,dataobj,datapsf,nitermax,
-                                              rhop,rhot,rhov,rhos,μt,μv,mueps)
+psfst, skyst, algost, admmst, toolst = muffin(folder = myfolder,mydataobj,mydatapsf,
+                                              mynitermax, myrhop, myrhot, myrhov, myrhos,
+                                              myμt, myμv, mymueps)
 
 
 ################################

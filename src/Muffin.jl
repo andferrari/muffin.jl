@@ -8,7 +8,8 @@
 
 # psfst, skyst, algost, admmst, toolst = muffin()
 
-# psfst, skyst, algost, admmst, toolst = muffin(folder = "/home/deguignet/.julia/v0.3/Muffin/data",datapsf="meerkat_m30_25pix.psf.fits",dataobj="testobject.fits",nitermax=1 )
+# demo = string(Pkg.dir("Muffin"),"/src/muffindemo.jl")
+
 ################################
 
 
