@@ -8,7 +8,7 @@
 myfolder = string(Pkg.dir("Muffin"))
 mydataobj =  "data/M31.fits"
 mydatapsf =  "data/meerkat_m30_25pix.psf.fits"
-mynitermax = 10
+mynitermax = 1
 myrhop = 1
 myrhot = 5
 myrhov = 2
@@ -36,6 +36,6 @@ psfst, skyst, algost, admmst, toolst = muffin(folder = myfolder,
 
 ################################
 
-savedata(savepath, psfst, skyst, algost, admmst, toolst)
+savedata(mysavepath, psfst, skyst, algost, admmst, toolst)
 
 ################################
