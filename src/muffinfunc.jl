@@ -404,9 +404,31 @@ function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj
         toto[:,:,z] = eye(256,256)
         zer[:,:,z] = fft(psfpad[:,:,z])
         psfcbe[:,:,z] = 1./ (abs(zer[:,:,z]).^2+mu*toto[:,:,z])
+<<<<<<< HEAD
         x[:,:,z] = real(ifft(fft(wlt_b[:,:,z]).*psfcbe[:,:,z]))
+=======
+        x[:,:,z] = real(ifft(fft(wlt_b[:,:,z]).*fft(psfcbe[:,:,z])))
+>>>>>>> parent of e492097... fft
     end
-    return x
+
+
+
+    #
+    # for z in 1:nfreq
+    #     xtmp = fft(wlt_b[:,:,z])
+    #     println("toto")
+    #     x[:,:,z] = real(imfilter_fft(xtmp,psfcbe[:,:,z]))
+    #     println("titi")
+    # end
+
+
+    # for z in 1:nfreq
+    #     xtmp = fft(wlt_b[:,:,z])
+    #     atmp = fft(mypsf[:,:,z].^2) + mu*toto
+    #     x[:,:,z] = real(ifft(xtmp./atmp))
+    # end
+        return x
+
 end
 
 
