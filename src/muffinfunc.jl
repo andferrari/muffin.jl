@@ -378,37 +378,37 @@ end
 
 #################################
 ######### x estimation ##########
-# function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj::Array{Float64,3},
-#                         wlt_b::SharedArray{Float64,3},mu::Float64,nfreq::Int64)
-#
-#             @sync @parallel for z in 1:nfreq
-#
-#                                 x[:,:,z] = conjgrad(x[:,:,z], wlt_b[:,:,z], mypsf[:,:,z],
-#                                                     mypsfadj[:,:,z], mu, tol=1e-4, itermax = 1e3)
-#                             end
-#         return x
-#
-# end
-
 function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj::Array{Float64,3},
                         wlt_b::SharedArray{Float64,3},mu::Float64,nfreq::Int64)
 
-    toto = zeros(Float64,255,255,15)
-    zer = zeros(Complex64,255,255,15)
-    psfcbe = zeros(Complex64,255,255,15)
+            @sync @parallel for z in 1:nfreq
 
-    for z in 1:nfreq
-        toto[:,:,z] = eye(255,255)
-        zer[:,:,z] = fft(mypsf[:,:,z]).^2
+                                x[:,:,z] = conjgrad(x[:,:,z], wlt_b[:,:,z], mypsf[:,:,z],
+                                                    mypsfadj[:,:,z], mu, tol=1e-4, itermax = 1e3)
+                            end
+        return x
 
-        psfcbe[:,:,z] = ifft(1./ (zer[:,:,z]+mu*toto[:,:,z]))
+end
 
-
-
-
-        x[:,:,z] = imfilter_fft(wlt_b[:,:,z],psfcbe[:,:,z])
-
-    end
+# function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj::Array{Float64,3},
+#                         wlt_b::SharedArray{Float64,3},mu::Float64,nfreq::Int64)
+#
+#     toto = zeros(Float64,255,255,15)
+#     zer = zeros(Complex64,255,255,15)
+#     psfcbe = zeros(Complex64,255,255,15)
+#
+#     for z in 1:nfreq
+#         toto[:,:,z] = eye(255,255)
+#         zer[:,:,z] = fft(mypsf[:,:,z]).^2
+#
+#         psfcbe[:,:,z] = ifft(1./ (zer[:,:,z]+mu*toto[:,:,z]))
+#
+#
+#
+#
+#         x[:,:,z] = imfilter_fft(wlt_b[:,:,z],psfcbe[:,:,z])
+#
+#     end
 
 
     # toto = zeros(Float64,256,256,15)
