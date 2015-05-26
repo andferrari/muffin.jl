@@ -393,9 +393,10 @@ end
 function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj::Array{Float64,3},
                         wlt_b::SharedArray{Float64,3},mu::Float64,nfreq::Int64)
 
+    toto = eye(256,256)
     for z in 1:nfreq
         xtmp = fft(wlt_b[:,:,z])
-        atmp = fft(mypsf[:,:,z]) + mu*eye[256,256,z]
+        atmp = fft(mypsf[:,:,z]) + mu*toto
         x[:,:,z] = real(ifft(xtmp./atmp))
     end
         return x
