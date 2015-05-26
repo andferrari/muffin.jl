@@ -395,7 +395,7 @@ function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj
 
     toto = zeros(Float64,255,255,15)
     zer = zeros(Complex64,255,255,15)
-    psfcbe = zeros(Float64,255,255,15)
+    psfcbe = zeros(Complex64,255,255,15)
 
     for z in 1:nfreq
         toto[:,:,z] = eye(255,255)
