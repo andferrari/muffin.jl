@@ -403,7 +403,7 @@ function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj
 
     for z in 1:nfreq
         xtmp = fft(wlt_b[:,:,z])
-        x[:,:,z] = imfilter_fft(xtmp,psfcbe[:,:,z])
+        x[:,:,z] = real(imfilter_fft(xtmp,psfcbe[:,:,z]))
     end
 
 
