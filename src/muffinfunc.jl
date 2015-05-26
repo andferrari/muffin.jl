@@ -449,10 +449,10 @@ end
     #     atmp = fft(mypsf[:,:,z].^2) + mu*toto
     #     x[:,:,z] = real(ifft(xtmp./atmp))
     # end
-        return x
-
-end
-
+#         return x
+#
+# end
+#
 
 #################################
 ###### proximity operators ######
