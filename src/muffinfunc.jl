@@ -403,8 +403,12 @@ function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj
         psfpad[1:255,1:255,z] = mypsf[:,:,z]
         toto[:,:,z] = eye(256,256)
         zer[:,:,z] = fft(psfpad[:,:,z])
+<<<<<<< HEAD
         psfcbe[:,:,z] = 1./ (abs(zer[:,:,z]).^2+mu*toto[:,:,z])
 <<<<<<< HEAD
+=======
+        psfcbe[:,:,z] = 1./ fft(abs(zer[:,:,z]).^2+mu*toto[:,:,z])
+>>>>>>> parent of de68238... bla
         x[:,:,z] = real(ifft(fft(wlt_b[:,:,z]).*psfcbe[:,:,z]))
 =======
         x[:,:,z] = real(ifft(fft(wlt_b[:,:,z]).*fft(psfcbe[:,:,z])))
