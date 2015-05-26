@@ -404,11 +404,15 @@ function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj
 
 
     for z in 1:nfreq
-        xtmp = fft(wlt_b[:,:,z])
-        println("toto")
-        x[:,:,z] = real(imfilter_fft(xtmp,psfcbe[:,:,z]))
-        println("titi")
+        x[:,:,z] = ifft(fft(wlt_b[:,:,z])./psfcbe[:,:,z])
     end
+    #
+    # for z in 1:nfreq
+    #     xtmp = fft(wlt_b[:,:,z])
+    #     println("toto")
+    #     x[:,:,z] = real(imfilter_fft(xtmp,psfcbe[:,:,z]))
+    #     println("titi")
+    # end
 
 
     # for z in 1:nfreq
