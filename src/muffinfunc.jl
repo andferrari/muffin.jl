@@ -403,7 +403,7 @@ function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj
         psfcbe[:,:,z] = fft(1./ (zer[:,:,z]+mu*toto[:,:,z]))
         titi = fft(wlt_b[:,:,z])
         # x[:,:,z] = imfilter_fft(titi,psfcbe[:,:,z])
-        x[:,:,z] = myconv2(titi,psfcbe[:,:,z])        
+        x[:,:,z] = myconv2(titi, hcat(vcat(psfcbe[:,:,z],zeros(1,length(psfcbe[:,:,z]))),zeros(1+length(psfcbe[:,:,z]),1)))        
     end
     return x
 
