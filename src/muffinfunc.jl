@@ -393,27 +393,45 @@ end
 function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj::Array{Float64,3},
                         wlt_b::SharedArray{Float64,3},mu::Float64,nfreq::Int64)
 
-    toto = zeros(Float64,256,256,15)
-    zer = zeros(Complex64,256,256,15)
-    psfcbe = zeros(Float64,256,256,15)
-    psfpad = zeros(Float64,256,256,15)
-
+    toto = zeros(Float64,255,255,15)
+    zer = zeros(Complex64,255,255,15)
+    psfcbe = zeros(Float64,255,255,15)
 
     for z in 1:nfreq
-        psfpad[1:255,1:255,z] = mypsf[:,:,z]
-        toto[:,:,z] = eye(256,256)
-        zer[:,:,z] = fft(psfpad[:,:,z])
-<<<<<<< HEAD
-        psfcbe[:,:,z] = 1./ (abs(zer[:,:,z]).^2+mu*toto[:,:,z])
-<<<<<<< HEAD
-=======
-        psfcbe[:,:,z] = 1./ fft(abs(zer[:,:,z]).^2+mu*toto[:,:,z])
->>>>>>> parent of de68238... bla
-        x[:,:,z] = real(ifft(fft(wlt_b[:,:,z]).*psfcbe[:,:,z]))
-=======
-        x[:,:,z] = real(ifft(fft(wlt_b[:,:,z]).*fft(psfcbe[:,:,z])))
->>>>>>> parent of e492097... fft
+        toto[:,:,z] = eye(255,255)
+        zer[:,:,z] = fft(mypsf[:,:,z]).^2
+
+        psfcbe[:,:,z] = ifft(1./ (zer[:,:,z]+mu*toto[:,:,z]))
+
+
+
+
+        x[:,:,z] = imfilter_fft(wlt_b,psfcbe[:,:,z])
+
     end
+
+
+    # toto = zeros(Float64,256,256,15)
+    # zer = zeros(Complex64,256,256,15)
+    # psfcbe = zeros(Float64,256,256,15)
+    # psfpad = zeros(Float64,256,256,15)
+
+
+    # for z in 1:nfreq
+    #     psfpad[1:255,1:255,z] = mypsf[:,:,z]
+    #     toto[:,:,z] = eye(256,256)
+    #     zer[:,:,z] = fft(psfpad[:,:,z])
+    #
+    #     psfcbe[:,:,z] = 1./ (abs(zer[:,:,z]).^2+mu*toto[:,:,z])
+    #
+    #
+    #     psfcbe[:,:,z] = 1./ fft(abs(zer[:,:,z]).^2+mu*toto[:,:,z])
+    #
+    #     x[:,:,z] = real(ifft(fft(wlt_b[:,:,z]).*psfcbe[:,:,z]))
+    #
+    #     x[:,:,z] = real(ifft(fft(wlt_b[:,:,z]).*fft(psfcbe[:,:,z])))
+    #
+    # end
 
 
 
