@@ -393,17 +393,21 @@ end
 function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj::Array{Float64,3},
                         wlt_b::SharedArray{Float64,3},mu::Float64,nfreq::Int64)
 
-    toto = zeros(Float64,255,255,15)
-    psfcbe = zeros(Complex128,255,255,15)
+    toto = zeros(Float64,256,256,15)
+    zer = zeros(Float64,256,256,15)
+    psfcbe = zeros(Complex128,256,256,15)
     for z in 1:nfreq
-        toto[:,:,z] = eye(255,255)
-        psfcbe[:,:,z] = 1./ (fft(mypsf[:,:,z].^2)+mu*toto[:,:,z])
+        toto[:,:,z] = eye(256,256)
+        zer[1:255,1:255,z] = fft(mypsf[:,:,z].^2)
+        psfcbe[:,:,z] = 1./ (zer[:,:,z]+mu*toto[:,:,z])
     end
 
 
     for z in 1:nfreq
         xtmp = fft(wlt_b[:,:,z])
+        println("toto")
         x[:,:,z] = real(imfilter_fft(xtmp,psfcbe[:,:,z]))
+        println("titi")
     end
 
 
