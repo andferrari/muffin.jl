@@ -404,7 +404,7 @@ function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj
 
 
     for z in 1:nfreq
-        x[:,:,z] = ifft(fft(wlt_b[:,:,z])./psfcbe[:,:,z])
+        x[:,:,z] = real(ifft(fft(wlt_b[:,:,z])./psfcbe[:,:,z]))
     end
     #
     # for z in 1:nfreq
