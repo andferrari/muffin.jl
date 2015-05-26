@@ -406,7 +406,7 @@ function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj
 
 
 
-        x[:,:,z] = imfilter_fft(wlt_b,psfcbe[:,:,z])
+        x[:,:,z] = imfilter_fft(wlt_b[:,:,z],psfcbe[:,:,z])
 
     end
 
