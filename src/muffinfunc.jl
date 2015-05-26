@@ -401,7 +401,8 @@ function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj
         toto[:,:,z] = eye(255,255)
         zer[:,:,z] = fft(mypsf[:,:,z]).^2
         psfcbe[:,:,z] = fft(1./ (zer[:,:,z]+mu*toto[:,:,z]))
-        x[:,:,z] = imfilter_fft(fft(wlt_b[:,:,z]),psfcbe[:,:,z])
+        titi = fft(wlt_b[:,:,z])
+        x[:,:,z] = imfilter_fft(titi,psfcbe[:,:,z])
     end
     return x
 
