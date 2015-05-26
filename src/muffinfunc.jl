@@ -399,18 +399,20 @@ function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj
 
     for z in 1:nfreq
         toto[:,:,z] = eye(255,255)
-        zer[:,:,z] = fft(mypsf[:,:,z]).^2
-        psfcbe[:,:,z] = fft(1./ (zer[:,:,z]+mu*toto[:,:,z]))
+        zer[:,:,z] = (mypsf[:,:,z]).^2
+        psfcbe[:,:,z] = 1./fft(zer[:,:,z]+mu*toto[:,:,z])
         titi = fft(wlt_b[:,:,z])
         # x[:,:,z] = imfilter_fft(titi,psfcbe[:,:,z])
-        x[:,:,z] = myconv2(titi, hcat(vcat(psfcbe[:,:,z],zeros(1,length(psfcbe[:,:,z]))),zeros(1+length(psfcbe[:,:,z]),1)))        
+        a = titi;
+        b = hcat(vcat(psfcbe[:,:,z],zeros(1,size(psfcbe[:,:,z],1))),zeros(1+size(psfcbe[:,:,z],1),1))
+        x[:,:,z] = myconv2(a,b)
     end
     return x
 
 end
 
 function myconv2(x,y)
-    return ifft2(fft(x).*fft(y))
+    return real( ifft(fft(x).*(y)) )
 end
     # toto = zeros(Float64,256,256,15)
     # zer = zeros(Complex64,256,256,15)
