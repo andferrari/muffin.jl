@@ -395,7 +395,7 @@ function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj
 
     toto = zeros(Float64,256,256,15)
     zer = zeros(Complex64,256,256,15)
-    psfcbe = zeros(Complex64,256,256,15)
+    psfcbe = zeros(Float64,256,256,15)
     psfpad = zeros(Float64,256,256,15)
 
 
