@@ -396,7 +396,7 @@ function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj
     for z in 1:nfreq
         xtmp = fft(wlt_b[:,:,z])
         atmp = (imfilter_fft(imfilter_fft(x[:,:,z], mypsf[:,:,z],"circular"), mypsfadj[:,:,z],"circular") + mu*x[:,:,z])
-        x[:,:,z] = ifft(xtmp./atmp)
+        x[:,:,z] = real(ifft(xtmp./atmp))
     end
         return x
 
