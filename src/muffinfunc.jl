@@ -103,6 +103,9 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
     loop = true
 
+plandct = plan_dct(zeros(Float64,15,256,256))
+planidct = plan_idct(zeros(Float64,15,256,256))
+
     tic()
         while loop
             tic()
@@ -156,11 +159,6 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             ######### prox spec ##########
             tic()
             tmp = permutedims(admmst.tauv + rhov*admmst.v,[3,1,2])
-
-            # admmst.s = estime_s(admmst.s,tmp,nxy,nspec,admmst.spectralwlt,
-            #                     admmst.x,admmst.taus,rhov,rhos)
-            #
-            # admmst.sh = estime_sh(admmst.s,admmst.sh,nxy)
 
             admmst.s, admmst.sh = estime_ssh(admmst.s,admmst.sh,tmp,nxy,nspec,admmst.spectralwlt,
                                               admmst.x,admmst.taus,rhov,rhos)
@@ -393,62 +391,23 @@ end
 function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj::Array{Float64,3},
                         wlt_b::SharedArray{Float64,3},mu::Float64,nfreq::Int64)
 
-    toto = zeros(Float64,255,255,15)
-    zer = zeros(Complex64,255,255,15)
-    psfcbe = zeros(Complex64,255,255,15)
+    nxy = (size(x))[1]
+    nxypsf = (size(mypsf))[1]
+    fftpsf = zeros(Complex64,nxy,nxy,15)
+    psfcbe = zeros(Complex64,nxy,nxy,15)
+    psfpad = zeros(Float64,nxy,nxy,15)
 
     for z in 1:nfreq
-        toto[:,:,z] = eye(255,255)
-        zer[:,:,z] = (mypsf[:,:,z]).^2
-        psfcbe[:,:,z] = 1./fft(zer[:,:,z]+mu*toto[:,:,z])
-        titi = fft(wlt_b[:,:,z])
-        # x[:,:,z] = imfilter_fft(titi,psfcbe[:,:,z])
-        a = titi;
-        b = hcat(vcat(psfcbe[:,:,z],zeros(1,size(psfcbe[:,:,z],1))),zeros(1+size(psfcbe[:,:,z],1),1))
-        x[:,:,z] = myconv2(a,b)
+        psfpad[1:nxypsf,1:nxypsf,z] = mypsf[:,:,z]
+        psfcbe[:,:,z] = 1./(abs(fft(psfpad[:,:,z])).^2+mu)
+        x[:,:,z] = real(ifft(psfcbe[:,:,z].*fft(wlt_b[:,:,z])))
     end
+
     return x
-
 end
 
-function myconv2(x,y)
-    return real( ifft(fft(x).*(y)) )
-end
-    # toto = zeros(Float64,256,256,15)
-    # zer = zeros(Complex64,256,256,15)
-    # psfcbe = zeros(Float64,256,256,15)
-    # psfpad = zeros(Float64,256,256,15)
 
 
-    # for z in 1:nfreq
-    #     psfpad[1:255,1:255,z] = mypsf[:,:,z]
-    #     toto[:,:,z] = eye(256,256)
-    #     zer[:,:,z] = fft(psfpad[:,:,z])
-    #
-    #     psfcbe[:,:,z] = 1./ (abs(zer[:,:,z]).^2+mu*toto[:,:,z])
-    #
-    #     x[:,:,z] = real(ifft(fft(wlt_b[:,:,z]).*psfcbe[:,:,z]))
-    #
-    #     x[:,:,z] = real(ifft(fft(wlt_b[:,:,z]).*fft(psfcbe[:,:,z])))
-    #
-    # end
-
-
-
-    #
-    # for z in 1:nfreq
-    #     xtmp = fft(wlt_b[:,:,z])
-    #     println("toto")
-    #     x[:,:,z] = real(imfilter_fft(xtmp,psfcbe[:,:,z]))
-    #     println("titi")
-    # end
-
-
-    # for z in 1:nfreq
-    #     xtmp = fft(wlt_b[:,:,z])
-    #     atmp = fft(mypsf[:,:,z].^2) + mu*toto
-    #     x[:,:,z] = real(ifft(xtmp./atmp))
-    # end
 
 
 #################################
@@ -504,39 +463,49 @@ end
 function estime_ssh(s::Array{Float64,3},sh::Array{Float64,3},tmp::Array{Float64,3},nxy::Int64,nspec::Int64,spectralwlt::Array{Float64,3},
                  x::SharedArray{Float64,3},taus::Array{Float64,3},rhov::Float64,rhos::Float64)
 
+    tic()
     for i in 1:nxy, j in 1:nxy
         spectralwlt[i,j,:]= idct(tmp[:,i,j])
     end
+    b = toq()
+    println("balise 1","  ",b)
+
+    tic()
     s = (spectralwlt + rhos*x - taus)/(rhov*nspec + rhos)
+    b = toq()
+    println("balise 2","  ",b)
 
+    tic()
     vecs = permutedims(s,[3,1,2])
+    b = toq()
+    println("balise 3","  ",b)
 
+    tic()
     for i in 1:nxy, j in 1:nxy
         sh[i,j,:] = dct(vecs[:,i,j])
     end
-
+    b = toq()
+    println("balise 4","  ",b)
     return s,sh
 end
 
 
-# #################################
-# ######### s estimation ##########
-# function estime_s(s::Array{Float64,3},tmp::Array{Float64,3},nxy::Int64,nspec::Int64,spectralwlt::Array{Float64,3},
-#                  x::SharedArray{Float64,3},taus::Array{Float64,3},rhov::Float64,rhos::Float64)
+# function estime_ssh(s::Array{Float64,3},sh::Array{Float64,3},
+#                     tmp::Array{Float64,3},nxy::Int64,nspec::Int64,
+#                     spectralwlt::Array{Float64,3}, x::SharedArray{Float64,3},
+#                     taus::Array{Float64,3},rhov::Float64,rhos::Float64,
+#                     plandct,planidct)
+#
 #     for i in 1:nxy, j in 1:nxy
-#      spectralwlt[i,j,:]= idct(tmp[:,i,j])
+#         spectralwlt[i,j,:]= planidct(tmp[:,i,j])
 #     end
 #     s = (spectralwlt + rhos*x - taus)/(rhov*nspec + rhos)
-#     return s
-# end
 #
-#
-# #################################
-# ######### sh estimation #########
-# function estime_sh(s::Array{Float64,3},sh::Array{Float64,3},nxy::Int64)
 #     vecs = permutedims(s,[3,1,2])
-#         for i in 1:nxy, j in 1:nxy
-#             sh[i,j,:] = dct(vecs[:,i,j])
-#         end
-#     return sh
+#
+#     for i in 1:nxy, j in 1:nxy
+#         sh[i,j,:] = plandct(vecs[:,i,j])
+#     end
+#
+#     return s,sh
 # end
