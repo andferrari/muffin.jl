@@ -103,7 +103,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
     loop = true
 
-    wlttmp = SharedArray(Float64,256,256,15,9)
+    wlttmp = Array(Float64,256,256,15,9)
     tic()
         while loop
             tic()
@@ -121,25 +121,24 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             # println("calcul wlt","  ",a)
 
 
-            # tic()
-            # for z in 1:nfreq, b in 1:nspat
-            #     toto[:,:,z,b] = idwt(admmst.taut[:,:,z,b] + rhot*admmst.t[:,:,z,b],wavelet(spatialwlt[b]))
-            # end
-            # admmst.wlt = squeeze(sum(toto,4),4)
-            # a = toq()
-            # println("calcul wlt","  ",a)
-
-
-
             tic()
-            @sync @parallel for z in 1:nfreq
-                                wlttmp[:,:,z,:] = myidwt(wlttmp[:,:,z,:],nspat,(admmst.taut)[:,:,z,:],rhot,
-                                                        (admmst.t)[:,:,z,:],spatialwlt)
-                            end
-            admmst.wlt = convert(Array,squeeze(sum(wlttmp,4),4))
-
+            for z in 1:nfreq, b in 1:nspat
+                wlttmp[:,:,z,b] = idwt(admmst.taut[:,:,z,b] + rhot*admmst.t[:,:,z,b],wavelet(spatialwlt[b]))
+            end
+            admmst.wlt = squeeze(sum(wlttmp,4),4)
             a = toq()
             println("calcul wlt","  ",a)
+
+
+
+            # tic()
+            # @sync @parallel for z in 1:nfreq
+            #                     wlttmp[:,:,z,:] = myidwt(wlttmp[:,:,z,:],nspat,(admmst.taut)[:,:,z,:],rhot,
+            #                                             (admmst.t)[:,:,z,:],spatialwlt)
+            #                 end
+            # admmst.wlt = convert(Array,squeeze(sum(wlttmp,4),4))
+            # a = toq()
+            # println("calcul wlt","  ",a)
 
             tic()
             b = fty + admmst.taup + rhop*admmst.p + admmst.taus + rhos*admmst.s
