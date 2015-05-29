@@ -49,10 +49,10 @@ type Admm_array
     taut::Array{Float64}
     rhot::Float64
 
-    wlt::SharedArray{Float64}
+    wlt::Array{Float64}
 
-    x::SharedArray{Float64}
-    Hx::SharedArray{Float64}
+    x::Array{Float64}
+    Hx::Array{Float64}
     xmm::Array{Float64}
 
     spectralwlt::Array{Float64}

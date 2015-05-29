@@ -103,9 +103,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
     loop = true
 
-plandct = plan_dct(zeros(Float64,15,256,256))
-planidct = plan_idct(zeros(Float64,15,256,256))
-
+    wlttmp = SharedArray(Float64,256,256,15,9)
     tic()
         while loop
             tic()
@@ -115,10 +113,31 @@ planidct = plan_idct(zeros(Float64,15,256,256))
 
             ##############################
             ########## update x ##########
+            # tic()
+            # for z in 1:nfreq, b in 1:nspat
+            #     admmst.wlt[:,:,z] = sum(idwt(admmst.taut[:,:,z,b] + rhot*admmst.t[:,:,z,b],wavelet(spatialwlt[b])),4)
+            # end
+            # a = toq()
+            # println("calcul wlt","  ",a)
+
+
+            # tic()
+            # for z in 1:nfreq, b in 1:nspat
+            #     toto[:,:,z,b] = idwt(admmst.taut[:,:,z,b] + rhot*admmst.t[:,:,z,b],wavelet(spatialwlt[b]))
+            # end
+            # admmst.wlt = squeeze(sum(toto,4),4)
+            # a = toq()
+            # println("calcul wlt","  ",a)
+
+
+
             tic()
-            for z in 1:nfreq, b in 1:nspat
-                admmst.wlt[:,:,z] = sum(idwt(admmst.taut[:,:,z,b] + rhot*admmst.t[:,:,z,b],wavelet(spatialwlt[b])),4)
-            end
+            @sync @parallel for z in 1:nfreq
+                                wlttmp[:,:,z,:] = myidwt(wlttmp[:,:,z,:],nspat,(admmst.taut)[:,:,z,:],rhot,
+                                                        (admmst.t)[:,:,z,:],spatialwlt)
+                            end
+            admmst.wlt = convert(Array,squeeze(sum(wlttmp,4),4))
+
             a = toq()
             println("calcul wlt","  ",a)
 
@@ -135,7 +154,6 @@ planidct = plan_idct(zeros(Float64,15,256,256))
             ######### prox spat ##########
 
             tic()
-
             for z in 1:nfreq, b in 1:nspat
                 admmst.Hx[:,:,z,b] = dwt(admmst.x[:,:,z],wavelet(spatialwlt[b]))
             end
@@ -144,21 +162,23 @@ planidct = plan_idct(zeros(Float64,15,256,256))
 
             tic()
             tmp = admmst.Hx - admmst.taut/rhot
-            admmst.t = prox_u(tmp,μt/rhot)
 
+            admmst.t = prox_u(tmp,μt/rhot)
 
             ##############################
             ###### prox positivity #######
 
             tmp = admmst.x-admmst.taup/rhop
+
             admmst.p = max(0,tmp)
+
             a = toq()
             println("calcul prox","  ", a)
 
             ##############################
             ######### prox spec ##########
             tic()
-            tmp = permutedims(admmst.tauv + rhov*admmst.v,[3,1,2])
+            tmp = admmst.tauv + rhov*admmst.v
 
             admmst.s, admmst.sh = estime_ssh(admmst.s,admmst.sh,tmp,nxy,nspec,admmst.spectralwlt,
                                               admmst.x,admmst.taus,rhov,rhos)
@@ -388,8 +408,8 @@ end
 #
 # end
 
-function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj::Array{Float64,3},
-                        wlt_b::SharedArray{Float64,3},mu::Float64,nfreq::Int64)
+function estime_x_par(x::Array{Float64,3},mypsf::Array{Float64,3},mypsfadj::Array{Float64,3},
+                        wlt_b::Array{Float64,3},mu::Float64,nfreq::Int64)
 
     nxy = (size(x))[1]
     nxypsf = (size(mypsf))[1]
@@ -460,32 +480,14 @@ end
 
 #################################
 ####### s / sh estimation #######
-function estime_ssh(s::Array{Float64,3},sh::Array{Float64,3},tmp::Array{Float64,3},nxy::Int64,nspec::Int64,spectralwlt::Array{Float64,3},
-                 x::SharedArray{Float64,3},taus::Array{Float64,3},rhov::Float64,rhos::Float64)
+function estime_ssh(s::Array{Float64,3},sh::Array{Float64,3},tmp::Array{Float64,3},
+                    nxy::Int64,nspec::Int64,spectralwlt::Array{Float64,3},
+                    x::Array{Float64,3},taus::Array{Float64,3},rhov::Float64,rhos::Float64)
 
-    tic()
-    for i in 1:nxy, j in 1:nxy
-        spectralwlt[i,j,:]= idct(tmp[:,i,j])
-    end
-    b = toq()
-    println("balise 1","  ",b)
-
-    tic()
+    spectralwlt = idct(tmp,3)
     s = (spectralwlt + rhos*x - taus)/(rhov*nspec + rhos)
-    b = toq()
-    println("balise 2","  ",b)
+    sh = dct(s,3)
 
-    tic()
-    vecs = permutedims(s,[3,1,2])
-    b = toq()
-    println("balise 3","  ",b)
-
-    tic()
-    for i in 1:nxy, j in 1:nxy
-        sh[i,j,:] = dct(vecs[:,i,j])
-    end
-    b = toq()
-    println("balise 4","  ",b)
     return s,sh
 end
 
@@ -509,3 +511,14 @@ end
 #
 #     return s,sh
 # end
+#
+
+
+function myidwt(tmp,nspat,taut,rhot,t,spatialwlt)
+
+              for b in 1:nspat
+                  tmp[:,:,:,b] = idwt(taut[:,:,1,b] + rhot*t[:,:,1,b],wavelet(spatialwlt[b]))
+
+              end
+    return tmp
+end
