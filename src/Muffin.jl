@@ -6,7 +6,7 @@
 
 ################################
 
-# psfst, skyst, algost, admmst, toolst = muffin()
+# psfst, skyst, algost, admmst, toolst = muffin();
 
 # demo = string(Pkg.dir("Muffin"),"/src/muffindemo.jl")
 
