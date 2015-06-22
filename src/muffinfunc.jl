@@ -23,6 +23,9 @@ println("MUFFIN initialisation")
     elseif dataobj == "2gauss"
         psf = "data/meerkat_m30_25pix.psf.fits"
         obj = "data/2gauss.fits"
+    elseif dataobj == "chiara"
+        psf = "/home/jeremy/Documents/Julia/psfchiara.fits"
+        obj = "/home/jeremy/Documents/Julia/skychiara.fits"
     elseif isempty(dataobj)
         psf = "data/meerkat_m30_25pix.psf.fits"
         obj = "data/M31.fits"
@@ -47,10 +50,17 @@ println("obj :"," ",obj)
     ################# Structure initialisation #################
                 ##################################
 
+if dataobj == "chiara"
+    ##################################
+    psfst = loadpsf(psf,1,2048)
+    skyst.mydata = lecture(obj)
+    ##################################
+else
     ##################################
     psfst = loadpsf(psf,bw,npixpsf)
     skyst = loadsky(obj,psfst.mypsf,psfst.nu)
     ##################################
+end
 
 
     ##################################
@@ -453,4 +463,52 @@ function myidwt(tmp,nspat,taut,rhot,t,spatialwlt)
 
               end
     return tmp
+end
+
+##################################
+
+##################################
+function data2cube(;nfreq = 11, nxy = 2048)
+
+    folder = "/home/jeremy/Documents/Julia/Andre"
+
+    psfcube = zeros(Float64,nxy,nxy,nfreq)
+    skycube = zeros(Float64,nxy,nxy,nfreq)
+
+    for z in [0:nfreq-1]
+        if z < 10
+            f = FITS(string(folder,folder[1],"halo_sim-0001-wsclean-000$z-dirty.fits"))
+            skycube[:,:,z+1] = squeeze(squeeze(read(f[1]),4),3)
+            close(f)
+            f = FITS(string(folder,folder[1],"halo_sim-0001-wsclean-000$z-psf.fits"))
+            psfcube[:,:,z+1] = squeeze(squeeze(read(f[1]),4),3)
+            close(f)
+        elseif z >= 10 | z < 100
+            f = FITS(string(folder,folder[1],"halo_sim-0001-wsclean-00$z-dirty.fits"))
+            skycube[:,:,z+1] = squeeze(squeeze(read(f[1]),4),3)
+            close(f)
+            f = FITS(string(folder,folder[1],"halo_sim-0001-wsclean-00$z-psf.fits"))
+            psfcube[:,:,z+1] = squeeze(squeeze(read(f[1]),4),3)
+            close(f)
+        else z >= 100
+            f = FITS(string(folder,folder[1],"halo_sim-0001-wsclean-0$z-dirty.fits"))
+            skycube[:,:,z+1] = squeeze(squeeze(read(f[1]),4),3)
+            close(f)
+            f = FITS(string(folder,folder[1],"halo_sim-0001-wsclean-0$z-psf.fits"))
+            psfcube[:,:,z+1] = squeeze(squeeze(read(f[1]),4),3)
+            close(f)
+
+            ##################################
+            # skycube, psfcube = data2cube()
+            #
+            # f = FITS("psfchiara.fits","w")
+            # write(f,psfcube)
+            # close(f)
+            # f = FITS("skychiara.fits","w")
+            # write(f,skycube)
+            # close(f)
+            ##################################
+        end
+    end
+    return skycube, psfcube
 end
