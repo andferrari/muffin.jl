@@ -4,7 +4,7 @@ using PyPlot
 
 # file = string("/home/jeremy/.julia/v0.3/Muffin/data/test300515.jld")
 
-file = string("/Users/deguignet/Documents/Git/Rec3d/data/results/andro_results.jld")
+file = string("/Users/deguignet/Documents/Git/Rec3d/data/results/result_1000iter_m31.jld")
 
 
 x = load(file, "admmst.x")
@@ -112,7 +112,7 @@ figure(6)
 clf()
 m = d12-40
 n = d12+40
-p = linspace(m,n,n-m+1)
+p = linspace(m,n,int64(n-m+1))
 q = alpharecsky[d12,m:n,2]'
 r = alpharec[d12,m:n,2]'
 dirty = alpharecdata[d12,m:n,2]'

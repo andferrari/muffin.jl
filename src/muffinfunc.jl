@@ -20,6 +20,9 @@ println("MUFFIN initialisation")
     elseif dataobj == "andro"
         psf = "data/meerkat_m30_25pix.psf.fits"
         obj = "data/andro.fits"
+    elseif dataobj == "2gauss"
+        psf = "data/meerkat_m30_25pix.psf.fits"
+        obj = "data/2gauss.fits"
     elseif isempty(dataobj)
         psf = "data/meerkat_m30_25pix.psf.fits"
         obj = "data/M31.fits"
