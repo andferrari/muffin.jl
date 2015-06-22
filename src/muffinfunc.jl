@@ -6,6 +6,9 @@ function muffin(;folder="",dataobj="",datapsf="",nitermax = 500, rhop = 1,
                 rhot = 5, rhov = 2, rhos = 1, μt = 5e-1, μv = 1e-0, mueps = 1e-3,
                 bw = 5, npixpsf = 255)
 
+println("")
+println("MUFFIN initialisation")
+
 
                  ##################################
     ################### data initialisation #################
@@ -20,14 +23,12 @@ function muffin(;folder="",dataobj="",datapsf="",nitermax = 500, rhop = 1,
     elseif isempty(dataobj)
         psf = "data/meerkat_m30_25pix.psf.fits"
         obj = "data/M31.fits"
-        # obj = "data/andro.fits"
-    else dataobj == ASCIIString
+    elseif dataobj == ASCIIString
         if isempty(folder)
             tmp = pwd()
             psf = string(tmp,tmp[1],datapsf)
             obj = string(tmp,tmp[1],dataobj)
         end
-
         if typeof(folder) == ASCIIString
              psf = string(folder,folder[1],datapsf)
              obj = string(folder,folder[1],dataobj)
@@ -36,8 +37,8 @@ function muffin(;folder="",dataobj="",datapsf="",nitermax = 500, rhop = 1,
         end
     end
 
-println(psf)
-println(obj)
+println("psf :"," ",psf)
+println("obj :"," ",obj)
 
                 ##################################
     ################# Structure initialisation #################
@@ -251,8 +252,6 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 end
 
 
-
-
 ####################################################################
 #######                  Data functions                      #######
 ####################################################################
@@ -392,18 +391,6 @@ end
 
 #################################
 ######### x estimation ##########
-# function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj::Array{Float64,3},
-#                         wlt_b::SharedArray{Float64,3},mu::Float64,nfreq::Int64)
-#
-#             @sync @parallel for z in 1:nfreq
-#
-#                                 x[:,:,z] = conjgrad(x[:,:,z], wlt_b[:,:,z], mypsf[:,:,z],
-#                                                     mypsfadj[:,:,z], mu, tol=1e-4, itermax = 1e3)
-#                             end
-#         return x
-#
-# end
-
 function estime_x_par(x::Array{Float64,3},mypsf::Array{Float64,3},mypsfadj::Array{Float64,3},
                         wlt_b::Array{Float64,3},mu::Float64,nfreq::Int64)
 
@@ -433,10 +420,6 @@ function estime_x_par(x::Array{Float64,3},mypsf::Array{Float64,3},mypsfadj::Arra
     return x
 end
 
-
-
-
-
 #################################
 ###### proximity operators ######
 function prox_u(u::SharedArray,μ::Float64)
@@ -446,44 +429,6 @@ end
 function prox_u(u::Array,μ::Float64)
     return (max(1-μ./abs(u),0).*u)
 end
-
-
-##########################################
-###### Conjugate Gradient Algorithm ######
-function conjgrad(xw::Array{Float64,2},bw::Array{Float64,2},mypsfw::Array{Float64,2},
-                  mypsfadjw::Array{Float64,2},mu::Float64; tol = 1e-6,itermax = 1e3)
-
-    r = bw - (imfilter_fft(imfilter_fft(xw, mypsfw,"circular"), mypsfadjw,"circular") + mu*xw)
-    rm = r
-    p = r
-    iter = 0
-    loop = true
-
-
-    while loop
-        iter += 1
-
-        Qp = imfilter_fft(imfilter_fft(p, mypsfw,"circular"), mypsfadjw,"circular") + mu*p
-
-        alpha = vecnorm(r)^2/sum(Qp.*p)
-        xw = xw + alpha*p
-        r = r - alpha*Qp
-        betaa = (vecnorm(r)/vecnorm(rm))^2
-        rm = r
-        p = r + betaa*p
-        crit = vecnorm(r)
-
-        if iter > itermax
-            error("itermax reached")
-        end
-
-        if crit < tol
-            loop = false
-        end
-    end
-    return xw
-end
-
 
 #################################
 ####### s / sh estimation #######
