@@ -11,8 +11,13 @@ function muffin(;folder="",dataobj="",datapsf="",nitermax = 500, rhop = 1,
     ################### data initialisation #################
                  ##################################
 
-
-    if isempty(dataobj)
+    if dataobj == "m31"
+        psf = "data/meerkat_m30_25pix.psf.fits"
+        obj = "data/M31.fits"
+    elseif dataobj == "andro"
+        psf = "data/meerkat_m30_25pix.psf.fits"
+        obj = "data/andro.fits"
+    elseif isempty(dataobj)
         psf = "data/meerkat_m30_25pix.psf.fits"
         obj = "data/M31.fits"
         # obj = "data/andro.fits"
@@ -309,7 +314,7 @@ function cubefreq(psf::ASCIIString,imagecube::Array,M::Int)
     end
     nfreqavg = itrunc(nfreq/M)
     file = FITS(psf)
-    header = readheader(file[1])
+    header = read_header(file[1])
     nustart = header["CRVAL4"]
     nustep = header["CDELT4"]
     nu0 = header["RESTFRQ"]

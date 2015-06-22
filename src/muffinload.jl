@@ -69,7 +69,6 @@ function loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,mydata,myps
     admmst.mueps = mueps
     admmst.tt = rhot*nspat
     admmst.mu = mueps + rhop + admmst.tt + rhos
-    println("taille wlttmp","   ",size(admmst.wlttmp))
     return admmst
 end
 

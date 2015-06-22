@@ -6,7 +6,7 @@
 
 ################################
 
-# psfst, skyst, algost, admmst, toolst = muffin();
+# psfst, skyst, algost, admmst, toolst = muffin(nitermax = 30);
 
 # demo = string(Pkg.dir("Muffin"),"/src/muffindemo.jl")
 
