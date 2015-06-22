@@ -53,7 +53,7 @@ println("obj :"," ",obj)
 if dataobj == "chiara"
     ##################################
     psfst = loadpsf(psf,1,2048)
-    skyst.mydata = lecture(obj)
+    skyst = loadsky(obj,psfst.mypsf,psfst.nu)
     ##################################
 else
     ##################################
@@ -327,6 +327,7 @@ function cubefreq(psf::ASCIIString,imagecube::Array,M::Int)
     nfreqavg = itrunc(nfreq/M)
     file = FITS(psf)
     header = read_header(file[1])
+    println(header)
     nustart = header["CRVAL4"]
     nustep = header["CDELT4"]
     nu0 = header["RESTFRQ"]
@@ -391,7 +392,10 @@ function lecture(directory::ASCIIString)
     file = FITS(directory)
     data = float64(read(file[1]))
     close(file)
-    data = squeeze(data,3)
+    println("taille data lecture"," ",size(data))
+    if length(size(data)) != 3
+        data = squeeze(data,3)
+    end
     return data
 end
 ##################################
@@ -485,6 +489,9 @@ function data2cube(;nfreq = 11, nxy = 2048)
             close(f)
         elseif z >= 10 | z < 100
             f = FITS(string(folder,folder[1],"halo_sim-0001-wsclean-00$z-dirty.fits"))
+
+
+
             skycube[:,:,z+1] = squeeze(squeeze(read(f[1]),4),3)
             close(f)
             f = FITS(string(folder,folder[1],"halo_sim-0001-wsclean-00$z-psf.fits"))
@@ -511,4 +518,19 @@ function data2cube(;nfreq = 11, nxy = 2048)
         end
     end
     return skycube, psfcube
+end
+
+
+function cubefreqchiara(psf::ASCIIString,imagecube::Array,M::Int)
+    nfreq = 11
+    nustart = 9.85e8
+    nustep = 2e6
+
+    nu = zeros(Float64,nfreq)
+    for i in 1:nfreq
+        nu[i] = nustart + (i-1)*nustep
+    end
+    nu0 = (nu[1] + nu[nfreq])/2
+
+    return nu,nu0
 end
