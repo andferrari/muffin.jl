@@ -2,7 +2,10 @@ using HDF5, JLD
 using PyPlot
 #include("testobj.jl");
 
-file = string("/home/jeremy/.julia/v0.3/Muffin/data/test300515.jld")
+# file = string("/home/jeremy/.julia/v0.3/Muffin/data/test300515.jld")
+
+file = string("/Users/deguignet/Documents/Git/Rec3d/data/results/andro_results.jld")
+
 
 x = load(file, "admmst.x")
 lastiter = load(file, "algost.lastiter")
@@ -23,6 +26,11 @@ nu = load(file, "psfst.nu")
 nu0 = load(file, "psfst.nu0")
 noise = load(file,"skyst.noise")
 
+d = size(x)[1]
+if isodd(size(x)[1]) == true
+    d12 = round((size(x)[1])/2)
+else d12 = d/2
+end
 
 
 #############################
@@ -67,7 +75,7 @@ errr = zeros(Float64,15)
 for z = 1:nfreq
     errr[z] = sqrt(sum((x[:,:,z] - sky[:,:,z]).^2)/sum(sky[:,:,z].^2))
 end
-#plot(nu./1e9,err[350,:]',marker="o",linewidth=2)
+# plot(nu./1e9,err[350,:]',marker="o",linewidth=2)
 plot(nu./1e9,errr[:],marker="o",linewidth=2)
 xlabel(L"\nu \; (GHz)",fontsize=18)
 ylabel(L"Relative \, rmse",fontsize=16)
@@ -102,12 +110,12 @@ colorbar(imshow(-alpharecsky[:,:,3]))
 #############################################
 figure(6)
 clf()
-m = 88
-n = 168
+m = d12-40
+n = d12+40
 p = linspace(m,n,n-m+1)
-q = alpharecsky[128,m:n,2]'
-r = alpharec[128,m:n,2]'
-dirty = alpharecdata[128,m:n,2]'
+q = alpharecsky[d12,m:n,2]'
+r = alpharec[d12,m:n,2]'
+dirty = alpharecdata[d12,m:n,2]'
 plot(p,q,linewidth=2)
 plot(p,r,linewidth=2)
 plot(p,dirty,linewidth=2)
@@ -118,10 +126,10 @@ ylabel(L"Spectral \, index \, \alpha",fontsize=18)
 #############################################
 figure(7)
 clf()
-p = linspace(88,168,81)
-q = alpharecsky[128,88:168,3]'
-r = alpharec[128,88:168,3]'
-dirty = alpharecdata[128,88:168,3]'
+p = linspace(d12-40,d12+40,81)
+q = alpharecsky[d12,d12-40:d12+40,3]'
+r = alpharec[d12,d12-40:d12+40,3]'
+dirty = alpharecdata[d12,d12-40:d12+40,3]'
 plot(p,q)
 plot(p,r)
 plot(p,dirty)
@@ -135,8 +143,8 @@ clf()
 
 subplot(1,2,1)
     p = nu./nu0
-    i = 128
-    j = 108
+    i = d12
+    j = d12-20
 
     q = 1*(squeeze(squeeze(x[i,j,:],1),1))
     d = (squeeze(squeeze(sky[i,j,:],1),1))
@@ -148,12 +156,13 @@ subplot(1,2,1)
     label2 = "Reconstructed spectrum"
 
     legend( (label1, label2), loc="upper right")
-    xlabel(L"$log(\nu/\nu0)$",fontsize=16)
+    xlabel(L"$log(\nu/\nu0)$,fontsize=16)
+    # xlabel(L"$log(\nu/\nu0)$",fontsize=16)
 
 subplot(1,2,2)
     p = nu./nu0
-    i = 128
-    j = 148
+    i = d12
+    j = d12+20
 
     q = 1.*(squeeze(squeeze(x[i,j,:],1),1))
     d = (squeeze(squeeze(sky[i,j,:],1),1))
@@ -168,7 +177,8 @@ subplot(1,2,2)
 
 
     legend( (label1, label2), loc="upper left")
-    xlabel(L"$log(\nu/\nu0)$",fontsize=16)
+    xlabel(L"$log(\nu/\nu0)$,fontsize=16)
+    # xlabel(L"$log(\nu/\nu0)$",fontsize=16)
 #############################################
 #############################################
 
