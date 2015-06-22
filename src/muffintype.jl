@@ -50,6 +50,7 @@ type Admm_array
     rhot::Float64
 
     wlt::Array{Float64}
+    wlttmp::Array{Float64}
 
     x::Array{Float64}
     Hx::Array{Float64}
@@ -90,7 +91,7 @@ function init_Algoparam()
     return Algo_param(0,0,0,0,0,0,0)
 end
 function init_Admmarray()
-    return Admm_array([],[],0.,[],[],[],0.,[],[],0.,[],[],0.,[],[],[],[],[],[],0.,0.,0.,0.,0.)
+    return Admm_array([],[],0.,[],[],[],0.,[],[],0.,[],[],0.,[],[],[],[],[],[],[],0.,0.,0.,0.,0.)
 end
 function init_TOOLS()
     return TOOLS([],[],[],[],[],[],[],[],[],[])

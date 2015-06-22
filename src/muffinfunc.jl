@@ -1,9 +1,10 @@
-####################################################################
+    ####################################################################
 #######                Main Muffin function                  #######
 ####################################################################
 
 function muffin(;folder="",dataobj="",datapsf="",nitermax = 500, rhop = 1,
-                rhot = 5, rhov = 2, rhos = 1, μt = 5e-1, μv = 1e-0, mueps = 1e-3)
+                rhot = 5, rhov = 2, rhos = 1, μt = 5e-1, μv = 1e-0, mueps = 1e-3,
+                bw = 5, npixpsf = 255)
 
 
                  ##################################
@@ -14,6 +15,7 @@ function muffin(;folder="",dataobj="",datapsf="",nitermax = 500, rhop = 1,
     if isempty(dataobj)
         psf = "data/meerkat_m30_25pix.psf.fits"
         obj = "data/M31.fits"
+        # obj = "data/andro.fits"
     else dataobj == ASCIIString
         if isempty(folder)
             tmp = pwd()
@@ -37,7 +39,7 @@ println(obj)
                 ##################################
 
     ##################################
-    psfst = loadpsf(psf,5)
+    psfst = loadpsf(psf,bw,npixpsf)
     skyst = loadsky(obj,psfst.mypsf,psfst.nu)
     ##################################
 
@@ -103,7 +105,6 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
     loop = true
 
-    wlttmp = Array(Float64,256,256,15,9)
     tic()
         while loop
             tic()
@@ -113,30 +114,20 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             ##############################
             ########## update x ##########
-            # tic()
-            # for z in 1:nfreq, b in 1:nspat
-            #     admmst.wlt[:,:,z] = sum(idwt(admmst.taut[:,:,z,b] + rhot*admmst.t[:,:,z,b],wavelet(spatialwlt[b])),4)
-            # end
-            # a = toq()
-            # println("calcul wlt","  ",a)
-
-
             tic()
             for z in 1:nfreq, b in 1:nspat
-                wlttmp[:,:,z,b] = idwt(admmst.taut[:,:,z,b] + rhot*admmst.t[:,:,z,b],wavelet(spatialwlt[b]))
+                admmst.wlttmp[:,:,z,b] = idwt(admmst.taut[:,:,z,b] + rhot*admmst.t[:,:,z,b],wavelet(spatialwlt[b]))
             end
-            admmst.wlt = squeeze(sum(wlttmp,4),4)
+            admmst.wlt = squeeze(sum(admmst.wlttmp,4),4)
             a = toq()
             println("calcul wlt","  ",a)
 
-
-
             # tic()
             # @sync @parallel for z in 1:nfreq
-            #                     wlttmp[:,:,z,:] = myidwt(wlttmp[:,:,z,:],nspat,(admmst.taut)[:,:,z,:],rhot,
+            #                     admmst.wlttmp[:,:,z,:] = myidwt(admmst.wlttmp[:,:,z,:],nspat,(admmst.taut)[:,:,z,:],rhot,
             #                                             (admmst.t)[:,:,z,:],spatialwlt)
             #                 end
-            # admmst.wlt = convert(Array,squeeze(sum(wlttmp,4),4))
+            # admmst.wlt = convert(Array,squeeze(sum(admmst.wlttmp,4),4))
             # a = toq()
             # println("calcul wlt","  ",a)
 
@@ -149,6 +140,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             admmst.x = estime_x_par(admmst.x,psfst.mypsf,psfst.mypsfadj,admmst.wlt + b,mu,nfreq)
             a = toq()
             println("calcul parallel","  ",a)
+
             ##############################
             ######### prox spat ##########
 
@@ -412,15 +404,26 @@ function estime_x_par(x::Array{Float64,3},mypsf::Array{Float64,3},mypsfadj::Arra
 
     nxy = (size(x))[1]
     nxypsf = (size(mypsf))[1]
-    fftpsf = zeros(Complex64,nxy,nxy,15)
-    psfcbe = zeros(Complex64,nxy,nxy,15)
-    psfpad = zeros(Float64,nxy,nxy,15)
+    fftpsf = zeros(Complex64,nxy,nxy,nfreq)
+    psfcbe = zeros(Complex64,nxy,nxy,nfreq)
+    psfpad = zeros(Float64,nxy,nxy,nfreq)
 
     for z in 1:nfreq
         psfpad[1:nxypsf,1:nxypsf,z] = mypsf[:,:,z]
         psfcbe[:,:,z] = 1./(abs(fft(psfpad[:,:,z])).^2+mu)
+
         x[:,:,z] = real(ifft(psfcbe[:,:,z].*fft(wlt_b[:,:,z])))
+
+        # x[:,:,z] = imfilter_fft(wlt_b[:,:,z],ifftshift(ifft(psfcbe[:,:,z])),"circular")
+        # xtmp = copy(x[:,:,z])
+        # x[:,2:nxy,z] = xtmp[:,1:nxy-1]
+        # x[:,1,z] = xtmp[:,nxy]
+        # xtmp = copy(x[:,:,z])
+        # x[2:nxy,:,z] = xtmp[1:nxy-1,:]
+        # x[1,:,z] = xtmp[nxy,:]
     end
+
+
 
     return x
 end
@@ -489,29 +492,6 @@ function estime_ssh(s::Array{Float64,3},sh::Array{Float64,3},tmp::Array{Float64,
 
     return s,sh
 end
-
-
-# function estime_ssh(s::Array{Float64,3},sh::Array{Float64,3},
-#                     tmp::Array{Float64,3},nxy::Int64,nspec::Int64,
-#                     spectralwlt::Array{Float64,3}, x::SharedArray{Float64,3},
-#                     taus::Array{Float64,3},rhov::Float64,rhos::Float64,
-#                     plandct,planidct)
-#
-#     for i in 1:nxy, j in 1:nxy
-#         spectralwlt[i,j,:]= planidct(tmp[:,i,j])
-#     end
-#     s = (spectralwlt + rhos*x - taus)/(rhov*nspec + rhos)
-#
-#     vecs = permutedims(s,[3,1,2])
-#
-#     for i in 1:nxy, j in 1:nxy
-#         sh[i,j,:] = plandct(vecs[:,i,j])
-#     end
-#
-#     return s,sh
-# end
-#
-
 
 function myidwt(tmp,nspat,taut,rhot,t,spatialwlt)
 

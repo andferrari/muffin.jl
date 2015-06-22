@@ -1,26 +1,26 @@
 function loadsky(obj::ASCIIString,mypsf,nu::Array)
     skyst = init_SKY()
     skyst.obj = obj
-    skyst.sky0 = (lecture(obj)/maximum(lecture(obj)))#[112:143,112:143]
+    skyst.sky0 = (lecture(obj)/maximum(lecture(obj)))
     skyst.sky,skyst.alpha = sky2cube(skyst.sky0,nu)
     skyst.skyconv = cubefilter(skyst.sky,mypsf)
     skyst.sig = sqrt(mean(skyst.skyconv.^2)/100)
     skyst.var = skyst.sig*skyst.sig
     skyst.noise = skyst.sig*randn(size(skyst.sky)[1],size(skyst.sky)[1],size(mypsf)[3])
-    skyst.mydata = skyst.skyconv #+ skyst.noise
+    skyst.mydata = skyst.skyconv + skyst.noise
     for z in 1:length(nu)
         push!(skyst.sumsky2, sum(skyst.sky[:,:,z].^2))
     end
     return skyst
 end
 
-function loadpsf(psf::ASCIIString,M::Int)
+function loadpsf(psf::ASCIIString,M::Int,npixpsf::Int)
     psfst = init_PSF()
     psfst.psf = psf
     psfst.psfcube = lecture(psfst.psf)
     psfst.psfavg = cubeaverage(psfst.psfcube,M)
     psfst.nu, psfst.nu0 = cubefreq(psfst.psf,psfst.psfcube,M)
-    psfst.mypsf = cropcubexy(psfst.psfavg,255)
+    psfst.mypsf = cropcubexy(psfst.psfavg,npixpsf)
     psfst.mypsfadj = flipdim(flipdim(psfst.mypsf,1),2)
     return psfst
 end
@@ -52,6 +52,7 @@ function loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,mydata,myps
     admmst.taut = zeros(Float64,nxy,nxy,nfreq,nspat)
     # admmst.wlt = SharedArray(Float64,nxy,nxy,nfreq)
     admmst.wlt = zeros(Float64,nxy,nxy,nfreq)
+    admmst.wlttmp = zeros(Float64,nxy,nxy,nfreq,nspat)
     admmst.x = copy(mydata)
     # admmst.Hx = SharedArray(Float64,nxy,nxy,nfreq,nspat)
     admmst.Hx = zeros(Float64,nxy,nxy,nfreq,nspat)
@@ -68,6 +69,7 @@ function loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,mydata,myps
     admmst.mueps = mueps
     admmst.tt = rhot*nspat
     admmst.mu = mueps + rhop + admmst.tt + rhos
+    println("taille wlttmp","   ",size(admmst.wlttmp))
     return admmst
 end
 
