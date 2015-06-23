@@ -230,20 +230,20 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             #
             # ##############################
             # ####### stopping rule ########
-            #
-            # if (niter >= nitermax) || ((toolst.tol1[niter] < 1E-6) && (toolst.tol2[niter] < 1E-4))
-            #     loop = false
-            #     algost.lastiter = niter
-            # end
+
+            if (niter >= nitermax) || ((toolst.tol1[niter] < 1E-6) && (toolst.tol2[niter] < 1E-4))
+                loop = false
+                algost.lastiter = niter
+            end
 
             admmst.xmm[:] = admmst.x
 
 
-            # @printf("| - error ||x - xm||: %02.04e \n", toolst.tol1[niter])
-            # @printf("| - error ||x - xp||: %02.04e \n", toolst.tol2[niter])
-            # @printf("| - error ||Hx - t||: %02.04e \n", toolst.tol3[niter])
-            # @printf("| - error ||x - s||: %02.04e \n", toolst.tol4[niter])
-            # @printf("| - error ||sh - v||: %02.04e \n", toolst.tol5[niter])
+            @printf("| - error ||x - xm||: %02.04e \n", toolst.tol1[niter])
+            @printf("| - error ||x - xp||: %02.04e \n", toolst.tol2[niter])
+            @printf("| - error ||Hx - t||: %02.04e \n", toolst.tol3[niter])
+            @printf("| - error ||x - s||: %02.04e \n", toolst.tol4[niter])
+            @printf("| - error ||sh - v||: %02.04e \n", toolst.tol5[niter])
 
             @printf("time for iteration : %f seconds \n", toq())
 
