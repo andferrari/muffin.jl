@@ -394,7 +394,7 @@ function lecture(directory::ASCIIString)
     close(file)
     println("taille data lecture"," ",size(data))
     if length(size(data)) != 3
-        data = squeeze(data,3)
+        data = squeeze(data,4)
     end
     return data
 end
