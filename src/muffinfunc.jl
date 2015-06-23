@@ -218,32 +218,32 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             push!(toolst.tol4,vecnorm(admmst.x - admmst.s, 2)^2)
             push!(toolst.tol5,vecnorm(admmst.sh - admmst.v, 2)^2)
 
-            push!(toolst.snr,10*log10(mean(cubefilter(admmst.x,psfst.mypsf).^2)/(skyst.sig)^2))
-            @printf("SNR : %02.04e dB \n", toolst.snr[niter])
+            # push!(toolst.snr,10*log10(mean(cubefilter(admmst.x,psfst.mypsf).^2)/(skyst.sig)^2))
+            # @printf("SNR : %02.04e dB \n", toolst.snr[niter])
 
 
-            ##############################
-            ############ RMSE ############
-            for z in 1:nfreq
-                toolst.err[niter,z] = sqrt(sum((admmst.x[:,:,z] - skyst.sky[:,:,z]).^2)/skyst.sumsky2[z])
-            end
-
-            ##############################
-            ####### stopping rule ########
-
-            if (niter >= nitermax) || ((toolst.tol1[niter] < 1E-6) && (toolst.tol2[niter] < 1E-4))
-                loop = false
-                algost.lastiter = niter
-            end
+            # ##############################
+            # ############ RMSE ############
+            # for z in 1:nfreq
+            #     toolst.err[niter,z] = sqrt(sum((admmst.x[:,:,z] - skyst.sky[:,:,z]).^2)/skyst.sumsky2[z])
+            # end
+            #
+            # ##############################
+            # ####### stopping rule ########
+            #
+            # if (niter >= nitermax) || ((toolst.tol1[niter] < 1E-6) && (toolst.tol2[niter] < 1E-4))
+            #     loop = false
+            #     algost.lastiter = niter
+            # end
 
             admmst.xmm[:] = admmst.x
 
 
-            @printf("| - error ||x - xm||: %02.04e \n", toolst.tol1[niter])
-            @printf("| - error ||x - xp||: %02.04e \n", toolst.tol2[niter])
-            @printf("| - error ||Hx - t||: %02.04e \n", toolst.tol3[niter])
-            @printf("| - error ||x - s||: %02.04e \n", toolst.tol4[niter])
-            @printf("| - error ||sh - v||: %02.04e \n", toolst.tol5[niter])
+            # @printf("| - error ||x - xm||: %02.04e \n", toolst.tol1[niter])
+            # @printf("| - error ||x - xp||: %02.04e \n", toolst.tol2[niter])
+            # @printf("| - error ||Hx - t||: %02.04e \n", toolst.tol3[niter])
+            # @printf("| - error ||x - s||: %02.04e \n", toolst.tol4[niter])
+            # @printf("| - error ||sh - v||: %02.04e \n", toolst.tol5[niter])
 
             @printf("time for iteration : %f seconds \n", toq())
 
@@ -254,11 +254,11 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
     ####################################################################
     ####################################################################
 
-    for z in 1:nfreq
-        toolst.errorrec[:,:,z] = skyst.sky[:,:,z] - admmst.x[:,:,z]
-        toolst.errorest[z] =  vecnorm(skyst.sky[:,:,z] - admmst.x[:,:,z])^2/skyst.sumsky2[z]
-        toolst.errorraw[z] =  vecnorm(skyst.mydata[:,:,z] - admmst.x[:,:,z])^2/vecnorm(skyst.mydata[:,:,z])^2
-    end
+    # for z in 1:nfreq
+    #     toolst.errorrec[:,:,z] = skyst.sky[:,:,z] - admmst.x[:,:,z]
+    #     toolst.errorest[z] =  vecnorm(skyst.sky[:,:,z] - admmst.x[:,:,z])^2/skyst.sumsky2[z]
+    #     toolst.errorraw[z] =  vecnorm(skyst.mydata[:,:,z] - admmst.x[:,:,z])^2/vecnorm(skyst.mydata[:,:,z])^2
+    # end
 
     return psfst, skyst, algost, admmst, toolst
 
