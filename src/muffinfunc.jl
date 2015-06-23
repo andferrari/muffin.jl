@@ -24,8 +24,8 @@ println("MUFFIN initialisation")
         psf = "data/meerkat_m30_25pix.psf.fits"
         obj = "data/2gauss.fits"
     elseif dataobj == "chiara"
-        psf = "/home/jeremy/Documents/Julia/psfchiara.fits"
-        obj = "/home/jeremy/Documents/Julia/skychiara.fits"
+        psf = "data/psfchiara.fits"
+        obj = "data/skychiara.fits"
     elseif isempty(dataobj)
         psf = "data/meerkat_m30_25pix.psf.fits"
         obj = "data/M31.fits"

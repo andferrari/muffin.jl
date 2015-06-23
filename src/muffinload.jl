@@ -21,13 +21,6 @@ function loadsky(obj::ASCIIString,mypsf,nu::Array)
     return skyst
 end
 
-# function loadsky(obj::ASCIIString,mypsf,nu::Array)
-#     skyst = init_SKY()
-#     skyst.mydata = lecture(obj)
-#
-#     return skyst
-# end
-
 function loadpsf(psf::ASCIIString,M::Int,npixpsf::Int)
     psfst = init_PSF()
     psfst.psf = psf
