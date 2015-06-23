@@ -474,7 +474,7 @@ end
 ##################################
 function data2cube(;nfreq = 11, nxy = 2048)
 
-    folder = "/home/jeremy/Documents/Julia/Andre"
+    folder = "/Users/deguignet/Documents/Julia/Andre"
 
     psfcube = zeros(Float64,nxy,nxy,nfreq)
     skycube = zeros(Float64,nxy,nxy,nfreq)
@@ -507,11 +507,11 @@ function data2cube(;nfreq = 11, nxy = 2048)
 
             ##################################
             # skycube, psfcube = data2cube()
-            #
-            # f = FITS("psfchiara.fits","w")
+
+            # f = FITS("psfchiara.fits","w");
             # write(f,psfcube)
             # close(f)
-            # f = FITS("skychiara.fits","w")
+            # f = FITS("skychiara.fits","w");
             # write(f,skycube)
             # close(f)
             ##################################
