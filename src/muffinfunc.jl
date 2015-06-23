@@ -133,22 +133,22 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             ##############################
             ########## update x ##########
-            # tic()
-            # for z in 1:nfreq, b in 1:nspat
-            #     admmst.wlttmp[:,:,z,b] = idwt(admmst.taut[:,:,z,b] + rhot*(admmst.t[:,:,z,b]), wavelet(spatialwlt[b]))
-            # end
-            # admmst.wlt = squeeze(sum(admmst.wlttmp,4),4)
-            # a = toq()
-            # println("calcul wlt","  ",a)
-
             tic()
-            @sync @parallel for z in 1:nfreq
-                                admmst.wlttmp[:,:,z,:] = myidwt(admmst.wlttmp[:,:,z,:],nspat,(admmst.taut)[:,:,z,:],rhot,
-                                                        (admmst.t)[:,:,z,:],spatialwlt)
-                            end
-            admmst.wlt = convert(Array,squeeze(sum(admmst.wlttmp,4),4))
+            for z in 1:nfreq, b in 1:nspat
+                admmst.wlttmp[:,:,z,b] = idwt(admmst.taut[:,:,z,b] + rhot*(admmst.t[:,:,z,b]), wavelet(spatialwlt[b]))
+            end
+            admmst.wlt = squeeze(sum(admmst.wlttmp,4),4)
             a = toq()
             println("calcul wlt","  ",a)
+
+            # tic()
+            # @sync @parallel for z in 1:nfreq
+            #                     admmst.wlttmp[:,:,z,:] = myidwt(admmst.wlttmp[:,:,z,:],nspat,(admmst.taut)[:,:,z,:],rhot,
+            #                                             (admmst.t)[:,:,z,:],spatialwlt)
+            #                 end
+            # admmst.wlt = convert(Array,squeeze(sum(admmst.wlttmp,4),4))
+            # a = toq()
+            # println("calcul wlt","  ",a)
 
             tic()
             b = fty + admmst.taup + rhop*admmst.p + admmst.taus + rhos*admmst.s
@@ -171,16 +171,16 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             println("calcul HX", "  ", a)
 
             tic()
-            tmp = admmst.Hx - admmst.taut/rhot
+            @time tmp = admmst.Hx - admmst.taut/rhot
 
-            admmst.t = prox_u(tmp,μt/rhot)
+            @time admmst.t = prox_u(tmp,μt/rhot)
 
             ##############################
             ###### prox positivity #######
 
-            tmp = admmst.x-admmst.taup/rhop
+            @time tmp = admmst.x-admmst.taup/rhop
 
-            admmst.p = max(0,tmp)
+            @time admmst.p = max(0,tmp)
 
             a = toq()
             println("calcul prox","  ", a)
