@@ -24,8 +24,8 @@ println("MUFFIN initialisation")
         psf = "data/meerkat_m30_25pix.psf.fits"
         obj = "data/2gauss.fits"
     elseif dataobj == "chiara"
-        psf = "/home/deguignet/Julia/psfchiara.fits"
-        obj = "/home/deguignet/Julia/skychiara.fits"
+        psf = "/home/deguignet/Julia/example_sim_psf.fits"
+        obj = "/home/deguignet/Julia/example_sim_dirty.fits"
     elseif isempty(dataobj)
         psf = "data/meerkat_m30_25pix.psf.fits"
         obj = "data/M31.fits"
@@ -472,7 +472,7 @@ end
 ##################################
 
 ##################################
-function data2cube(;nfreq = 11, nxy = 2048)
+function data2cube(;nfreq = 32, nxy = 2048)
 
     folder = "/Users/deguignet/Documents/Julia/Andre"
 
@@ -522,7 +522,7 @@ end
 
 
 function cubefreqchiara(psf::ASCIIString,imagecube::Array,M::Int)
-    nfreq = 11
+    nfreq = 32
     nustart = 9.85e8
     nustep = 2e6
 
