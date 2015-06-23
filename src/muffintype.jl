@@ -50,7 +50,7 @@ type Admm_array
     rhot::Float64
 
     wlt::Array{Float64}
-    wlttmp::Array{Float64}
+    wlttmp::SharedArray{Float64}
 
     x::Array{Float64}
     Hx::Array{Float64}
