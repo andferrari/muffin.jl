@@ -52,12 +52,16 @@ println("obj :"," ",obj)
 
 if dataobj == "chiara"
     ##################################
+    println("loading psf...")
     psfst = loadpsf(psf,1,2048)
+    println("loading sky...")
     skyst = loadsky(obj,psfst.mypsf,psfst.nu)
     ##################################
 else
     ##################################
+    println("loading psf...")
     psfst = loadpsf(psf,bw,npixpsf)
+    println("loading sky...")
     skyst = loadsky(obj,psfst.mypsf,psfst.nu)
     ##################################
 end
@@ -74,8 +78,10 @@ end
     #################################
 
     #################################
+    println("loading param...")
     algost = loadparam(nspat,nfreq,nspec,nxy,niter,lastiter,nitermax)
 
+    println("loading arrays...")
     admmst = loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,
                         skyst.mydata,psfst.mypsfadj)
 
@@ -85,7 +91,7 @@ end
                  ##################################
     #####################  Main Admm Loop  #####################
                  ##################################
-
+    println("Starting ADMM")
     #################################
     psfst, skyst, algost, admmst, toolst = muffinadmm(psfst, skyst, algost, admmst, toolst)
     #################################
