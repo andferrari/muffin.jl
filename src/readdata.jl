@@ -4,27 +4,27 @@ using PyPlot
 
 # file = string("/home/jeremy/.julia/v0.3/Muffin/data/test300515.jld")
 
-file = string("/Users/deguignet/Documents/Git/Rec3d/data/results/result_1000iter_m31.jld")
-
+#file = string("/Users/deguignet/Documents/Git/Rec3d/data/results/result_1000iter_m31.jld")
+file = string("/Users/deguignet/Documents/Julia/Andre/resultchiara.jld")
 
 x = load(file, "admmst.x")
 lastiter = load(file, "algost.lastiter")
 nfreq = load(file, "algost.nfreq")
-errorrec = load(file, "toolst.errorrec")
-errorest = load(file, "toolst.errorest")
-errorraw = load(file, "toolst.errorraw")
+# errorrec = load(file, "toolst.errorrec")
+# errorest = load(file, "toolst.errorest")
+# errorraw = load(file, "toolst.errorraw")
 err = load(file, "toolst.err")
 tol1 = load(file, "toolst.tol1")
 tol2 = load(file, "toolst.tol2")
 tol3 = load(file, "toolst.tol3")
 tol4 = load(file, "toolst.tol4")
 tol5 = load(file, "toolst.tol5")
-mydata = load(file, "skyst.mydata")
-sky = load(file, "skyst.sky")
-snr = load(file, "toolst.snr")
+# mydata = load(file, "skyst.mydata")
+# sky = load(file, "skyst.sky")
+# snr = load(file, "toolst.snr")
 nu = load(file, "psfst.nu")
 nu0 = load(file, "psfst.nu0")
-noise = load(file,"skyst.noise")
+# noise = load(file,"skyst.noise")
 
 d = size(x)[1]
 if isodd(size(x)[1]) == true
@@ -34,7 +34,7 @@ end
 
 
 #############################
-nw = 15
+nw = 11
 nu = zeros(Float64,nw)
 
 for i = 1:nw

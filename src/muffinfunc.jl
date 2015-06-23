@@ -135,7 +135,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             ########## update x ##########
             tic()
             for z in 1:nfreq, b in 1:nspat
-                admmst.wlttmp[:,:,z,b] = idwt(admmst.taut[:,:,z,b] + rhot*admmst.t[:,:,z,b],wavelet(spatialwlt[b]))
+                admmst.wlttmp[:,:,z,b] = idwt(admmst.taut[:,:,z,b] + rhot*(admmst.t[:,:,z,b]), wavelet(spatialwlt[b]))
             end
             admmst.wlt = squeeze(sum(admmst.wlttmp,4),4)
             a = toq()

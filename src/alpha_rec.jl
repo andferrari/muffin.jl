@@ -8,7 +8,7 @@ alpharecsky = zeros(Float64,nxy,nxy,3)
 alpharecdata = zeros(Float64,nxy,nxy,3)
 nu0 = (nu[end]+nu[1])/2
 
-N = 15
+N = 11
 ν = nu./nu0
 A = [ones(N) log10(ν) log10(ν).^2]
 for i = 1:nxy, j = 1:nxy
