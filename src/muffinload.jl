@@ -21,14 +21,22 @@ function loadsky(obj::ASCIIString,mypsf,nu::Array)
     return skyst
 end
 
+# function loadpsf(psf::ASCIIString,M::Int,npixpsf::Int)
+#     psfst = init_PSF()
+#     psfst.psf = psf
+#     psfst.psfcube = lecture(psfst.psf)
+#     psfst.psfavg = cubeaverage(psfst.psfcube,M)
+#     # psfst.nu, psfst.nu0 = cubefreq(psfst.psf,psfst.psfcube,M)
+#     psfst.nu, psfst.nu0 = cubefreqchiara(psfst.psf,psfst.psfcube,M)
+#     psfst.mypsf = cropcubexy(psfst.psfavg,npixpsf)
+#     psfst.mypsfadj = flipdim(flipdim(psfst.mypsf,1),2)
+#     return psfst
+# end
 function loadpsf(psf::ASCIIString,M::Int,npixpsf::Int)
     psfst = init_PSF()
-    psfst.psf = psf
-    psfst.psfcube = lecture(psfst.psf)
-    psfst.psfavg = cubeaverage(psfst.psfcube,M)
-    # psfst.nu, psfst.nu0 = cubefreq(psfst.psf,psfst.psfcube,M)
-    psfst.nu, psfst.nu0 = cubefreqchiara(psfst.psf,psfst.psfcube,M)
-    psfst.mypsf = cropcubexy(psfst.psfavg,npixpsf)
+    psfcube = lecture(psf)
+    psfst.nu, psfst.nu0 = cubefreqchiara()
+    psfst.mypsf = cropcubexy(psfcub,npixpsf)
     psfst.mypsfadj = flipdim(flipdim(psfst.mypsf,1),2)
     return psfst
 end

@@ -549,7 +549,7 @@ function data2cube(;nfreq = 1, nxy = 2048)
 end
 
 
-function cubefreqchiara(psf::ASCIIString,imagecube::Array,M::Int)
+function cubefreqchiara()
     nfreq = 11
     nustart = 9.85e8
     nustep = 2e6

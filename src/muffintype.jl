@@ -1,12 +1,20 @@
+# type PSF
+#     psf::ASCIIString
+#     psfcube::Array{Float64}
+#     psfavg::Array{Float64}
+#     nu::Array{Float64}
+#     nu0::Float64
+#     mypsf::Array{Float64}
+#     mypsfadj::Array{Float64}
+# end
+
 type PSF
-    psf::ASCIIString
-    psfcube::Array{Float64}
-    psfavg::Array{Float64}
     nu::Array{Float64}
     nu0::Float64
     mypsf::Array{Float64}
     mypsfadj::Array{Float64}
 end
+
 
 type SKY
     obj::ASCIIString
@@ -80,9 +88,14 @@ type TOOLS
     errorraw::Array{Float64}
 end
 
+# function init_PSF()
+#     return PSF("",[],[],[],0.,[],[])
+# end
+
 function init_PSF()
-    return PSF("",[],[],[],0.,[],[])
+    return PSF([],0.,[],[])
 end
+
 function init_SKY()
     return SKY("",[],[],[],[],0.,0.,[],[],[])
 end
