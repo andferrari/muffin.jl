@@ -402,7 +402,7 @@ function lecture(directory::ASCIIString)
     if length(size(data)) != 3
         data = squeeze(data,4)
     end
-    data = data[:,:,11]
+    data = data[:,:,1:11]
     println("taille tronquee","  ",size(data))
     return data
 end
