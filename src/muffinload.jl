@@ -36,7 +36,7 @@ function loadpsf(psf::ASCIIString,M::Int,npixpsf::Int)
     psfst = init_PSF()
     psfcube = lecture(psf)
     psfst.nu, psfst.nu0 = cubefreqchiara()
-    psfst.mypsf = cropcubexy(psfcub,npixpsf)
+    psfst.mypsf = cropcubexy(psfcube,npixpsf)
     psfst.mypsfadj = flipdim(flipdim(psfst.mypsf,1),2)
     return psfst
 end
