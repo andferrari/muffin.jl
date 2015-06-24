@@ -506,8 +506,9 @@ function myidwt(wlt,nspat,taut,rhot,t,spatialwlt)
     println("size wlt "," ",size(wlt))
 
               for b in 1:nspat
-                  tmp[:,:,b] = idwt(taut[:,:,1,b] + rhot*t[:,:,1,b],wavelet(spatialwlt[b]))
+                  tmp = tmp + idwt(taut[:,:,1,b] + rhot*t[:,:,1,b],wavelet(spatialwlt[b]))
               end
+              println("size tmp"," ",size(tmp))
               wlt = squeeze(sum(tmp,3),3)
     return wlt
 end
