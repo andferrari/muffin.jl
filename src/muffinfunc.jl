@@ -179,34 +179,34 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             ##############################
             ######### prox spat ##########
 
-            # tic()
-            # for z in 1:nfreq, b in 1:nspat
-            #     admmst.Hx[:,:,z,b] = dwt(admmst.x[:,:,z],wavelet(spatialwlt[b]))
-            # end
-            # a = toq()
-            # println("calcul HX", "  ", a)
-            #
-            # tic()
-            # @time tmp = admmst.Hx - (admmst.taut)/rhot
-            #
-            # @time admmst.t = prox_u(tmp,μt/rhot)
-            # # tmp = 0
-
             tic()
-            for z in 1:nfreq
-                for b in 1:nspat
-                        hx = dwt(admmst.x[:,:,z],wavelet(spatialwlt[b]))
-                        tmp = hx - admmst.taut[:,:,z,b]/rhot
-                        admmst.t[:,:,z,b] = prox_u(tmp,μt/rhot)
-                        admmst.taut[:,:,z,b] = admmst.taut[:,:,z,b] + rhot*(admmst.t[:,:,z,b]-hx)
-                end
+            for z in 1:nfreq, b in 1:nspat
+                admmst.Hx[:,:,z,b] = dwt(admmst.x[:,:,z],wavelet(spatialwlt[b]))
             end
             a = toq()
-            println("new", "  ", a)
+            println("calcul HX", "  ", a)
 
+            tic()
+            @time tmp = admmst.Hx - (admmst.taut)/rhot
+
+            @time admmst.t = prox_u(tmp,μt/rhot)
+            # # tmp = 0
+
+            # tic()
+            # for z in 1:nfreq
+            #     for b in 1:nspat
+            #             hx = dwt(admmst.x[:,:,z],wavelet(spatialwlt[b]))
+            #             tmp = hx - admmst.taut[:,:,z,b]/rhot
+            #             admmst.t[:,:,z,b] = prox_u(tmp,μt/rhot)
+            #             admmst.taut[:,:,z,b] = admmst.taut[:,:,z,b] + rhot*(admmst.t[:,:,z,b]-hx)
+            #     end
+            # end
+            # a = toq()
+            # println("new", "  ", a)
+            # tic()
             ##############################
             ###### prox positivity #######
-            tic()
+
             @time tmp = admmst.x-admmst.taup/rhop
 
             @time admmst.p = max(0,tmp)
@@ -235,7 +235,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             #### update of Lagrange multipliers ####
 
             admmst.taup = admmst.taup + rhop*(admmst.p-admmst.x)
-            # admmst.taut = admmst.taut + rhot*(admmst.t-admmst.Hx)
+            admmst.taut = admmst.taut + rhot*(admmst.t-admmst.Hx)
             admmst.tauv = admmst.tauv + rhov*(admmst.v-admmst.sh)
             admmst.taus = admmst.taus + rhos*(admmst.s-admmst.x)
 
