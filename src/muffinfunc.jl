@@ -254,7 +254,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             end
 
             admmst.xmm[:] = admmst.x
-
+            run(`free -g`)
 
             @printf("| - error ||x - xm||: %02.04e \n", toolst.tol1[niter])
             @printf("| - error ||x - xp||: %02.04e \n", toolst.tol2[niter])
