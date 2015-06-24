@@ -149,10 +149,13 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             tic()
             for z in 1:nfreq, for b in 1:nspat
-                admmst.wlt[:,:,z] = admmst.wlt[:,:,z] + idwt(admmst.taut[:,:,z,b] + rhot*(admmst.t[:,:,z,b]), wavelet(spatialwlt[b]))
+                admmst.wlt[:,:,z] = myidwt(admmst.wlt[:,:,z], nspat, (admmst.taut)[:,:,z,:], rhot,
+                                    (admmst.t)[:,:,z,:], spatialwlt)
             end
             a = toq()
             println("calcul wlt","  ",a)
+
+
 
             # tic()
             # @sync @parallel for z in 1:nfreq
@@ -490,13 +493,23 @@ function estime_ssh(s::Array{Float64,3},sh::Array{Float64,3},tmp::Array{Float64,
     return s,sh
 end
 
-function myidwt(tmp,nspat,taut,rhot,t,spatialwlt)
+# function myidwt(tmp,nspat,taut,rhot,t,spatialwlt)
+#
+#               for b in 1:nspat
+#                   tmp[:,:,:,b] = idwt(taut[:,:,1,b] + rhot*t[:,:,1,b],wavelet(spatialwlt[b]))
+#
+#               end
+#     return tmp
+# end
+
+function myidwt(wlt,nspat,taut,rhot,t,spatialwlt)
+    println("size wlt "," ",size(wlt))
 
               for b in 1:nspat
-                  tmp[:,:,:,b] = idwt(taut[:,:,1,b] + rhot*t[:,:,1,b],wavelet(spatialwlt[b]))
-
+                  tmp[:,:,b] = idwt(taut[:,:,1,b] + rhot*t[:,:,1,b],wavelet(spatialwlt[b]))
               end
-    return tmp
+              wlt = squeeze(sum(tmp,3),3)
+    return wlt
 end
 
 ##################################
