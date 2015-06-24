@@ -178,7 +178,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             tic()
             @time tmp = admmst.Hx - (admmst.taut)/rhot
-
+            println(size(tmp))
             @time admmst.t = prox_u(tmp,μt/rhot)
             # @time admmst.t = max(1 - (1)./ abs(tmp), 0).*tmp
 
@@ -531,7 +531,7 @@ end
 
 
 function cubefreqchiara(psf::ASCIIString,imagecube::Array,M::Int)
-    nfreq = 1
+    nfreq = 11
     nustart = 9.85e8
     nustep = 2e6
 
