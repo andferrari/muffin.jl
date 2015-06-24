@@ -206,7 +206,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             ##############################
             ###### prox positivity #######
-
+            tic()
             @time tmp = admmst.x-admmst.taup/rhop
 
             @time admmst.p = max(0,tmp)
