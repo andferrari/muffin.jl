@@ -448,12 +448,12 @@ end
 
 #################################
 ###### proximity operators ######
-function prox_u(u::SharedArray,μ::Float64)
-    return (max(1-μ./abs(u),0).*u)
-end
+# function prox_u(u::SharedArray,μ::Float64)
+#     return (max(1-μ./abs(u),0).*u)
+# end
 
 function prox_u(u::Array,μ::Float64)
-    return (max(1-μ./abs(u),0).*u)
+    return max(0, 1-μ./abs(u)).*u
 end
 
 #################################
