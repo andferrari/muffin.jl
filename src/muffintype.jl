@@ -16,17 +16,21 @@ type PSF
 end
 
 
+# type SKY
+#     obj::ASCIIString
+#     sky0::Array{Float64}
+#     sky::Array{Float64}
+#     alpha::Array{Float64}
+#     skyconv::Array{Float64}
+#     sig::Float64
+#     var::Float64
+#     noise::Array{Float64}
+#     mydata::Array{Float64}
+#     sumsky2::Array{Float64}
+# end
+
 type SKY
-    obj::ASCIIString
-    sky0::Array{Float64}
-    sky::Array{Float64}
-    alpha::Array{Float64}
-    skyconv::Array{Float64}
-    sig::Float64
-    var::Float64
-    noise::Array{Float64}
     mydata::Array{Float64}
-    sumsky2::Array{Float64}
 end
 
 type Algo_param
@@ -95,10 +99,13 @@ end
 function init_PSF()
     return PSF([],0.,[],[])
 end
-
 function init_SKY()
-    return SKY("",[],[],[],[],0.,0.,[],[],[])
+    return SKY([])
 end
+
+# function init_SKY()
+#     return SKY("",[],[],[],[],0.,0.,[],[],[])
+# end
 function init_Algoparam()
     return Algo_param(0,0,0,0,0,0,0)
 end

@@ -130,13 +130,6 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
     loop = true
 
-    # psfst.psf[:] = 0
-    # psfst.psfcube[:] = 0
-    # psfst.psfavg[:] = 0
-    # toolst.errorrec[:] = 0
-    # toolst.errorest[:] = 0
-    # toolst.errorraw[:] = 0
-
     tic()
         while loop
             tic()
@@ -146,13 +139,6 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             ##############################
             ########## update x ##########
-            # tic()
-            # for z in 1:nfreq, b in 1:nspat
-            #     admmst.wlttmp[:,:,z,b] = idwt(admmst.taut[:,:,z,b] + rhot*(admmst.t[:,:,z,b]), wavelet(spatialwlt[b]))
-            # end
-            # admmst.wlt = squeeze(sum(admmst.wlttmp,4),4)
-            # a = toq()
-            # println("calcul wlt","  ",a)
             tic()
             for z in 1:nfreq
                 for b in 1:nspat
@@ -197,7 +183,16 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             println(size(tmp))
             @time admmst.t = prox_u(tmp,μt/rhot)
             tmp = 0
-            # @time admmst.t = max(1 - (1)./ abs(tmp), 0).*tmp
+
+
+            # for z in 1:nfreq
+            #     for b in 1:nspat
+            #             hx = dwt(admmst.x[:,:,z],wavelet(spatialwlt[b]))
+            #             tmp = hx - admmst.taut[:,:,z,b]/rhot
+            #             admmst.t[:,:,z,b] = prox_u(tmp,μt/rhot)
+            #             admmst.taut[:,:,z,b] = admmst.taut[:,:,z,b] + rhot*(admmst.t[:,:,z,b]-hx)
+            #     end
+            # end
 
             ##############################
             ###### prox positivity #######
