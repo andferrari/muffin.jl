@@ -5,7 +5,7 @@ using PyPlot
 # file = string("/home/jeremy/.julia/v0.3/Muffin/data/test300515.jld")
 
 #file = string("/Users/deguignet/Documents/Git/Rec3d/data/results/result_1000iter_m31.jld")
-file = string("/Users/deguignet/Documents/Julia/Andre/resultchiara.jld")
+file = string("/Users/deguignet/Documents/Julia/Andre/chiararesults.jld")
 
 x = load(file, "admmst.x")
 lastiter = load(file, "algost.lastiter")
