@@ -154,9 +154,11 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             # a = toq()
             # println("calcul wlt","  ",a)
             tic()
-            for z in 1:nfreq, b in 1:nspat
-                admmst.wlt[:,:,z] = admmst.wlt[:,:,z] +
+            for z in 1:nfreq
+                for b in 1:nspat
+                    admmst.wlt[:,:,z] = admmst.wlt[:,:,z] +
                                        idwt(admmst.taut[:,:,z,b] + rhot*(admmst.t[:,:,z,b]), wavelet(spatialwlt[b]))
+                end
             end
             a = toq()
             println("calcul wlt","  ",a)
