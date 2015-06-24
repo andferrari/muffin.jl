@@ -179,7 +179,8 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             tic()
             @time tmp = admmst.Hx - admmst.taut/rhot
 
-            @time admmst.t = prox_u(tmp,μt/rhot)
+            # @time admmst.t = prox_u(tmp,μt/rhot)
+            @time admmst.t = max(1 - (μt/rhot)./ abs(tmp), 0).*tmp
 
             ##############################
             ###### prox positivity #######
