@@ -149,8 +149,8 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             tic()
             for z in 1:nfreq
-                admmst.wlt[:,:,z] = myidwt(admmst.wlt[:,:,z], nspat, (admmst.taut)[:,:,z,:], rhot,
-                                    (admmst.t)[:,:,z,:], spatialwlt)
+                admmst.wlt[:,:,z] = myidwt(admmst.wlt[:,:,z], nspat, admmst.taut[:,:,z,:], rhot,
+                                    admmst.t[:,:,z,:], spatialwlt)
             end
             a = toq()
             println("calcul wlt","  ",a)
@@ -188,7 +188,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             tic()
             @time tmp = admmst.Hx - (admmst.taut)/rhot
-            println(size(tmp))
+
             @time admmst.t = prox_u(tmp,μt/rhot)
             # tmp = 0
 
