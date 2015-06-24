@@ -167,7 +167,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             admmst.x = estime_x_par(admmst.x,psfst.mypsf,psfst.mypsfadj,admmst.wlt + b,mu,nfreq)
             a = toq()
             println("calcul parallel","  ",a)
-            b = 0
+            # b = 0
             ##############################
             ######### prox spat ##########
 
@@ -182,9 +182,9 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             @time tmp = admmst.Hx - (admmst.taut)/rhot
             println(size(tmp))
             @time admmst.t = prox_u(tmp,μt/rhot)
-            tmp = 0
+            # tmp = 0
 
-
+            # tic()
             # for z in 1:nfreq
             #     for b in 1:nspat
             #             hx = dwt(admmst.x[:,:,z],wavelet(spatialwlt[b]))
@@ -193,6 +193,8 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             #             admmst.taut[:,:,z,b] = admmst.taut[:,:,z,b] + rhot*(admmst.t[:,:,z,b]-hx)
             #     end
             # end
+            # a = toq()
+            # println("new", "  ", a)
 
             ##############################
             ###### prox positivity #######
@@ -203,7 +205,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             a = toq()
             println("calcul prox","  ", a)
-            tmp = 0
+            # tmp = 0
 
             ##############################
             ######### prox spec ##########
@@ -215,11 +217,11 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             a = toq()
             println("calcul s sh","  ",a)
-            tmp = 0
+            # tmp = 0
 
             tmp = admmst.sh - admmst.tauv/rhov
             admmst.v = prox_u(tmp,μv/rhov)
-            tmp = 0
+            # tmp = 0
 
             ########################################
             #### update of Lagrange multipliers ####
