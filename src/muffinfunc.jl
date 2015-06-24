@@ -130,12 +130,12 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
     loop = true
 
-    psfst.psf = 0
-    psfst.psfcube = 0
-    psfst.psfavg = 0
-    toolst.errorrec = 0
-    toolst.errorest = 0
-    toolst.errorraw = 0
+    psfst.psf[:] = 0
+    psfst.psfcube[:] = 0
+    psfst.psfavg[:] = 0
+    toolst.errorrec[:] = 0
+    toolst.errorest[:] = 0
+    toolst.errorraw[:] = 0
 
     tic()
         while loop
