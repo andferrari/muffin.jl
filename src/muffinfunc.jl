@@ -502,13 +502,13 @@ end
 #     return tmp
 # end
 
-@everywhere function myidwt(wlt,nspat,taut,rhot,t,spatialwlt)
-                      wlt = idwt(taut[:,:,1,1] + rhot*t[:,:,1,1],wavelet(spatialwlt[1]))
-                      for b in 2:nspat
-                          wlt = wlt + idwt(taut[:,:,1,b] + rhot*t[:,:,1,b],wavelet(spatialwlt[b]))
-                      end
-                 return wlt
+function myidwt(wlt,nspat,taut,rhot,t,spatialwlt)
+        wlt = idwt(taut[:,:,1,1] + rhot*t[:,:,1,1],wavelet(spatialwlt[1]))
+            for b in 2:nspat
+                wlt = wlt + idwt(taut[:,:,1,b] + rhot*t[:,:,1,b],wavelet(spatialwlt[b]))
             end
+        return wlt
+end
 
 ##################################
 
