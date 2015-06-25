@@ -102,7 +102,7 @@ function init_PSF()
     return PSF([],0.,[],[])
 end
 function init_SKY()
-    return SKY([],[];[])
+    return SKY([],[],[])
 end
 
 # function init_SKY()
