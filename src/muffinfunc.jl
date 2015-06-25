@@ -449,14 +449,14 @@ end
 #################################
 ######### x estimation ##########
 function estime_x_par(x::Array{Float64,3},mypsf::Array{Float64,3},mypsfadj::Array{Float64,3},
-                        wlt_b::SharedArray{Float64,3},mu::Float64,nfreq::Int64)
+                        wlt_b::Array{Float64,3},mu::Float64,nfreq::Int64)
 
     nxy = (size(x))[1]
     nxypsf = (size(mypsf))[1]
     fftpsf = zeros(Complex64,nxy,nxy,nfreq)
     psfcbe = zeros(Complex64,nxy,nxy,nfreq)
     psfpad = zeros(Float64,nxy,nxy,nfreq)
-    wlt_b = convert(Array,wlt_b)
+    
     for z in 1:nfreq
         psfpad[1:nxypsf,1:nxypsf,z] = mypsf[:,:,z]
         psfcbe[:,:,z] = 1./(abs(fft(psfpad[:,:,z])).^2+mu)
