@@ -279,7 +279,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             @printf("| - error ||x - xm||: %02.04e \n", toolst.tol1[niter])
             @printf("| - error ||x - xp||: %02.04e \n", toolst.tol2[niter])
-            @printf("| - error ||Hx - t||: %02.04e \n", toolst.tol3[niter])
+            # @printf("| - error ||Hx - t||: %02.04e \n", toolst.tol3[niter])
             @printf("| - error ||x - s||: %02.04e \n", toolst.tol4[niter])
             @printf("| - error ||sh - v||: %02.04e \n", toolst.tol5[niter])
 
