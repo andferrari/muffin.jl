@@ -61,7 +61,7 @@ type Admm_array
     taut::Array{Float64}
     rhot::Float64
 
-    wlt::Array{Float64}
+    wlt::SharedArray{Float64}
 
     x::Array{Float64}
     Hx::Array{Float64}
