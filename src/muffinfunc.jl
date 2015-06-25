@@ -148,7 +148,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             # println("calcul wlt","  ",a)
 
             tic()
-            @sync @parallel for z in 1:nfreq
+            for z in 1:nfreq
                 admmst.wlt[:,:,z] = myidwt(admmst.wlt[:,:,z], nspat, admmst.taut[:,:,z,:], rhot,
                                     admmst.t[:,:,z,:], spatialwlt)
             end
@@ -434,7 +434,7 @@ function lecture(directory::ASCIIString)
     if length(size(data)) != 3
         data = squeeze(data,4)
     end
-    data = data[:,:,1:11]
+    data = data[1:128,1:128,1:11]
     println("taille tronquee","  ",size(data))
     return data
 end
