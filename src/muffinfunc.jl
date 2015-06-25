@@ -262,14 +262,14 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             # ##############################
             # ############ RMSE ############
-            # for z in 1:nfreq
-            #     toolst.err[niter,z] = sqrt(sum((admmst.x[:,:,z] - skyst.sky[:,:,z]).^2)/skyst.sumsky2[z])
-            # end
-            #
+            for z in 1:nfreq
+                toolst.err[niter,z] = sqrt(sum((admmst.x[:,:,z] - skyst.sky[:,:,z]).^2)/skyst.sumsky2[z])
+            end
+
             # ##############################
             # ####### stopping rule ########
 
-            if (niter >= nitermax) || ((toolst.tol1[niter] < 1E-6) && (toolst.tol2[niter] < 1E-4))
+            if (niter >= nitermax) #|| ((toolst.tol1[niter] < 1E-6) && (toolst.tol2[niter] < 1E-4))
                 loop = false
                 algost.lastiter = niter
             end

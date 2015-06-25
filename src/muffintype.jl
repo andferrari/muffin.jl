@@ -30,7 +30,9 @@ end
 # end
 
 type SKY
+    sky::Array{Float64}
     mydata::Array{Float64}
+    sumsky2::Array{Float64}
 end
 
 type Algo_param
@@ -100,7 +102,7 @@ function init_PSF()
     return PSF([],0.,[],[])
 end
 function init_SKY()
-    return SKY([])
+    return SKY([],[];[])
 end
 
 # function init_SKY()

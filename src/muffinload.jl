@@ -23,7 +23,12 @@
 
 function loadsky(obj::ASCIIString,mypsf,nu::Array)
     skyst = init_SKY()
+    sky0 = "/home/deguignet/Julia/I_HALO_CL_RS_SKY.FITS"
+    skyst.sky = lecture(obj)
     skyst.mydata = lecture(obj)
+    for z in 1:length(nu)
+        push!(skyst.sumsky2, sum(skyst.sky[:,:,z].^2))
+    end
     return skyst
 end
 
