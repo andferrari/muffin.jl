@@ -279,7 +279,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             @printf("| - error ||x - xm||: %02.04e \n", toolst.tol1[niter])
             @printf("| - error ||x - xp||: %02.04e \n", toolst.tol2[niter])
-            @printf("| - error ||Hx - t||: %02.04e \n", toolst.tol3[niter])
+            # @printf("| - error ||Hx - t||: %02.04e \n", toolst.tol3[niter])
             @printf("| - error ||x - s||: %02.04e \n", toolst.tol4[niter])
             @printf("| - error ||sh - v||: %02.04e \n", toolst.tol5[niter])
 
@@ -456,7 +456,7 @@ function estime_x_par(x::Array{Float64,3},mypsf::Array{Float64,3},mypsfadj::Arra
     fftpsf = zeros(Complex64,nxy,nxy,nfreq)
     psfcbe = zeros(Complex64,nxy,nxy,nfreq)
     psfpad = zeros(Float64,nxy,nxy,nfreq)
-    
+
     for z in 1:nfreq
         psfpad[1:nxypsf,1:nxypsf,z] = mypsf[:,:,z]
         psfcbe[:,:,z] = 1./(abs(fft(psfpad[:,:,z])).^2+mu)
