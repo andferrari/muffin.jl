@@ -434,7 +434,7 @@ function lecture(directory::ASCIIString)
     if length(size(data)) != 3
         data = squeeze(data,4)
     end
-    data = data[:,:,1:11]
+    # data = data[:,:,1:11]
     println("taille tronquee","  ",size(data))
     return data
 end
@@ -570,7 +570,7 @@ end
 
 
 function cubefreqchiara()
-    nfreq = 11
+    nfreq = 32
     nustart = 9.85e8
     nustep = 2e6
 
