@@ -297,7 +297,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
     #     toolst.errorest[z] =  vecnorm(skyst.sky[:,:,z] - admmst.x[:,:,z])^2/skyst.sumsky2[z]
     #     toolst.errorraw[z] =  vecnorm(skyst.mydata[:,:,z] - admmst.x[:,:,z])^2/vecnorm(skyst.mydata[:,:,z])^2
     # end
-
+    savedata("result_2048pix_100ite.jld", psfst, skyst, algost, admmst, toolst)
     return psfst, skyst, algost, admmst, toolst
 
 end

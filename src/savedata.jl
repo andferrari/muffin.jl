@@ -8,7 +8,7 @@ function savedata(savepath, psfst, skyst, algost, admmst, toolst)
                     #   "toolst.errorrec",toolst.errorrec,
                     #   "toolst.errorest",toolst.errorest,
                     #   "toolst.errorraw",toolst.errorraw,
-                    #   "toolst.err",toolst.err,
+                      "toolst.err",toolst.err,
                       "toolst.tol1",toolst.tol1,
                       "toolst.tol2",toolst.tol2,
                     #   "toolst.tol3",toolst.tol3,
