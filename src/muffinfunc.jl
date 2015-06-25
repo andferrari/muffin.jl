@@ -148,7 +148,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             # println("calcul wlt","  ",a)
 
             tic()
-            for z in 1:nfreq
+            @sync @parallel for z in 1:nfreq
                 admmst.wlt[:,:,z] = myidwt(admmst.wlt[:,:,z], nspat, admmst.taut[:,:,z,:], rhot,
                                     admmst.t[:,:,z,:], spatialwlt)
             end
