@@ -18,7 +18,8 @@ function loadsky(obj::ASCIIString,mypsf,nu::Array)
         println("methode 2")
 
         skyst = init_SKY()
-        skyst.mydata = lecture(obj)
+        skyst.sky = lecture(obj)
+        skyst.mydata = cubefilter(skyst.sky,mypsf)
     end
     return skyst
 end

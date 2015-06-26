@@ -1,11 +1,12 @@
 using HDF5, JLD
 using PyPlot
-#include("testobj.jl");
+# include("testobj.jl");
 
 # file = string("/home/jeremy/.julia/v0.3/Muffin/data/test300515.jld")
 
-#file = string("/Users/deguignet/Documents/Git/Rec3d/data/results/result_1000iter_m31.jld")
-file = string("/Users/deguignet/Documents/Julia/Andre/chiararesults.jld")
+# file = string("/Users/deguignet/Documents/Git/Rec3d/data/results/result_1000iter_m31.jld")
+# file = string("/Users/deguignet/Documents/Julia/result_chiara_32f_2048p.jld")
+file = string("remi.jld")
 
 x = load(file, "admmst.x")
 lastiter = load(file, "algost.lastiter")
@@ -13,14 +14,14 @@ nfreq = load(file, "algost.nfreq")
 # errorrec = load(file, "toolst.errorrec")
 # errorest = load(file, "toolst.errorest")
 # errorraw = load(file, "toolst.errorraw")
-err = load(file, "toolst.err")
+#err = load(file, "toolst.err")
 tol1 = load(file, "toolst.tol1")
 tol2 = load(file, "toolst.tol2")
-tol3 = load(file, "toolst.tol3")
+#tol3 = load(file, "toolst.tol3")
 tol4 = load(file, "toolst.tol4")
 tol5 = load(file, "toolst.tol5")
-# mydata = load(file, "skyst.mydata")
-# sky = load(file, "skyst.sky")
+mydata = load(file, "skyst.mydata")
+sky = load(file, "skyst.sky")
 # snr = load(file, "toolst.snr")
 nu = load(file, "psfst.nu")
 nu0 = load(file, "psfst.nu0")
@@ -34,15 +35,26 @@ end
 
 
 #############################
-nw = 11
-nu = zeros(Float64,nw)
+# nw = 11
+# nu = zeros(Float64,nw)
+#
+# for i = 1:nw
+#     nu[i] = 1.025e9 + (i-1)*50e6
+# end
+# nxy = size(x)[1]
 
-for i = 1:nw
-    nu[i] = 1.025e9 + (i-1)*50e6
-end
-nxy = size(x)[1]
+# nfreq = 32
+# nustart = 9.85e8
+# nustep = 2e6
+#
+# nu = zeros(Float64,nfreq)
+# for i in 1:nfreq
+#     nu[i] = nustart + (i-1)*nustep
+# end
+# nu0 = (nu[1] + nu[nfreq])/2
+# nxy  = size(x)[1]
 ##############################
-
+# imshow(rand(20,20),cmap=ColorMap("ocean"))
 #############################################################################
 #############################################################################
 
@@ -156,7 +168,7 @@ subplot(1,2,1)
     label2 = "Reconstructed spectrum"
 
     legend( (label1, label2), loc="upper right")
-    xlabel(L"$log(\nu/\nu0)$,fontsize=16)
+    # xlabel(L"$log(\nu/\nu0)$,fontsize=16)
     # xlabel(L"$log(\nu/\nu0)$",fontsize=16)
 
 subplot(1,2,2)
@@ -170,14 +182,14 @@ subplot(1,2,2)
     plot(log10(p),log10(d),linewidth=2)
     plot(log10(p),log10(q),linewidth=2)
 
-    #plot(log10(p),log10(s))
+    # plot(log10(p),log10(s))
 
     label1 = "Sky spectrum"
     label2 = "Reconstructed spectrum"
 
 
     legend( (label1, label2), loc="upper left")
-    xlabel(L"$log(\nu/\nu0)$,fontsize=16)
+    # xlabel(L"$log(\nu/\nu0)$,fontsize=16)
     # xlabel(L"$log(\nu/\nu0)$",fontsize=16)
 #############################################
 #############################################
@@ -228,7 +240,7 @@ for z in [1 5 10 15]
     subplot(2,2,e)
     axis("off")
     a = nu[z]/1e9
-    #imshow(sqrt(abs(sky[:,:,z]-x[:,:,z])),vmin = 0, vmax = round(maximum(sqrt(abs(sky[:,:,:]-x[:,:,:]))),1))
+    # imshow(sqrt(abs(sky[:,:,z]-x[:,:,z])),vmin = 0, vmax = round(maximum(sqrt(abs(sky[:,:,:]-x[:,:,:]))),1))
     imshow(((sky[:,:,z]-x[:,:,z])),vmin = 0, vmax = 0.1)
     title(string(L"$\nu \, = \,$","$a ", L"\, GHz"))
     e += 1
