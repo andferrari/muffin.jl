@@ -18,6 +18,16 @@ function savedata(savepath, psfst, skyst, algost, admmst, toolst)
                       "skyst.sky",skyst.sky,
                     #   "toolst.snr",toolst.snr,
                       "psfst.nu",psfst.nu,
-                      "psfst.nu0",psfst.nu0)
+                      "psfst.nu0",psfst.nu0,
+                      "admmst.t",admmst.t,
+                      "admmst.taut",admmst.taut,
+                      "admmst.v",admmst.v,
+                      "admmst.tauv",admmst.tauv,
+                      "admmst.s",admmst.s,
+                      "admmst.taus",admmst.taus,
+                      "admmst.p",admmst.p,
+                      "admmst.taup",admmst.taup)
+
+                     
                     #   "skyst.noise",skyst.noise)
 end
