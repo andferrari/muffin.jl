@@ -14,7 +14,7 @@ function savedata(savepath, psfst, skyst, algost, admmst, toolst)
                     #   "toolst.tol3",toolst.tol3,
                       "toolst.tol4",toolst.tol4,
                       "toolst.tol5",toolst.tol5,
-                      "skyst.mydata",skyst.mydata,
+                    #   "skyst.mydata",skyst.mydata,
                     #   "skyst.sky",skyst.sky,
                     #   "toolst.snr",toolst.snr,
                       "psfst.nu",psfst.nu,
