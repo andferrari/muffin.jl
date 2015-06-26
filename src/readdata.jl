@@ -6,7 +6,7 @@ using PyPlot
 
 # file = string("/Users/deguignet/Documents/Git/Rec3d/data/results/result_1000iter_m31.jld")
 # file = string("/Users/deguignet/Documents/Julia/result_chiara_32f_2048p.jld")
-file = string("remi.jld")
+file = string("test.jld")
 
 x = load(file, "admmst.x")
 lastiter = load(file, "algost.lastiter")
