@@ -1,13 +1,5 @@
-# type PSF
-#     psf::ASCIIString
-#     psfcube::Array{Float64}
-#     psfavg::Array{Float64}
-#     nu::Array{Float64}
-#     nu0::Float64
-#     mypsf::Array{Float64}
-#     mypsfadj::Array{Float64}
-# end
-
+####################################
+####################################
 type PSF
     nu::Array{Float64}
     nu0::Float64
@@ -15,26 +7,31 @@ type PSF
     mypsfadj::Array{Float64}
 end
 
-
-# type SKY
-#     obj::ASCIIString
-#     sky0::Array{Float64}
-#     sky::Array{Float64}
-#     alpha::Array{Float64}
-#     skyconv::Array{Float64}
-#     sig::Float64
-#     var::Float64
-#     noise::Array{Float64}
-#     mydata::Array{Float64}
-#     sumsky2::Array{Float64}
-# end
-
 type SKY
+    sky::Array{Float64}
+    alpha::Array{Float64}
+    sig::Float64
+    var::Float64
+    noise::Array{Float64}
+    mydata::Array{Float64}
+    sumsky2::Array{Float64}
+end
+####################################
+####################################
+type PSF_dirty
+    nu::Array{Float64}
+    nu0::Float64
+    mypsf::Array{Float64}
+    mypsfadj::Array{Float64}
+end
+
+type SKY_dirty
     sky::Array{Float64}
     mydata::Array{Float64}
     sumsky2::Array{Float64}
 end
-
+####################################
+####################################
 type Algo_param
     nspat::Int64
     nfreq::Int64
@@ -66,7 +63,7 @@ type Admm_array
     wlt::Array{Float64}
 
     x::Array{Float64}
-    Hx::Array{Float64}
+    # Hx::Array{Float64}
     xmm::Array{Float64}
 
     spectralwlt::Array{Float64}
@@ -93,26 +90,29 @@ type TOOLS
     errorest::Array{Float64}
     errorraw::Array{Float64}
 end
-
-# function init_PSF()
-#     return PSF("",[],[],[],0.,[],[])
-# end
-
+####################################
+####################################
 function init_PSF()
     return PSF([],0.,[],[])
 end
 function init_SKY()
-    return SKY([],[],[])
+    return SKY([],[],0.,0.,[],[],[])
 end
-
-# function init_SKY()
-#     return SKY("",[],[],[],[],0.,0.,[],[],[])
-# end
+####################################
+####################################
+function init_PSF_dirty()
+    return PSF_dirty([],0.,[],[])
+end
+function init_SKY_dirty()
+    return SKY_dirty([],[],[])
+end
+####################################
+####################################
 function init_Algoparam()
     return Algo_param(0,0,0,0,0,0,0)
 end
 function init_Admmarray()
-    return Admm_array([],[],0.,[],[],[],0.,[],[],0.,[],[],0.,[],[],[],[],[],[],0.,0.,0.,0.,0.)
+    return Admm_array([],[],0.,[],[],[],0.,[],[],0.,[],[],0.,[],[],[],[],[],0.,0.,0.,0.,0.)
 end
 function init_TOOLS()
     return TOOLS([],[],[],[],[],[],[],[],[],[])

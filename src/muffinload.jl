@@ -1,28 +1,30 @@
-# function loadsky(obj::ASCIIString,mypsf,nu::Array)
-#
-#     skyst = init_SKY()
-#     skyst.obj = obj
-#     skyst.sky0 = lecture(obj)
-#     if length(size(skyst.sky0)) == 2
-#         skyst.sky0 = (lecture(obj)/maximum(lecture(obj)))
-#         skyst.sky,skyst.alpha = sky2cube(skyst.sky0,nu)
-#         skyst.skyconv = cubefilter(skyst.sky,mypsf)
-#         skyst.sig = sqrt(mean(skyst.skyconv.^2)/100)
-#         skyst.var = skyst.sig*skyst.sig
-#         skyst.noise = skyst.sig*randn(size(skyst.sky)[1],size(skyst.sky)[1],size(mypsf)[3])
-#         skyst.mydata = skyst.skyconv + skyst.noise
-#         for z in 1:length(nu)
-#             push!(skyst.sumsky2, sum(skyst.sky[:,:,z].^2))
-#         end
-#     elseif length(size(skyst.sky0)) == 3
-#         skyst = init_SKY()
-#         skyst.mydata = lecture(obj)
-#     end
-#     return skyst
-# end
-
 function loadsky(obj::ASCIIString,mypsf,nu::Array)
+
     skyst = init_SKY()
+    sky0 = lecture(obj)
+    if size(sky0)[3] == 1
+        println("methode 1")
+        sky0 = squeeze(sky0/maximum(sky0),3)
+        skyst.sky,skyst.alpha = sky2cube(sky0,nu)
+        skyconv = cubefilter(skyst.sky,mypsf)
+        skyst.sig = sqrt(mean(skyconv.^2)/100)
+        skyst.var = skyst.sig*skyst.sig
+        skyst.noise = skyst.sig*randn( size(skyst.sky)[1], size(skyst.sky)[1], size(mypsf)[3])
+        skyst.mydata = skyconv + skyst.noise
+        for z in 1:length(nu)
+            push!(skyst.sumsky2, sum(skyst.sky[:,:,z].^2))
+        end
+    elseif size(sky0)[3] != 1
+        println("methode 2")
+
+        skyst = init_SKY()
+        skyst.mydata = lecture(obj)
+    end
+    return skyst
+end
+
+function loadsky_dirty(obj::ASCIIString,mypsf,nu::Array)
+    skyst = init_SKY_dirty()
     sky0 = "/home/deguignet/Julia/I_HALO_CL_RS_SKY.FITS"
     skyst.sky = lecture(obj)
     skyst.mydata = lecture(obj)
@@ -33,23 +35,26 @@ function loadsky(obj::ASCIIString,mypsf,nu::Array)
 end
 
 
-# function loadpsf(psf::ASCIIString,M::Int,npixpsf::Int)
-#     psfst = init_PSF()
-#     psfst.psf = psf
-#     psfst.psfcube = lecture(psfst.psf)
-#     psfst.psfavg = cubeaverage(psfst.psfcube,M)
-#     # psfst.nu, psfst.nu0 = cubefreq(psfst.psf,psfst.psfcube,M)
-#     psfst.nu, psfst.nu0 = cubefreqchiara(psfst.psf,psfst.psfcube,M)
-#     psfst.mypsf = cropcubexy(psfst.psfavg,npixpsf)
-#     psfst.mypsfadj = flipdim(flipdim(psfst.mypsf,1),2)
-#     return psfst
-# end
-function loadpsf(psf::ASCIIString,M::Int,npixpsf::Int)
+function loadpsf(psf::ASCIIString,M::Int)
     psfst = init_PSF()
     psfcube = lecture(psf)
-    psfst.nu, psfst.nu0 = cubefreqchiara()
-    psfst.mypsf = cropcubexy(psfcube,npixpsf)
+    d = round((size(psfcube)[1])/2)
+    psfcube = psfcube[d-128:d+127,d-128:d+127,:]
+    println(size(psfcube))
+    psfavg = cubeaverage(psfcube,M)
+    psfst.nu, psfst.nu0 = cubefreq(psf,psfcube,M)
+    psfst.mypsf = cropcubexy(psfavg,size(psfcube)[1])
     psfst.mypsfadj = flipdim(flipdim(psfst.mypsf,1),2)
+    return psfst
+end
+
+function loadpsf_dirty(psf::ASCIIString)
+    psfst = init_PSF_dirty()
+    psfcube = lecture(psf)
+    psfst.nu, psfst.nu0 = cubefreqchiara(size(psfcube)[3])
+    psfst.mypsf = cropcubexy(psfcube,size(psfcube)[1])
+    psfst.mypsfadj = flipdim(flipdim(psfst.mypsf,1),2)
+    println("size toto"," ",size(psfst.mypsf))
     return psfst
 end
 
@@ -95,8 +100,8 @@ function loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,mydata,myps
     println("x")
     admmst.x = copy(mydata)
     # admmst.Hx = SharedArray(Float64,nxy,nxy,nfreq,nspat)
-    println("Hx")
-    admmst.Hx = zeros(Float64,nxy,nxy,nfreq,nspat)
+    # println("Hx")
+    # admmst.Hx = zeros(Float64,nxy,nxy,nfreq,nspat)
     println("xmm")
     admmst.xmm = zeros(Float64,nxy,nxy,nfreq)
     println("spectralwlt")

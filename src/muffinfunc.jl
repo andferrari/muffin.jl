@@ -24,8 +24,10 @@ println("MUFFIN initialisation")
         psf = "data/meerkat_m30_25pix.psf.fits"
         obj = "data/2gauss.fits"
     elseif dataobj == "chiara"
-        psf = "/home/deguignet/Julia/example_sim_psf.fits"
-        obj = "/home/deguignet/Julia/example_sim_dirty.fits"
+        # psf = "/home/deguignet/Julia/example_sim_psf.fits"
+        # obj = "/home/deguignet/Julia/example_sim_dirty.fits"
+        psf = "/Users/deguignet/Documents/Julia/example_sim_psf.fits"
+        obj = "/Users/deguignet/Documents/Julia/example_sim_dirty.fits"
     elseif isempty(dataobj)
         psf = "data/meerkat_m30_25pix.psf.fits"
         obj = "data/M31.fits"
@@ -52,15 +54,17 @@ println("obj :"," ",obj)
 
 if dataobj == "chiara"
     ##################################
+    println("mode 1")
     println("loading psf...")
-    psfst = loadpsf(psf,1,2048)
+    psfst = loadpsf_dirty(psf)
     println("loading sky...")
-    skyst = loadsky(obj,psfst.mypsf,psfst.nu)
+    skyst = loadsky_dirty(obj,psfst.mypsf,psfst.nu)
     ##################################
 else
     ##################################
+    println("mode 2")
     println("loading psf...")
-    psfst = loadpsf(psf,bw,npixpsf)
+    psfst = loadpsf(psf,bw)
     println("loading sky...")
     skyst = loadsky(obj,psfst.mypsf,psfst.nu)
     ##################################
@@ -82,6 +86,7 @@ end
     algost = loadparam(nspat,nfreq,nspec,nxy,niter,lastiter,nitermax)
 
     println("loading arrays...")
+    println(size(skyst.mydata),"  ",size(psfst.mypsfadj))
     admmst = loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,
                         skyst.mydata,psfst.mypsfadj)
 
@@ -139,23 +144,13 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             ##############################
             ########## update x ##########
-            # tic()
-            # for z in 1:nfreq, b in 1:nspat
-            #     admmst.wlttmp[:,:,z,b] = idwt(admmst.taut[:,:,z,b] + rhot*(admmst.t[:,:,z,b]), wavelet(spatialwlt[b]))
-            # end
-            # admmst.wlt = squeeze(sum(admmst.wlttmp,4),4)
-            # a = toq()
-            # println("calcul wlt","  ",a)
-
             tic()
             for z in 1:nfreq
-                admmst.wlt[:,:,z] = myidwt(admmst.wlt[:,:,z], nspat, admmst.taut[:,:,z,:], rhot,
-                                    admmst.t[:,:,z,:], spatialwlt)
+                admmst.wlt[:,:,z] = myidwt((admmst.wlt)[:,:,z], nspat, (admmst.taut)[:,:,z,:], rhot,
+                                    (admmst.t)[:,:,z,:], spatialwlt)
             end
             a = toq()
             println("calcul wlt","  ",a)
-
-
 
             # tic()
             # @sync @parallel for z in 1:nfreq
@@ -196,14 +191,19 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             ##############################
             ##############################
             tic()
+            tmp1 = 0.0
+            tmp2 = zeros(Float64,nxy,nxy)
             for z in 1:nfreq
                 for b in 1:nspat
                         hx = dwt(admmst.x[:,:,z],wavelet(spatialwlt[b]))
                         tmp = hx - admmst.taut[:,:,z,b]/rhot
                         admmst.t[:,:,z,b] = prox_u(tmp,μt/rhot)
                         admmst.taut[:,:,z,b] = admmst.taut[:,:,z,b] + rhot*(admmst.t[:,:,z,b]-hx)
+                        tmp1 = vecnorm([tmp2 (hx-(admmst.t)[:,:,z,b])],2)
+                        tmp2 = (hx-(admmst.t)[:,:,z,b])
                 end
             end
+            tmp2[:] = 0
             a = toq()
             println("new", "  ", a)
             tic()
@@ -253,6 +253,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             push!(toolst.tol1,vecnorm(admmst.x - admmst.xmm, 2)^2)
             push!(toolst.tol2,vecnorm(admmst.x - admmst.p, 2)^2)
             # push!(toolst.tol3,vecnorm(admmst.Hx - admmst.t, 2)^2)
+            push!(toolst.tol3,tmp1^2)
             push!(toolst.tol4,vecnorm(admmst.x - admmst.s, 2)^2)
             push!(toolst.tol5,vecnorm(admmst.sh - admmst.v, 2)^2)
 
@@ -275,11 +276,11 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             end
 
             admmst.xmm[:] = admmst.x
-            println(run(`free -g`))
+            # println(run(`free -g`))
 
             @printf("| - error ||x - xm||: %02.04e \n", toolst.tol1[niter])
             @printf("| - error ||x - xp||: %02.04e \n", toolst.tol2[niter])
-            # @printf("| - error ||Hx - t||: %02.04e \n", toolst.tol3[niter])
+            @printf("| - error ||Hx - t||: %02.04e \n", toolst.tol3[niter])
             @printf("| - error ||x - s||: %02.04e \n", toolst.tol4[niter])
             @printf("| - error ||sh - v||: %02.04e \n", toolst.tol5[niter])
 
@@ -297,7 +298,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
     #     toolst.errorest[z] =  vecnorm(skyst.sky[:,:,z] - admmst.x[:,:,z])^2/skyst.sumsky2[z]
     #     toolst.errorraw[z] =  vecnorm(skyst.mydata[:,:,z] - admmst.x[:,:,z])^2/vecnorm(skyst.mydata[:,:,z])^2
     # end
-    savedata("result_2048pix_100ite.jld", psfst, skyst, algost, admmst, toolst)
+    # savedata("result_2048pix_100ite.jld", psfst, skyst, algost, admmst, toolst)
     return psfst, skyst, algost, admmst, toolst
 
 end
@@ -365,7 +366,6 @@ function cubefreq(psf::ASCIIString,imagecube::Array,M::Int)
     nfreqavg = itrunc(nfreq/M)
     file = FITS(psf)
     header = read_header(file[1])
-    println(header)
     nustart = header["CRVAL4"]
     nustep = header["CDELT4"]
     nu0 = header["RESTFRQ"]
@@ -431,10 +431,9 @@ function lecture(directory::ASCIIString)
     data = float64(read(file[1]))
     close(file)
     println("taille data lecture"," ",size(data))
-    if length(size(data)) != 3
-        data = squeeze(data,4)
-    end
-    # data = data[:,:,1:11]
+    data = squeeze(data,find(([size(data)...].==1)))
+
+    data = data[:,:,:]
     println("taille tronquee","  ",size(data))
     return data
 end
@@ -461,8 +460,11 @@ function estime_x_par(x::Array{Float64,3},mypsf::Array{Float64,3},mypsfadj::Arra
         psfpad[1:nxypsf,1:nxypsf,z] = mypsf[:,:,z]
         psfcbe[:,:,z] = 1./(abs(fft(psfpad[:,:,z])).^2+mu)
 
+        ########################
         x[:,:,z] = real(ifft(psfcbe[:,:,z].*fft(wlt_b[:,:,z])))
+        ########################
 
+        ########################
         # x[:,:,z] = imfilter_fft(wlt_b[:,:,z],ifftshift(ifft(psfcbe[:,:,z])),"circular")
         # xtmp = copy(x[:,:,z])
         # x[:,2:nxy,z] = xtmp[:,1:nxy-1]
@@ -470,6 +472,7 @@ function estime_x_par(x::Array{Float64,3},mypsf::Array{Float64,3},mypsfadj::Arra
         # xtmp = copy(x[:,:,z])
         # x[2:nxy,:,z] = xtmp[1:nxy-1,:]
         # x[1,:,z] = xtmp[nxy,:]
+        ########################
     end
 
 
@@ -486,7 +489,6 @@ end
 function prox_u(u::Array,μ::Float64)
     return max(0, 1-μ./abs(u)).*u
 end
-
 #################################
 ####### s / sh estimation #######
 function estime_ssh(s::Array{Float64,3},sh::Array{Float64,3},tmp::Array{Float64,3},
@@ -500,15 +502,6 @@ function estime_ssh(s::Array{Float64,3},sh::Array{Float64,3},tmp::Array{Float64,
     return s,sh
 end
 
-# function myidwt(tmp,nspat,taut,rhot,t,spatialwlt)
-#
-#               for b in 1:nspat
-#                   tmp[:,:,:,b] = idwt(taut[:,:,1,b] + rhot*t[:,:,1,b],wavelet(spatialwlt[b]))
-#
-#               end
-#     return tmp
-# end
-
 function myidwt(wlt,nspat,taut,rhot,t,spatialwlt)
         wlt = idwt(taut[:,:,1,1] + rhot*t[:,:,1,1],wavelet(spatialwlt[1]))
             for b in 2:nspat
@@ -516,61 +509,11 @@ function myidwt(wlt,nspat,taut,rhot,t,spatialwlt)
             end
         return wlt
 end
-
 ##################################
 
 ##################################
-function data2cube(;nfreq = 1, nxy = 2048)
-
-    folder = "/Users/deguignet/Documents/Julia/Andre"
-
-    psfcube = zeros(Float64,nxy,nxy,nfreq)
-    skycube = zeros(Float64,nxy,nxy,nfreq)
-
-    for z in [0:nfreq-1]
-        if z < 10
-            f = FITS(string(folder,folder[1],"halo_sim-0001-wsclean-000$z-dirty.fits"))
-            skycube[:,:,z+1] = squeeze(squeeze(read(f[1]),4),3)
-            close(f)
-            f = FITS(string(folder,folder[1],"halo_sim-0001-wsclean-000$z-psf.fits"))
-            psfcube[:,:,z+1] = squeeze(squeeze(read(f[1]),4),3)
-            close(f)
-        elseif z >= 10 | z < 100
-            f = FITS(string(folder,folder[1],"halo_sim-0001-wsclean-00$z-dirty.fits"))
-
-
-
-            skycube[:,:,z+1] = squeeze(squeeze(read(f[1]),4),3)
-            close(f)
-            f = FITS(string(folder,folder[1],"halo_sim-0001-wsclean-00$z-psf.fits"))
-            psfcube[:,:,z+1] = squeeze(squeeze(read(f[1]),4),3)
-            close(f)
-        else z >= 100
-            f = FITS(string(folder,folder[1],"halo_sim-0001-wsclean-0$z-dirty.fits"))
-            skycube[:,:,z+1] = squeeze(squeeze(read(f[1]),4),3)
-            close(f)
-            f = FITS(string(folder,folder[1],"halo_sim-0001-wsclean-0$z-psf.fits"))
-            psfcube[:,:,z+1] = squeeze(squeeze(read(f[1]),4),3)
-            close(f)
-
-            ##################################
-            # skycube, psfcube = data2cube()
-
-            # f = FITS("psfchiara.fits","w");
-            # write(f,psfcube)
-            # close(f)
-            # f = FITS("skychiara.fits","w");
-            # write(f,skycube)
-            # close(f)
-            ##################################
-        end
-    end
-    return skycube, psfcube
-end
-
-
-function cubefreqchiara()
-    nfreq = 32
+function cubefreqchiara(nfrequencies::Int)
+    nfreq = nfrequencies
     nustart = 9.85e8
     nustep = 2e6
 
