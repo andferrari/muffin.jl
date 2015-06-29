@@ -26,8 +26,8 @@ println("MUFFIN initialisation")
     elseif dataobj == "chiara"
         # psf = "/home/deguignet/Julia/example_sim_psf.fits"
         # obj = "/home/deguignet/Julia/example_sim_dirty.fits"
-        psf = "/Users/deguignet/Documents/Julia/example_sim_psf.fits"
-        obj = "/Users/deguignet/Documents/Julia/example_sim_dirty.fits"
+        psf = "/home/deguignet/Julia/example_sim_psf.fits"
+        obj = "/home/deguignet/Julia/example_sim_dirty.fits"
     elseif isempty(dataobj)
         psf = "data/meerkat_m30_25pix.psf.fits"
         obj = "data/M31.fits"
@@ -203,12 +203,22 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
                         tmp2 = (hx-(admmst.t)[:,:,z,b])
                 end
             end
+
+            # for z in 1:nfreq
+            #     admmst.t, admmst.taut, tmp1 = myspat(admmst.x[:,:,z], admmst.t[:,:,z,:], admmst.taut[:,:,z,:],
+            #                                         tmp1, tmp2, nspat, spatialwlt, rhot, μt)
+            # end
+
+
             tmp2[:] = 0
             a = toq()
             println("new", "  ", a)
             tic()
             ############################################################
             ############################################################
+
+
+
 
 
             ##############################
@@ -525,4 +535,18 @@ function cubefreqchiara(nfrequencies::Int)
     nu0 = (nu[1] + nu[nfreq])/2
 
     return nu,nu0
+end
+
+
+function myspat(x,t,taut,tmp1,tmp2, nspat, spatialwlt, rhot, μt)
+    println(size(x)," ",size(t)," ",size(taut))
+    for b in 1:nspat
+        hx = dwt(x[:,:], wavelet(spatialwlt[b]))
+        tmp = hx - taut[:,:,1,b]/rhot
+        t[:,:,1,b] = prox_u(tmp,μt/rhot)
+        taut[:,:,1,b] = taut[:,:,1,b] + rhot*(t[:,:,1,b]-hx)
+        tmp1 = vecnorm([tmp2 (hx-t[:,:,1,b])],2)
+        tmp2 = (hx-t[:,:,1,b])
+    end
+    return t,taut,tmp1
 end
