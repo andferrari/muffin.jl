@@ -521,6 +521,7 @@ function estime_ssh(s::Array{Float64,3},sh::Array{Float64,3},tmp::Array{Float64,
 end
 
 function myidwt(wlt,nspat,taut,rhot,t,spatialwlt)
+    println(size(wlt)," ",nspat," ",size(taut)," ",rhot," ",size(t)," ",spatialwlt)
         wlt = idwt(taut[:,:,1,1] + rhot*t[:,:,1,1],wavelet(spatialwlt[1]))
             for b in 2:nspat
                 wlt = wlt + idwt(taut[:,:,1,b] + rhot*t[:,:,1,b],wavelet(spatialwlt[b]))
