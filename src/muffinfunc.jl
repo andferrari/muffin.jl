@@ -136,8 +136,8 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
     const fty = admmst.fty
     const nitermax = algost.nitermax
 
-    spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
-
+    # spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
+    spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8]
     niter = 0
 
     loop = true
