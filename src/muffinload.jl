@@ -136,3 +136,62 @@ function loadtools(nitermax,nfreq,nxy)
     toolst.errorraw = zeros(Float64,nfreq)
     return toolst
 end
+
+
+
+
+
+function loadarray_ws(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,mydata,mypsfadj,file)
+    println("warm start")
+    println("init")
+    admmst = init_Admmarray()
+
+
+
+    println("s")
+    admmst.s = load(file,"admmst.s")
+    # admmst.s = SharedArray(Float64,nxy,nxy,nfreq)
+    println("taus")
+    admmst.taus = load(file,"admmst.taus")
+    println("sh")
+    admmst.sh = zeros(Float64,nxy,nxy,nfreq)
+    # admmst.sh = SharedArray(Float64,nxy,nxy,nfreq)
+    println("taup")
+    admmst.taup = load(file,"admmst.taup")
+    println("p")
+    admmst.p = load(file,"admmst.p")
+    println("tauv")
+    admmst.tauv = load(file,"admmst.tauv")
+    println("v")
+    admmst.v = load(file,"admmst.v")
+    println("t")
+    admmst.t = load(file,"admmst.t")
+    println("taut")
+    admmst.taut = load(file,"admmst.taut")
+
+    println("wlt")
+    admmst.wlt = zeros(Float64,nxy,nxy,nfreq)
+    # admmst.wlt = SharedArray(Float64,nxy,nxy,nfreq)
+    println("x")
+    admmst.x = load(file,"admmst.x")
+    # admmst.Hx = SharedArray(Float64,nxy,nxy,nfreq,nspat)
+    # println("Hx")
+    # admmst.Hx = zeros(Float64,nxy,nxy,nfreq,nspat)
+    println("xmm")
+    admmst.xmm = zeros(Float64,nxy,nxy,nfreq)
+    println("spectralwlt")
+    admmst.spectralwlt = zeros(Float64,nxy,nxy,nfreq)
+    # admmst.spectralwlt = SharedArray(Float64,nxy,nxy,nfreq)
+    println("fty")
+    admmst.fty = cubefilter(mydata,mypsfadj)
+    admmst.rhop = rhop
+    admmst.rhot = rhot
+    admmst.rhov = rhov
+    admmst.rhos = rhos
+    admmst.μt = μt
+    admmst.μv = μv
+    admmst.mueps = mueps
+    admmst.tt = rhot*nspat
+    admmst.mu = mueps + rhop + admmst.tt + rhos
+    return admmst
+end

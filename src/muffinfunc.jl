@@ -4,7 +4,7 @@
 
 function muffin(;folder="",dataobj="",datapsf="",nitermax = 500, rhop = 1,
                 rhot = 5, rhov = 2, rhos = 1, μt = 5e-1, μv = 1e-0, mueps = 1e-3,
-                bw = 5, npixpsf = 255)
+                bw = 5, npixpsf = 255, ws == false)
 
 println("")
 println("MUFFIN initialisation")
@@ -86,9 +86,16 @@ end
     algost = loadparam(nspat,nfreq,nspec,nxy,niter,lastiter,nitermax)
 
     println("loading arrays...")
-    println(size(skyst.mydata),"  ",size(psfst.mypsfadj))
-    admmst = loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,
-                        skyst.mydata,psfst.mypsfadj)
+    if ws == true
+        file = string("/home/deguignet/Julia/resultats_100iter_woshaar.jld")
+        println(size(skyst.mydata),"  ",size(psfst.mypsfadj))
+        admmst = loadarray_ws(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,
+                            skyst.mydata,psfst.mypsfadj,file)
+    else
+        println(size(skyst.mydata),"  ",size(psfst.mypsfadj))
+        admmst = loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,
+                            skyst.mydata,psfst.mypsfadj)
+    end
 
     toolst = loadtools(nitermax,nfreq,nxy)
     ##################################
