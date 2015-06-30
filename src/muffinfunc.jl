@@ -152,7 +152,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             ##############################
             ########## update x ##########
             tic()
-            @sync @parallel for z in 1:nfreq
+            for z in 1:nfreq
                 admmst.wlt[:,:,z] = myidwt((admmst.wlt)[:,:,z], nspat, (admmst.taut)[:,:,z,:], rhot,
                                     (admmst.t)[:,:,z,:], spatialwlt)
             end
