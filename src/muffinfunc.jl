@@ -4,7 +4,7 @@
 
 function muffin(;folder="",dataobj="",datapsf="",nitermax = 500, rhop = 1,
                 rhot = 5, rhov = 2, rhos = 1, μt = 5e-1, μv = 1e-0, mueps = 1e-3,
-                bw = 5, npixpsf = 255, ws == "")
+                bw = 5, npixpsf = 255, ws="")
 
 println("")
 println("MUFFIN initialisation")
