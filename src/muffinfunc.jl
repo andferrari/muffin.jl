@@ -145,7 +145,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             ##############################
             ########## update x ##########
             tic()
-            for z in 1:nfreq
+            @sync @parallel for z in 1:nfreq
                 admmst.wlt[:,:,z] = myidwt((admmst.wlt)[:,:,z], nspat, (admmst.taut)[:,:,z,:], rhot,
                                     (admmst.t)[:,:,z,:], spatialwlt)
             end
@@ -203,7 +203,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
                         tmp2 = (hx-(admmst.t)[:,:,z,b])
                 end
             end
-            
+
             # for z in 1:nfreq
             #     admmst.t, admmst.taut, tmp1 = myspat(admmst.x[:,:,z], admmst.t[:,:,z,:], admmst.taut[:,:,z,:],
             #                                         tmp1, tmp2, nspat, spatialwlt, rhot, μt)
@@ -459,7 +459,7 @@ end
 #################################
 ######### x estimation ##########
 function estime_x_par(x::Array{Float64,3},mypsf::Array{Float64,3},mypsfadj::Array{Float64,3},
-                        wlt_b::Array{Float64,3},mu::Float64,nfreq::Int64)
+                        wlt_b::SharedArray{Float64,3},mu::Float64,nfreq::Int64)
 
     nxy = (size(x))[1]
     nxypsf = (size(mypsf))[1]
