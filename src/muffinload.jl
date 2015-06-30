@@ -96,8 +96,8 @@ function loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,mydata,myps
     admmst.taut = zeros(Float64,nxy,nxy,nfreq,nspat)
 
     println("wlt")
-    # admmst.wlt = zeros(Float64,nxy,nxy,nfreq)
-    admmst.wlt = SharedArray(Float64,nxy,nxy,nfreq)
+    admmst.wlt = zeros(Float64,nxy,nxy,nfreq)
+    # admmst.wlt = SharedArray(Float64,nxy,nxy,nfreq)
     println("x")
     admmst.x = copy(mydata)
     # admmst.Hx = SharedArray(Float64,nxy,nxy,nfreq,nspat)

@@ -459,7 +459,7 @@ end
 #################################
 ######### x estimation ##########
 function estime_x_par(x::Array{Float64,3},mypsf::Array{Float64,3},mypsfadj::Array{Float64,3},
-                        wlt_b::SharedArray{Float64,3},mu::Float64,nfreq::Int64)
+                        wlt_b::Array{Float64,3},mu::Float64,nfreq::Int64)
 
     nxy = (size(x))[1]
     nxypsf = (size(mypsf))[1]
