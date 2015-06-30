@@ -2,8 +2,7 @@ using HDF5, JLD
 
 function savedata(savepath, psfst, skyst, algost, admmst, toolst)
 
-    JLD.save(savepath,"admmst.x",admmst.x,
-                      "algost.lastiter",algost.lastiter,
+    JLD.save(savepath,"algost.lastiter",algost.lastiter,
                       "algost.nfreq",algost.nfreq,
                     #   "toolst.errorrec",toolst.errorrec,
                     #   "toolst.errorest",toolst.errorest,
@@ -19,15 +18,19 @@ function savedata(savepath, psfst, skyst, algost, admmst, toolst)
                     #   "toolst.snr",toolst.snr,
                       "psfst.nu",psfst.nu,
                       "psfst.nu0",psfst.nu0,
-                      "admmst.t",admmst.t,
-                      "admmst.taut",admmst.taut,
-                      "admmst.v",admmst.v,
-                      "admmst.tauv",admmst.tauv,
-                      "admmst.s",admmst.s,
-                      "admmst.taus",admmst.taus,
-                      "admmst.p",admmst.p,
-                      "admmst.taup",admmst.taup)
-
-                     
+                      "admmst",admmst)
+                      
                     #   "skyst.noise",skyst.noise)
 end
+
+
+
+# "admmst.x",admmst.x
+# "admmst.t",admmst.t,
+# "admmst.taut",admmst.taut,
+# "admmst.v",admmst.v,
+# "admmst.tauv",admmst.tauv,
+# "admmst.s",admmst.s,
+# "admmst.taus",admmst.taus,
+# "admmst.p",admmst.p,
+# "admmst.taup",admmst.taup
