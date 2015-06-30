@@ -26,7 +26,7 @@ end
 
 function loadsky_dirty(obj::ASCIIString,mypsf,nu::Array)
     skyst = init_SKY_dirty()
-    sky0 = "/home/deguignet/Julia/I_HALO_CL_RS_SKY.FITS"
+    # sky0 = "/home/deguignet/Julia/I_HALO_CL_RS_SKY.FITS"
     skyst.sky = lecture(obj)
     skyst.mydata = lecture(obj)
     for z in 1:length(nu)
@@ -101,8 +101,8 @@ function loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,mydata,myps
     println("x")
     admmst.x = copy(mydata)
     # admmst.Hx = SharedArray(Float64,nxy,nxy,nfreq,nspat)
-    println("Hx")
-    admmst.Hx = zeros(Float64,nxy,nxy,nfreq,nspat)
+    # println("Hx")
+    # admmst.Hx = zeros(Float64,nxy,nxy,nfreq,nspat)
     println("xmm")
     admmst.xmm = zeros(Float64,nxy,nxy,nfreq)
     println("spectralwlt")

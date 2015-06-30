@@ -176,44 +176,44 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             ############################################################
             ############################################################
-            tic()
-            for z in 1:nfreq, b in 1:nspat
-                admmst.Hx[:,:,z,b] = dwt(admmst.x[:,:,z],wavelet(spatialwlt[b]))
-            end
-            a = toq()
-            println("calcul HX", "  ", a)
-
-            tic()
-            @time tmp = admmst.Hx - (admmst.taut)/rhot
-
-            @time admmst.t = prox_u(tmp,μt/rhot)
-            # # tmp = 0
-            ##############################
-            ##############################
             # tic()
-            # tmp1 = 0.0
-            # tmp2 = zeros(Float64,nxy,nxy)
-            # for z in 1:nfreq
-            #     for b in 1:nspat
-            #             hx = dwt(admmst.x[:,:,z],wavelet(spatialwlt[b]))
-            #             tmp = hx - admmst.taut[:,:,z,b]/rhot
-            #             admmst.t[:,:,z,b] = prox_u(tmp,μt/rhot)
-            #             admmst.taut[:,:,z,b] = admmst.taut[:,:,z,b] + rhot*(admmst.t[:,:,z,b]-hx)
-            #             tmp1 = vecnorm([tmp2 (hx-(admmst.t)[:,:,z,b])],2)
-            #             tmp2 = (hx-(admmst.t)[:,:,z,b])
-            #     end
+            # for z in 1:nfreq, b in 1:nspat
+            #     admmst.Hx[:,:,z,b] = dwt(admmst.x[:,:,z],wavelet(spatialwlt[b]))
             # end
-
+            # a = toq()
+            # println("calcul HX", "  ", a)
+            #
+            # tic()
+            # @time tmp = admmst.Hx - (admmst.taut)/rhot
+            #
+            # @time admmst.t = prox_u(tmp,μt/rhot)
+            # # # tmp = 0
+            ##############################
+            ##############################
+            tic()
+            tmp1 = 0.0
+            tmp2 = zeros(Float64,nxy,nxy)
+            for z in 1:nfreq
+                for b in 1:nspat
+                        hx = dwt(admmst.x[:,:,z],wavelet(spatialwlt[b]))
+                        tmp = hx - admmst.taut[:,:,z,b]/rhot
+                        admmst.t[:,:,z,b] = prox_u(tmp,μt/rhot)
+                        admmst.taut[:,:,z,b] = admmst.taut[:,:,z,b] + rhot*(admmst.t[:,:,z,b]-hx)
+                        tmp1 = vecnorm([tmp2 (hx-(admmst.t)[:,:,z,b])],2)
+                        tmp2 = (hx-(admmst.t)[:,:,z,b])
+                end
+            end
+            
             # for z in 1:nfreq
             #     admmst.t, admmst.taut, tmp1 = myspat(admmst.x[:,:,z], admmst.t[:,:,z,:], admmst.taut[:,:,z,:],
             #                                         tmp1, tmp2, nspat, spatialwlt, rhot, μt)
             # end
 
 
-            # tmp2[:] = 0
-            # a = toq()
-            # println("new", "  ", a)
-            # tic()
+            tmp2[:] = 0
+            a = toq()
+            println("new", "  ", a)
+            tic()
             ############################################################
             ############################################################
 
@@ -252,7 +252,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             #### update of Lagrange multipliers ####
 
             admmst.taup = admmst.taup + rhop*(admmst.p-admmst.x)
-            admmst.taut = admmst.taut + rhot*(admmst.t-admmst.Hx)
+            # admmst.taut = admmst.taut + rhot*(admmst.t-admmst.Hx)
             admmst.tauv = admmst.tauv + rhov*(admmst.v-admmst.sh)
             admmst.taus = admmst.taus + rhos*(admmst.s-admmst.x)
 
@@ -262,8 +262,8 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             push!(toolst.tol1,vecnorm(admmst.x - admmst.xmm, 2)^2)
             push!(toolst.tol2,vecnorm(admmst.x - admmst.p, 2)^2)
-            push!(toolst.tol3,vecnorm(admmst.Hx - admmst.t, 2)^2)
-            # push!(toolst.tol3,tmp1^2)
+            # push!(toolst.tol3,vecnorm(admmst.Hx - admmst.t, 2)^2)
+            push!(toolst.tol3,tmp1^2)
             push!(toolst.tol4,vecnorm(admmst.x - admmst.s, 2)^2)
             push!(toolst.tol5,vecnorm(admmst.sh - admmst.v, 2)^2)
 
