@@ -130,7 +130,8 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
     const tt = admmst.tt
     const mu = admmst.mu
     const nspat = algost.nspat
-    const nfreq = algost.nfreq
+    # const nfreq = algost.nfreq
+    const nfreq = 8
     const nspec = algost.nspec
     const nxy = algost.nxy
     const fty = admmst.fty
