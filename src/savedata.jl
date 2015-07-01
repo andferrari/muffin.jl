@@ -2,7 +2,7 @@ using HDF5, JLD
 
 function savedata(savepath, psfst, skyst, algost, admmst, toolst)
 
-    JLD.save("imagerec.jld","admmst.x",admmst.x)
+    JLD.save("imagerec2.jld","admmst.x",admmst.x)
 
     JLD.save(savepath,"algost.lastiter",algost.lastiter,
                       "algost.nfreq",algost.nfreq,
@@ -13,7 +13,7 @@ function savedata(savepath, psfst, skyst, algost, admmst, toolst)
                       "toolst.tol4",toolst.tol4,
                       "toolst.tol5",toolst.tol5,
                       "skyst.mydata",skyst.mydata,
-                      "skyst.sky",skyst.sky,            
+                      "skyst.sky",skyst.sky,
                       "psfst.nu",psfst.nu,
                       "psfst.nu0",psfst.nu0,
                       "admmst",admmst)
