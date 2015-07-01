@@ -129,16 +129,15 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
     const mueps = admmst.mueps
     const tt = admmst.tt
     const mu = admmst.mu
-    # const nspat = algost.nspat
-    const nspat = 8
+    const nspat = algost.nspat
     const nfreq = algost.nfreq
     const nspec = algost.nspec
     const nxy = algost.nxy
     const fty = admmst.fty
     const nitermax = algost.nitermax
 
-    # spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
-    spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8]
+    spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
+
     niter = 0
 
     loop = true
@@ -522,7 +521,6 @@ function estime_ssh(s::Array{Float64,3},sh::Array{Float64,3},tmp::Array{Float64,
 end
 
 function myidwt(wlt,nspat,taut,rhot,t,spatialwlt)
-    println(size(wlt)," ",nspat," ",size(taut)," ",rhot," ",size(t)," ",spatialwlt)
         wlt = idwt(taut[:,:,1,1] + rhot*t[:,:,1,1],wavelet(spatialwlt[1]))
             for b in 2:nspat
                 wlt = wlt + idwt(taut[:,:,1,b] + rhot*t[:,:,1,b],wavelet(spatialwlt[b]))
