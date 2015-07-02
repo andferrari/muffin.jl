@@ -16,7 +16,7 @@
     for z in [1 5 10 15]
         subplot(4,4,e)
         axis("off")
-        a = nu[z]/1e9
+        a = trunc(nu[z]/1e9,3)
         imshow(sky[:,:,z],vmin=0,vmax=1.3)
         title(string(L"$\nu \, = \,$","$a ", L"\, GHz"),fontsize=14)
         e += 1
