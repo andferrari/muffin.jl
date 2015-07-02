@@ -9,40 +9,39 @@ function muffin(;folder="",dataobj="",datapsf="",nitermax = 500, rhop = 1,
 println("")
 println("MUFFIN initialisation")
 
-
                  ##################################
     ################### data initialisation #################
                  ##################################
 
-    if dataobj == "m31"
-        psf = "data/meerkat_m30_25pix.psf.fits"
-        obj = "data/M31.fits"
-    elseif dataobj == "andro"
-        psf = "data/meerkat_m30_25pix.psf.fits"
-        obj = "data/andro.fits"
-    elseif dataobj == "2gauss"
-        psf = "data/meerkat_m30_25pix.psf.fits"
-        obj = "data/2gauss.fits"
-    elseif dataobj == "chiara"
-        # psf = "/home/deguignet/Julia/example_sim_psf.fits"
-        # obj = "/home/deguignet/Julia/example_sim_dirty.fits"
-        psf = "/home/deguignet/Julia/example_sim_psf.fits"
-        obj = "/home/deguignet/Julia/example_sim_dirty.fits"
-    elseif isempty(dataobj)
-        psf = "data/meerkat_m30_25pix.psf.fits"
-        obj = "data/M31.fits"
-    elseif dataobj == ASCIIString
-        if isempty(folder)
+
+    if typeof(dataobj) == ASCIIString
+        if dataobj == "m31"
+            psf = "data/meerkat_m30_25pix.psf.fits"
+            obj = "data/M31.fits"
+        elseif dataobj == "andro"
+            psf = "data/meerkat_m30_25pix.psf.fits"
+            obj = "data/andro.fits"
+        elseif dataobj == "2gauss"
+            psf = "data/meerkat_m30_25pix.psf.fits"
+            obj = "data/2gauss.fits"
+        elseif dataobj == "chiara"
+            psf = "/home/deguignet/Julia/example_sim_psf.fits"
+            obj = "/home/deguignet/Julia/example_sim_dirty.fits"
+
+        elseif isempty(folder)
             tmp = pwd()
             psf = string(tmp,tmp[1],datapsf)
             obj = string(tmp,tmp[1],dataobj)
-        end
-        if typeof(folder) == ASCIIString
-             psf = string(folder,folder[1],datapsf)
-             obj = string(folder,folder[1],dataobj)
+        elseif typeof(folder) == ASCIIString
+                 psf = string(folder,folder[1],datapsf)
+                 obj = string(folder,folder[1],dataobj)
         else
-             error("data folder is not correct")
+                 error("data folder is not correct")
         end
+
+    elseif isempty(dataobj)
+        psf = "data/meerkat_m30_25pix.psf.fits"
+        obj = "data/M31.fits"
     end
 
 println("psf :"," ",psf)

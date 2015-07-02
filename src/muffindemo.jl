@@ -8,7 +8,7 @@
 myfolder = string(Pkg.dir("Muffin"))
 mydataobj =  "data/M31.fits"
 mydatapsf =  "data/meerkat_m30_25pix.psf.fits"
-mynitermax = 1
+mynitermax = 5
 myrhop = 1
 myrhot = 5
 myrhov = 2
