@@ -53,7 +53,6 @@ println("obj :"," ",obj)
 
 if dataobj == "chiara"
     ##################################
-    println("mode 1")
     println("loading psf...")
     psfst = loadpsf_dirty(psf)
     println("loading sky...")
@@ -61,7 +60,6 @@ if dataobj == "chiara"
     ##################################
 else
     ##################################
-    println("mode 2")
     println("loading psf...")
     psfst = loadpsf(psf,bw)
     println("loading sky...")
@@ -87,11 +85,9 @@ end
     println("loading arrays...")
     if ws == "true"
         file = string("/home/deguignet/Julia/resultats_100iter_woshaar.jld")
-        println(size(skyst.mydata),"  ",size(psfst.mypsfadj))
         admmst = loadarray_ws(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,
                             skyst.mydata,psfst.mypsfadj,file)
     else
-        println(size(skyst.mydata),"  ",size(psfst.mypsfadj))
         admmst = loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,
                             skyst.mydata,psfst.mypsfadj)
     end
@@ -150,53 +146,16 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             ##############################
             ########## update x ##########
-            tic()
             for z in 1:nfreq
                 admmst.wlt[:,:,z] = myidwt((admmst.wlt)[:,:,z], nspat, (admmst.taut)[:,:,z,:], rhot,
                                     (admmst.t)[:,:,z,:], spatialwlt)
             end
-            a = toq()
-            println("calcul wlt","  ",a)
 
-            # tic()
-            # @sync @parallel for z in 1:nfreq
-            #                     admmst.wlttmp[:,:,z,:] = myidwt(admmst.wlttmp[:,:,z,:],nspat,(admmst.taut)[:,:,z,:],rhot,
-            #                                             (admmst.t)[:,:,z,:],spatialwlt)
-            #                 end
-            # admmst.wlt = convert(Array,squeeze(sum(admmst.wlttmp,4),4))
-            # a = toq()
-            # println("calcul wlt","  ",a)
-
-            tic()
             b = fty + admmst.taup + rhop*admmst.p + admmst.taus + rhos*admmst.s
-            a = toq()
-            println("calcul b","  ",a)
 
-            tic()
             admmst.x = estime_x_par(admmst.x,psfst.mypsf,psfst.mypsfadj,admmst.wlt + b,mu,nfreq)
-            a = toq()
-            println("calcul parallel","  ",a)
-            # b = 0
             ##############################
             ######### prox spat ##########
-
-            ############################################################
-            ############################################################
-            # tic()
-            # for z in 1:nfreq, b in 1:nspat
-            #     admmst.Hx[:,:,z,b] = dwt(admmst.x[:,:,z],wavelet(spatialwlt[b]))
-            # end
-            # a = toq()
-            # println("calcul HX", "  ", a)
-            #
-            # tic()
-            # @time tmp = admmst.Hx - (admmst.taut)/rhot
-            #
-            # @time admmst.t = prox_u(tmp,μt/rhot)
-            # # # tmp = 0
-            ##############################
-            ##############################
-            tic()
             tmp1 = 0.0
             tmp2 = zeros(Float64,nxy,nxy)
             for z in 1:nfreq
@@ -209,56 +168,31 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
                         tmp2 = (hx-(admmst.t)[:,:,z,b])
                 end
             end
-
-            # for z in 1:nfreq
-            #     admmst.t, admmst.taut, tmp1 = myspat(admmst.x[:,:,z], admmst.t[:,:,z,:], admmst.taut[:,:,z,:],
-            #                                         tmp1, tmp2, nspat, spatialwlt, rhot, μt)
-            # end
-
-
             tmp2[:] = 0
-            a = toq()
-            println("new", "  ", a)
-            tic()
-            ############################################################
-            ############################################################
-
-
-
-
-
             ##############################
             ###### prox positivity #######
 
-            @time tmp = admmst.x-admmst.taup/rhop
+            tmp = admmst.x-admmst.taup/rhop
 
-            @time admmst.p = max(0,tmp)
+            admmst.p = max(0,tmp)
 
-            a = toq()
-            println("calcul prox","  ", a)
-            # tmp = 0
 
             ##############################
             ######### prox spec ##########
-            tic()
+
             tmp = admmst.tauv + rhov*admmst.v
 
             admmst.s, admmst.sh = estime_ssh(admmst.s,admmst.sh,tmp,nxy,nspec,admmst.spectralwlt,
                                               admmst.x,admmst.taus,rhov,rhos)
 
-            a = toq()
-            println("calcul s sh","  ",a)
-            # tmp = 0
-
             tmp = admmst.sh - admmst.tauv/rhov
             admmst.v = prox_u(tmp,μv/rhov)
-            # tmp = 0
+
 
             ########################################
             #### update of Lagrange multipliers ####
 
             admmst.taup = admmst.taup + rhop*(admmst.p-admmst.x)
-            # admmst.taut = admmst.taut + rhot*(admmst.t-admmst.Hx)
             admmst.tauv = admmst.tauv + rhov*(admmst.v-admmst.sh)
             admmst.taus = admmst.taus + rhos*(admmst.s-admmst.x)
 
@@ -268,32 +202,21 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             push!(toolst.tol1,vecnorm(admmst.x - admmst.xmm, 2)^2)
             push!(toolst.tol2,vecnorm(admmst.x - admmst.p, 2)^2)
-            # push!(toolst.tol3,vecnorm(admmst.Hx - admmst.t, 2)^2)
             push!(toolst.tol3,tmp1^2)
             push!(toolst.tol4,vecnorm(admmst.x - admmst.s, 2)^2)
             push!(toolst.tol5,vecnorm(admmst.sh - admmst.v, 2)^2)
 
-            # push!(toolst.snr,10*log10(mean(cubefilter(admmst.x,psfst.mypsf).^2)/(skyst.sig)^2))
-            # @printf("SNR : %02.04e dB \n", toolst.snr[niter])
-
-
-            # ##############################
-            # ############ RMSE ############
-            # println(size(toolst.err)," ",size(admmst.x)," ",size(skyst.sky)," ",size(skyst.sumsky2))
-            # for z in 1:nfreq
-            #     toolst.err[niter,z] = sqrt(sum((admmst.x[:,:,z] - skyst.sky[:,:,z]).^2)/skyst.sumsky2[z])
-            # end
 
             # ##############################
             # ####### stopping rule ########
 
-            if (niter >= nitermax) #|| ((toolst.tol1[niter] < 1E-6) && (toolst.tol2[niter] < 1E-4))
+            if (niter >= nitermax) || ((toolst.tol1[niter] < 1E-6) && (toolst.tol2[niter] < 1E-4))
                 loop = false
                 algost.lastiter = niter
             end
 
             admmst.xmm[:] = admmst.x
-            # println(run(`free -g`))
+
 
             @printf("| - error ||x - xm||: %02.04e \n", toolst.tol1[niter])
             @printf("| - error ||x - xp||: %02.04e \n", toolst.tol2[niter])
@@ -310,12 +233,6 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
     ####################################################################
     ####################################################################
 
-    # for z in 1:nfreq
-    #     toolst.errorrec[:,:,z] = skyst.sky[:,:,z] - admmst.x[:,:,z]
-    #     toolst.errorest[z] =  vecnorm(skyst.sky[:,:,z] - admmst.x[:,:,z])^2/skyst.sumsky2[z]
-    #     toolst.errorraw[z] =  vecnorm(skyst.mydata[:,:,z] - admmst.x[:,:,z])^2/vecnorm(skyst.mydata[:,:,z])^2
-    # end
-    # savedata("result_2048pix_100ite.jld", psfst, skyst, algost, admmst, toolst)
     return psfst, skyst, algost, admmst, toolst
 
 end
@@ -447,11 +364,9 @@ function lecture(directory::ASCIIString)
     file = FITS(directory)
     data = float64(read(file[1]))
     close(file)
-    println("taille data lecture"," ",size(data))
     data = squeeze(data,find(([size(data)...].==1)))
-
     data = data[:,:,:]
-    println("taille tronquee","  ",size(data))
+
     return data
 end
 ##################################
@@ -476,20 +391,7 @@ function estime_x_par(x::Array{Float64,3},mypsf::Array{Float64,3},mypsfadj::Arra
     for z in 1:nfreq
         psfpad[1:nxypsf,1:nxypsf,z] = mypsf[:,:,z]
         psfcbe[:,:,z] = 1./(abs(fft(psfpad[:,:,z])).^2+mu)
-
-        ########################
         x[:,:,z] = real(ifft(psfcbe[:,:,z].*fft(wlt_b[:,:,z])))
-        ########################
-
-        ########################
-        # x[:,:,z] = imfilter_fft(wlt_b[:,:,z],ifftshift(ifft(psfcbe[:,:,z])),"circular")
-        # xtmp = copy(x[:,:,z])
-        # x[:,2:nxy,z] = xtmp[:,1:nxy-1]
-        # x[:,1,z] = xtmp[:,nxy]
-        # xtmp = copy(x[:,:,z])
-        # x[2:nxy,:,z] = xtmp[1:nxy-1,:]
-        # x[1,:,z] = xtmp[nxy,:]
-        ########################
     end
 
 
@@ -499,13 +401,10 @@ end
 
 #################################
 ###### proximity operators ######
-# function prox_u(u::SharedArray,μ::Float64)
-#     return (max(1-μ./abs(u),0).*u)
-# end
-
 function prox_u(u::Array,μ::Float64)
     return max(0, 1-μ./abs(u)).*u
 end
+
 #################################
 ####### s / sh estimation #######
 function estime_ssh(s::Array{Float64,3},sh::Array{Float64,3},tmp::Array{Float64,3},
