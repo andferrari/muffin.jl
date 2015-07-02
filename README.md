@@ -110,6 +110,12 @@ To run the demo, type :
 	using Muffin
 	demo = string(Pkg.dir("Muffin"),"/src/muffindemo.jl")
 	include(demo);
+	
+If you want to visualize your results, just type after the simulation :
+
+	plot = string(Pkg.dir("Muffin"),"/src/readdata.jl")
+	include(plot);
+
 
 The demo will run with the following parameters :
 
@@ -127,6 +133,8 @@ The demo will run with the following parameters :
 	mysavepath = string(myfolder,myfolder[1],"data/demo_results.jld")
 	
 and the results will be saved in the `demo_results.jld` file.
+
+
 
 
 
