@@ -182,7 +182,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             #     z = i-1
             #     admmst.wlt[:,:,z],admmst.x[:,:,z],admmst.t[:,:,z,:],admmst.taut[:,:,z,:],admmst.p[:,:,z],admmst.taup[:,:,z] =
             #                                 @fetchfrom(i,parallelmuffin(admmst.wlt[:,:,z], admmst.taut[:,:,z,:], admmst.t[:,:,z,:], rhot, admmst.x[:,:,z],
-            #                                 psfst.mypsf[:,:,z], psfst.mypsfadj[:,:,z], admmst.p[:,:,z], admmst.taup[:,:,z],
+            #                                 psfst.mypsf[:,:,z], admmst.p[:,:,z], admmst.taup[:,:,z],
             #                                 fty[:,:,z], rhop, admmst.taus[:,:,z], admmst.s[:,:,z], rhos, admmst.mu, spatialwlt,
             #                                 μt, nspat))
 ########################
@@ -190,7 +190,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             @sync @parallel for z in 1:nfreq
                 admmst.wlt[:,:,z],admmst.x[:,:,z],admmst.t[:,:,z,:],admmst.taut[:,:,z,:],admmst.p[:,:,z],admmst.taup[:,:,z] =
                                             parallelmuffin(admmst.wlt[:,:,z], admmst.taut[:,:,z,:], admmst.t[:,:,z,:], rhot, admmst.x[:,:,z],
-                                            psfst.mypsf[:,:,z], psfst.mypsfadj[:,:,z], admmst.p[:,:,z], admmst.taup[:,:,z],
+                                            psfst.mypsf[:,:,z], admmst.p[:,:,z], admmst.taup[:,:,z],
                                             fty[:,:,z], rhop, admmst.taus[:,:,z], admmst.s[:,:,z], rhos, admmst.mu, spatialwlt,
                                             μt, nspat)
 
@@ -232,7 +232,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             #
             # b = fty + admmst.taup + rhop*admmst.p + admmst.taus + rhos*admmst.s
             #
-            # admmst.x = estime_x_par(admmst.x,psfst.mypsf,psfst.mypsfadj,admmst.wlt + b,mu,nfreq)
+            # admmst.x = estime_x_par(admmst.x,psfst.mypsf,admmst.wlt + b,mu,nfreq)
             # ##############################
             # ######### prox spat ##########
             # tmp1 = 0.0
@@ -468,41 +468,41 @@ end
 
 #################################
 ######### x estimation ##########
-function estime_x_par(x::Array{Float64,3},mypsf::Array{Float64,3},mypsfadj::Array{Float64,3},
-                        wlt_b::Array{Float64,3},mu::Float64,nfreq::Int64)
-
-    nxy = (size(x))[1]
-    nxypsf = (size(mypsf))[1]
-    fftpsf = zeros(Complex64,nxy,nxy,nfreq)
-    psfcbe = zeros(Complex64,nxy,nxy,nfreq)
-    psfpad = zeros(Float64,nxy,nxy,nfreq)
-
-    for z in 1:nfreq
-        psfpad[1:nxypsf,1:nxypsf,z] = mypsf[:,:,z]
-        psfcbe[:,:,z] = 1./(abs(fft(psfpad[:,:,z])).^2+mu)
-        x[:,:,z] = real(ifft(psfcbe[:,:,z].*fft(wlt_b[:,:,z])))
-    end
-
-    return x
-end
-
-function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},mypsfadj::Array{Float64,3},
-                        wlt_b::SharedArray{Float64,3},mu::Float64,nfreq::Int64)
-
-    nxy = (size(x))[1]
-    nxypsf = (size(mypsf))[1]
-    fftpsf = zeros(Complex64,nxy,nxy,nfreq)
-    psfcbe = zeros(Complex64,nxy,nxy,nfreq)
-    psfpad = zeros(Float64,nxy,nxy,nfreq)
-
-    for z in 1:nfreq
-        psfpad[1:nxypsf,1:nxypsf,z] = mypsf[:,:,z]
-        psfcbe[:,:,z] = 1./(abs(fft(psfpad[:,:,z])).^2+mu)
-        x[:,:,z] = real(ifft(psfcbe[:,:,z].*fft(wlt_b[:,:,z])))
-    end
-
-    return x
-end
+# function estime_x_par(x::Array{Float64,3},mypsf::Array{Float64,3},
+#                         wlt_b::Array{Float64,3},mu::Float64,nfreq::Int64)
+#
+#     nxy = (size(x))[1]
+#     nxypsf = (size(mypsf))[1]
+#     fftpsf = zeros(Complex64,nxy,nxy,nfreq)
+#     psfcbe = zeros(Complex64,nxy,nxy,nfreq)
+#     psfpad = zeros(Float64,nxy,nxy,nfreq)
+#
+#     for z in 1:nfreq
+#         psfpad[1:nxypsf,1:nxypsf,z] = fftshift(mypsf[:,:,z])
+#         psfcbe[:,:,z] = 1./(abs(fft(psfpad[:,:,z])).^2+mu)
+#         x[:,:,z] = real(ifft(psfcbe[:,:,z].*fft(wlt_b[:,:,z])))
+#     end
+#
+#     return x
+# end
+#
+# function estime_x_par(x::SharedArray{Float64,3},mypsf::Array{Float64,3},
+#                         wlt_b::SharedArray{Float64,3},mu::Float64,nfreq::Int64)
+#
+#     nxy = (size(x))[1]
+#     nxypsf = (size(mypsf))[1]
+#     fftpsf = zeros(Complex64,nxy,nxy,nfreq)
+#     psfcbe = zeros(Complex64,nxy,nxy,nfreq)
+#     psfpad = zeros(Float64,nxy,nxy,nfreq)
+#
+#     for z in 1:nfreq
+#         psfpad[1:nxypsf,1:nxypsf,z] = fftshift(mypsf[:,:,z])
+#         psfcbe[:,:,z] = 1./(abs(fft(psfpad[:,:,z])).^2+mu)
+#         x[:,:,z] = real(ifft(psfcbe[:,:,z].*fft(wlt_b[:,:,z])))
+#     end
+#
+#     return x
+# end
 
 #################################
 ###### proximity operators ######
@@ -546,17 +546,6 @@ function estime_ssh(s::Array{Float64,3},sh::Array{Float64,3},tmp::Array{Float64,
     return s,sh
 end
 
-function estime_ssh(s::Array{Float64,3},sh::Array{Float64,3},tmp::Array{Float64,3},
-                    nxy::Int64,nspec::Int64,spectralwlt::Array{Float64,3},
-                    x::DArray{Float64,3},taus::Array{Float64,3},rhov::Float64,rhos::Float64)
-
-    spectralwlt = idct(tmp,3)
-    s = (spectralwlt + rhos*x - taus)/(rhov*nspec + rhos)
-    sh = dct(s,3)
-
-    return s,sh
-end
-
 function myidwt(wlt::Array{Float64,2},nspat::Int,taut::Array{Float64,4},rhot::Float64,t::Array{Float64,4},spatialwlt)
         wlt = idwt(taut[:,:,1,1] + rhot*t[:,:,1,1],wavelet(spatialwlt[1]))
             for b in 2:nspat
@@ -590,30 +579,10 @@ function cubefreqchiara(nfrequencies::Int)
     return nu,nu0
 end
 
-
-function myspat(x,t,taut,tmp1,tmp2, nspat, spatialwlt, rhot, μt)
-    println(size(x)," ",size(t)," ",size(taut))
-    for b in 1:nspat
-        hx = dwt(x[:,:], wavelet(spatialwlt[b]))
-        tmp = hx - taut[:,:,1,b]/rhot
-        t[:,:,1,b] = prox_u(tmp,μt/rhot)
-        taut[:,:,1,b] = taut[:,:,1,b] + rhot*(t[:,:,1,b]-hx)
-        tmp1 = vecnorm([tmp2 (hx-t[:,:,1,b])],2)
-        tmp2 = (hx-t[:,:,1,b])
-    end
-    return t,taut,tmp1
-end
-
-
-function parallelmuffin(wlt,taut,t,rhot,x,psf,psfadj,p,taup,fty,rhop,taus,s,rhos,mu,spatialwlt,μt,nspat)
-
-    # wlt = convert(Array,wlt)
-    # x = convert(Array,x)
-    # p = convert(Array,p)
-    # taup = convert(Array,taup)
-    # t = convert(Array,taut)
-    # taut = convert(Array,taut)
-
+function parallelmuffin(wlt::Array{Float64,2},taut::Array{Float64,4},t::Array{Float64,4},rhot::Float64,
+                        x::Array{Float64,2},psf::Array{Float64,2},p::Array{Float64,2},taup::Array{Float64,2},
+                        fty::Array{Float64,2},rhop::Float64,taus::Array{Float64,2},s::Array{Float64,2},rhos::Float64,
+                        mu::Float64,spatialwlt,μt::Float64,nspat::Int)
 
         wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
         b = fty + taup + rhop*p + taus + rhos*s
@@ -634,8 +603,46 @@ function parallelmuffin(wlt,taut,t,rhot,x,psf,psfadj,p,taup,fty,rhop,taus,s,rhos
                     tmp = hx - taut[:,:,1,b]/rhot
                     t[:,:,1,b] = prox_u(tmp,μt/rhot)
                     taut[:,:,1,b] = taut[:,:,1,b] + rhot*(t[:,:,1,b]-hx)
-                    # tmp1 = vecnorm([tmp2 (hx-(admmst.t)[:,:,z,b])],2)
-                    # tmp2 = (hx-(admmst.t)[:,:,z,b])
+                    # tmp1 = vecnorm([tmp2 (hx-(t)[:,:,z,b])],2)
+                    # tmp2 = (hx-(t)[:,:,z,b])
+        end
+        # tmp2[:] = 0
+
+
+        tmp = x-taup/rhop
+        p = max(0,tmp)
+        taup = taup + rhop*(p-x)
+
+    return wlt,x,t,taut,p,taup
+
+end
+
+function parallelmuffin(wlt::SharedArray{Float64,2},taut::SharedArray{Float64,4},t::SharedArray{Float64,4},rhot::Float64,
+                        x::SharedArray{Float64,2},psf::Array{Float64,2},p::SharedArray{Float64,2},taup::SharedArray{Float64,2},
+                        fty::Array{Float64,2},rhop::Float64,taus::Array{Float64,2},s::Array{Float64,2},rhos::Float64,
+                        mu::Float64,spatialwlt,μt::Float64,nspat::Int)
+
+        wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
+        b = fty + taup + rhop*p + taus + rhos*s
+        wlt_b = wlt + b
+
+        nxy = (size(x))[1]
+        nxypsf = (size(psf))[1]
+        psfcbe = zeros(Complex64,nxy,nxy)
+        psfpad = zeros(Float64,nxy,nxy)
+        psfpad[1:nxypsf,1:nxypsf] = psf[:,:]
+        psfcbe = 1./(abs(fft(psfpad)).^2+mu)
+        x = real(ifft(psfcbe.*fft(wlt_b)))
+
+        # tmp1 = 0.0
+        # tmp2 = zeros(Float64,nxy,nxy)
+        for b in 1:nspat
+                    hx = dwt(x,wavelet(spatialwlt[b]))
+                    tmp = hx - taut[:,:,1,b]/rhot
+                    t[:,:,1,b] = prox_u(tmp,μt/rhot)
+                    taut[:,:,1,b] = taut[:,:,1,b] + rhot*(t[:,:,1,b]-hx)
+                    # tmp1 = vecnorm([tmp2 (hx-(t)[:,:,z,b])],2)
+                    # tmp2 = (hx-(t)[:,:,z,b])
         end
         # tmp2[:] = 0
 
