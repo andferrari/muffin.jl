@@ -65,18 +65,31 @@ function loadparam(nspat,nfreq,nspec,nxy,niter,lastiter,nitermax)
     return algost
 end
 
-function loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,mydata,mypsfadj)
-    admmst = init_Admmarray()
+function loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,mydata,mypsfadj,parallel)
+    admmst = init_Admmarray(parallel)
     admmst.s = zeros(Float64,nxy,nxy,nfreq)
     admmst.taus = zeros(Float64,nxy,nxy,nfreq)
     admmst.sh = zeros(Float64,nxy,nxy,nfreq)
-    admmst.taup = zeros(Float64,nxy,nxy,nfreq)
-    admmst.p = zeros(Float64,nxy,nxy,nfreq)
     admmst.tauv = zeros(Float64,nxy,nxy,nfreq)
     admmst.v = zeros(Float64,nxy,nxy,nfreq)
-    admmst.t = zeros(Float64,nxy,nxy,nfreq,nspat)
-    admmst.taut = zeros(Float64,nxy,nxy,nfreq,nspat)
-    admmst.wlt = zeros(Float64,nxy,nxy,nfreq)
+
+    if parallel == "true"
+        println("Parallel muffin")
+        admmst.taup = SharedArray(Float64,nxy,nxy,nfreq)
+        admmst.p = SharedArray(Float64,nxy,nxy,nfreq)
+        admmst.t = SharedArray(Float64,nxy,nxy,nfreq,nspat)
+        admmst.taut = SharedArray(Float64,nxy,nxy,nfreq,nspat)
+        admmst.wlt = SharedArray(Float64,nxy,nxy,nfreq)
+    else
+        admmst.taup = zeros(Float64,nxy,nxy,nfreq)
+        admmst.p = zeros(Float64,nxy,nxy,nfreq)
+        admmst.t = zeros(Float64,nxy,nxy,nfreq,nspat)
+        admmst.taut = zeros(Float64,nxy,nxy,nfreq,nspat)
+        admmst.wlt = zeros(Float64,nxy,nxy,nfreq)
+    end
+
+############################################################
+
     admmst.x = copy(mydata)
     admmst.xmm = zeros(Float64,nxy,nxy,nfreq)
     admmst.spectralwlt = zeros(Float64,nxy,nxy,nfreq)
@@ -114,55 +127,6 @@ end
 
 function loadarray_ws(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,mydata,mypsfadj,file)
     println("warm start")
-    println("init")
-    admmst = init_Admmarray()
-
-
-
-    println("s")
-    admmst.s = load(file,"admmst.s")
-    # admmst.s = SharedArray(Float64,nxy,nxy,nfreq)
-    println("taus")
-    admmst.taus = load(file,"admmst.taus")
-    println("sh")
-    admmst.sh = zeros(Float64,nxy,nxy,nfreq)
-    # admmst.sh = SharedArray(Float64,nxy,nxy,nfreq)
-    println("taup")
-    admmst.taup = load(file,"admmst.taup")
-    println("p")
-    admmst.p = load(file,"admmst.p")
-    println("tauv")
-    admmst.tauv = load(file,"admmst.tauv")
-    println("v")
-    admmst.v = load(file,"admmst.v")
-    println("t")
-    admmst.t = load(file,"admmst.t")
-    println("taut")
-    admmst.taut = load(file,"admmst.taut")
-
-    println("wlt")
-    admmst.wlt = zeros(Float64,nxy,nxy,nfreq)
-    # admmst.wlt = SharedArray(Float64,nxy,nxy,nfreq)
-    println("x")
-    admmst.x = load(file,"admmst.x")
-    # admmst.Hx = SharedArray(Float64,nxy,nxy,nfreq,nspat)
-    # println("Hx")
-    # admmst.Hx = zeros(Float64,nxy,nxy,nfreq,nspat)
-    println("xmm")
-    admmst.xmm = zeros(Float64,nxy,nxy,nfreq)
-    println("spectralwlt")
-    admmst.spectralwlt = zeros(Float64,nxy,nxy,nfreq)
-    # admmst.spectralwlt = SharedArray(Float64,nxy,nxy,nfreq)
-    println("fty")
-    admmst.fty = cubefilter(mydata,mypsfadj)
-    admmst.rhop = rhop
-    admmst.rhot = rhot
-    admmst.rhov = rhov
-    admmst.rhos = rhos
-    admmst.μt = μt
-    admmst.μv = μv
-    admmst.mueps = mueps
-    admmst.tt = rhot*nspat
-    admmst.mu = mueps + rhop + admmst.tt + rhos
+    admmst = load(file,"admmst")
     return admmst
 end

@@ -51,11 +51,16 @@ To load the `Muffin.jl` module, type from a Julia session :
 To use parallel computing, start Julia with **nprocs** local process and load the module :
 
 ```julia
-	$ julia -p nprocs  
-	julia> using Muffin
+	$ julia -p nprocs
+	julia> @everywhere using Muffin
 ```
+
+You just need to add the keyword **parallel** in the MUFFIN function, for an example :
+
 	
-	
+```julia
+	julia> psfst, skyst, algost, admmst, toolst = muffin(nitermax = 10,parallel="true");
+```
 	
 #Functions
 
@@ -87,6 +92,8 @@ To use parallel computing, start Julia with **nprocs** local process and load th
 	* μt : Spatial regularization parameter. Default : `5e-1`
 	* μv : Spectral regularization parameter. Default : `1`
 	* mueps : Ridge/Tikhonov regularization parameter : `1e-3`
+	* ws : warm start
+	* parallel : to start parallel Muffin
  
  
 ####Save data

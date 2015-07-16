@@ -50,20 +50,16 @@ type Admm_array
 
     taup::Array{Float64}
     p::Array{Float64}
-    rhop::Float64
+    t::Array{Float64}
+    taut::Array{Float64}
+    wlt::Array{Float64}
+    x::Array{Float64}
 
+    rhop::Float64
     tauv::Array{Float64}
     v::Array{Float64}
     rhov::Float64
-
-    t::Array{Float64}
-    taut::Array{Float64}
     rhot::Float64
-
-    wlt::Array{Float64}
-
-    x::Array{Float64}
-    # Hx::Array{Float64}
     xmm::Array{Float64}
 
     spectralwlt::Array{Float64}
@@ -77,6 +73,36 @@ type Admm_array
     mu::Float64
 end
 
+type Admm_array_parallel
+    s::Array{Float64}
+    taus::Array{Float64}
+    rhos::Float64
+    sh::Array{Float64}
+
+    taup::SharedArray{Float64}
+    p::SharedArray{Float64}
+    t::SharedArray{Float64}
+    taut::SharedArray{Float64}
+    wlt::SharedArray{Float64}
+    x::SharedArray{Float64}
+
+    rhop::Float64
+    tauv::Array{Float64}
+    v::Array{Float64}
+    rhov::Float64
+    rhot::Float64
+    xmm::Array{Float64}
+
+    spectralwlt::Array{Float64}
+
+    fty::Array{Float64}
+
+    μt::Float64
+    μv::Float64
+    mueps::Float64
+    tt::Float64
+    mu::Float64
+end
 
 type TOOLS
     snr::Array{Float64}
@@ -111,9 +137,18 @@ end
 function init_Algoparam()
     return Algo_param(0,0,0,0,0,0,0)
 end
-function init_Admmarray()
-    return Admm_array([],[],0.,[],[],[],0.,[],[],0.,[],[],0.,[],[],[],[],[],0.,0.,0.,0.,0.)
+# function init_Admmarray()
+#     return Admm_array([],[],0.,[],[],[],0.,[],[],0.,[],[],0.,[],[],[],[],[],0.,0.,0.,0.,0.)
+# end
+
+function init_Admmarray(parallel)
+    if parallel == "true"
+        return Admm_array_parallel([],[],0.,[],[],[],[],[],[],[],0.,[],[],0.,0.,[],[],[],0.,0.,0.,0.,0.)
+    else
+        return Admm_array([],[],0.,[],[],[],[],[],[],[],0.,[],[],0.,0.,[],[],[],0.,0.,0.,0.,0.)
+    end
 end
+
 function init_TOOLS()
     return TOOLS([],[],[],[],[],[],[],[],[],[])
 end
