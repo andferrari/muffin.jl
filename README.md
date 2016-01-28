@@ -1,5 +1,6 @@
 
-**A new version of `Muffin.jl` running on a cluster is under heavy development and will be available soon!**
+A new version of `Muffin.jl` running on a cluster is under heavy development and will be available soon.
+As a foretaste, see the [slides](http://bipop.inrialpes.fr/people/malick/Docs/15-titan-ferrari.pdf) presented in the  [Titan workshop](http://bipop.inrialpes.fr/people/malick/Titan.html).
 
 =========
 
